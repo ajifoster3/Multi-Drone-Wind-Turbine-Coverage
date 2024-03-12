@@ -29,7 +29,7 @@ void OffboardNode::spinNode()
     {
         publishGeoPose();
         publishTargetPose();
-        //rclcpp::spin_some(shared_from_this());
+        rclcpp::spin_some(shared_from_this());
         rate.sleep();
     }
 }
