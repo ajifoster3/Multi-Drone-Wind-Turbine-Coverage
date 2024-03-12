@@ -1,0 +1,2 @@
+/usr/bin/ar qc libGreedyIterativeCoveragePathPlanner.a CMakeFiles/GreedyIterativeCoveragePathPlanner.dir/src/CoveragePath.cpp.o CMakeFiles/GreedyIterativeCoveragePathPlanner.dir/src/GreedyIterativeCoveragePathPlanner.cpp.o CMakeFiles/GreedyIterativeCoveragePathPlanner.dir/src/HaversineDistance.cpp.o
+/usr/bin/ranlib libGreedyIterativeCoveragePathPlanner.a

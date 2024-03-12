@@ -1,0 +1,3 @@
+/home/ajifoster3/Documents/Code/c++/coverage_library/build/CMakeFiles/GreedyIterativeCoveragePathPlanner.dir
+/home/ajifoster3/Documents/Code/c++/coverage_library/build/CMakeFiles/edit_cache.dir
+/home/ajifoster3/Documents/Code/c++/coverage_library/build/CMakeFiles/rebuild_cache.dir
