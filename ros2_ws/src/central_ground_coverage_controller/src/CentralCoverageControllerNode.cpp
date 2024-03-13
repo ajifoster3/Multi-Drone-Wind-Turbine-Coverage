@@ -1,7 +1,7 @@
 #include "CentralCoverageControllerNode.h"
 
 CentralCoverageControllerNode::CentralCoverageControllerNode(const std::string &name, int team_size)
-    : Node(name), teamSize_(team_size)
+    : Node(name), teamSize_(team_size), geoid("egm96-5")
 {
     initializeSubscribers();
     initializePublishers();
@@ -21,6 +21,10 @@ void CentralCoverageControllerNode::globalPositionCb(const geographic_msgs::msg:
     if (uas_id < currentGpsPositions_.size())
     {
         currentGpsPositions_[uas_id] = *msg;
+        double geoidHeight = geoid(
+                currentGpsPositions_[uas_id].pose.position.latitude, 
+                currentGpsPositions_[uas_id].pose.position.longitude);
+        currentGpsPositions_[uas_id].pose.position.altitude -= geoidHeight;
     }
 }
 
@@ -40,15 +44,6 @@ void CentralCoverageControllerNode::timerCallback()
             // Get the pose from the returned viewpoint
             Pose pose = goalViewPoint.value().getPose();
 
-            //Create a geoid object 
-            //TODO: Move to currentGpsPositions_ setter
-            GeographicLib::Geoid geoid("egm96-5");
-            
-            // Calculate the Geoid height for the given pose
-            double geoidHeight = geoid(
-                currentGpsPositions_[i].pose.position.latitude, 
-                currentGpsPositions_[i].pose.position.longitude);
-
             // Calculate the distance with the haversine distances and the altitudes adjusted for geoid height
             double distance = HaversineDistance::calculateDistance(
                     pose.position.latitude, 
@@ -56,9 +51,9 @@ void CentralCoverageControllerNode::timerCallback()
                     pose.position.altitude,
                     currentGpsPositions_[i].pose.position.latitude, 
                     currentGpsPositions_[i].pose.position.longitude, 
-                    currentGpsPositions_[i].pose.position.altitude - geoidHeight
+                    currentGpsPositions_[i].pose.position.altitude
                     );
-
+                    
             // If less than 40cm from the target, set the coverage time to the current time (complete coverage)
             // TODO: replace 0.4 with a variable "goalPoseTolerance", Better being moved to the coverage_library?
             if (distance < 0.4)

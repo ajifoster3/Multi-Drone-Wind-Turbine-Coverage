@@ -12,6 +12,7 @@
 
 using namespace std::chrono_literals;
 
+
 class CentralCoverageControllerNode : public rclcpp::Node
 {
 public:
@@ -21,6 +22,7 @@ public:
 
 private:
     int teamSize_{};
+    GeographicLib::Geoid geoid;
     std::vector<CoveragePath> coveragePaths_{};
     std::vector<rclcpp::Subscription<geographic_msgs::msg::GeoPoseStamped>::SharedPtr> centralGlobalPosSubs_;
     std::vector<rclcpp::Publisher<geographic_msgs::msg::GeoPoseStamped>::SharedPtr> centralGlobalGoalPosPubs_;
