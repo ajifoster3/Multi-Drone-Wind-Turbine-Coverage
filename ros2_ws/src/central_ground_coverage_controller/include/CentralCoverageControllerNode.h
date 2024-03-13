@@ -6,6 +6,9 @@
 #include <geographic_msgs/msg/geo_pose_stamped.hpp>
 #include <GreedyIterativeCoveragePathPlanner.h>
 #include <CoveragePath.h>
+#include <HaversineDistance.h>
+#include <memory>
+#include <GeographicLib/Geoid.hpp>
 
 using namespace std::chrono_literals;
 
@@ -27,7 +30,7 @@ private:
 
     void globalPositionCb(const geographic_msgs::msg::GeoPoseStamped::SharedPtr msg, size_t uasId);
 
-    void timer_callback();
+    void timerCallback();
 
     void coveragePoseToGeoPose(geographic_msgs::msg::GeoPoseStamped &geopose, Pose &pose);
 

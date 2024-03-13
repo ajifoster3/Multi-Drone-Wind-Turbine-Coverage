@@ -6,8 +6,9 @@ CentralCoverageControllerNode::CentralCoverageControllerNode(const std::string &
     initializeSubscribers();
     initializePublishers();
     initializeClients();
+
     timer_ = this->create_wall_timer(
-        500ms, std::bind(&CentralCoverageControllerNode::timer_callback, this));
+        500ms, std::bind(&CentralCoverageControllerNode::timerCallback, this));
 }
 
 void CentralCoverageControllerNode::setCoveragePaths(std::vector<CoveragePath> &coveragePaths)
@@ -24,7 +25,7 @@ void CentralCoverageControllerNode::globalPositionCb(const geographic_msgs::msg:
     }
 }
 
-void CentralCoverageControllerNode::timer_callback()
+void CentralCoverageControllerNode::timerCallback()
 {
     for (int i = 0; i < teamSize_; ++i)
     {
@@ -32,17 +33,38 @@ void CentralCoverageControllerNode::timer_callback()
         std::optional<CoverageViewpoint> nextViewPoint = coveragePaths_[i].getFirstZeroCoverageTimeViewpoint();
         if (nextViewPoint)
         {
-            CoverageViewpoint viewpoint = nextViewPoint.value();
-            Pose pose = viewpoint.getPose();
+            using HaversineDistance::calculateDistance;
+            GeographicLib::Geoid geoid("egm96-5");
+            Pose pose = nextViewPoint.value().getPose();
+            double distance = calculateDistance(
+                    pose.position.latitude, 
+                    pose.position.longitude,
+                    pose.position.altitude,
+                    currentGpsPositions_[i].pose.position.latitude, 
+                    currentGpsPositions_[i].pose.position.longitude, 
+                    currentGpsPositions_[i].pose.position.altitude - 
+                    geoid(currentGpsPositions_[i].pose.position.latitude, currentGpsPositions_[i].pose.position.longitude));
+            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Distance = %f", distance);
+            if (distance < 0.4)
+            {
+                coveragePaths_[i].setFirstZeroCoverageTimeViewpointTime();
+                RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Coverage Pose reached");
+            }
+
             geographic_msgs::msg::GeoPoseStamped geopose;
             coveragePoseToGeoPose(geopose, pose);
             geopose.header.stamp = this->now();
             pub->publish(geopose);
-            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Publishing geopose");
+        }
+        else
+        {
         }
     }
 }
 
+/*
+** TODO: Move to Pose class
+*/
 void CentralCoverageControllerNode::coveragePoseToGeoPose(geographic_msgs::msg::GeoPoseStamped &geopose, Pose &pose)
 {
     geopose.pose.position.altitude = pose.position.altitude;
@@ -83,3 +105,4 @@ void CentralCoverageControllerNode::initializePublishers()
                 topic_name, rclcpp::SensorDataQoS()));
     }
 }
+

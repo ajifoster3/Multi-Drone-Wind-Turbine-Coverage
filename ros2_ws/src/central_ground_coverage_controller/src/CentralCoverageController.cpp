@@ -2,34 +2,12 @@
 #include <rclcpp/wait_for_message.hpp>
 #include <sensor_msgs/msg/nav_sat_fix.hpp>
 #include <geographic_msgs/msg/geo_pose_stamped.hpp>
-#include <GeographicLib/Geoid.hpp>
 #include <GreedyIterativeCoveragePathPlanner.h>
 #include <CoverageViewpointLoader.h>
 #include <CoveragePath.h>
 #include <Pose.h>
 #include "CentralCoverageControllerNode.h"
 
-/* -*- GograpticLib utils -*- */
-
-std::shared_ptr<GeographicLib::Geoid> egm96_5;
-
-template <class T>
-inline double geoid_to_ellipsoid_height(T lla)
-{
-    if (egm96_5)
-        return GeographicLib::Geoid::GEOIDTOELLIPSOID * (*egm96_5)(lla->latitude, lla->longitude);
-    else
-        return 0.0;
-}
-
-template <class T>
-inline double ellipsoid_to_geoid_height(T lla)
-{
-    if (egm96_5)
-        return GeographicLib::Geoid::ELLIPSOIDTOGEOID * (*egm96_5)(lla->latitude, lla->longitude);
-    else
-        return 0.0;
-}
 
 int main(int argc, char **argv)
 {
@@ -80,6 +58,18 @@ int main(int argc, char **argv)
 
     // Give paths to the central_coverage_controller_node
     central_coverage_controller_node->setCoveragePaths(coveragePaths);
+
+    //*****************************************************************************
+
+    auto now = std::chrono::system_clock::now();
+    
+    // Convert to a time_t, which represents time in seconds since the epoch
+    std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+    
+    // Convert to a readable string
+    std::cout << "Current time: " << std::ctime(&now_time_t);
+
+    //*****************************************************************************
 
     rclcpp::spin(central_coverage_controller_node);
 

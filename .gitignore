@@ -3634,3 +3634,5 @@ ros2_ws/log/build_2024-03-12_02-03-14/offboard_control/stderr.log
 ros2_ws/log/build_2024-03-12_02-03-14/offboard_control/stdout.log
 ros2_ws/log/build_2024-03-12_02-03-14/offboard_control/stdout_stderr.log
 ros2_ws/log/build_2024-03-12_02-03-14/offboard_control/streams.log
+*.log
+*.internal

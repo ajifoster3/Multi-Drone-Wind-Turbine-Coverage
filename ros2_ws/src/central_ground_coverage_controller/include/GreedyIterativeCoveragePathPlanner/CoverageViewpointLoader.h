@@ -33,7 +33,7 @@ namespace CoverageViewpointLoader
             pose.orientation.z = geoPose["geometry_msgs/Quaternion orientation"]["z"];
             pose.orientation.w = geoPose["geometry_msgs/Quaternion orientation"]["w"];
             // Assuming default coverageTime and assigned values as placeholders
-            double coverageTime = 0; // Placeholder value
+            std::chrono::seconds coverageTime = std::chrono::seconds(0); // Placeholder value
             bool assigned = false;   // Placeholder value
             viewpoints.emplace_back(pose, coverageTime, assigned);
         }

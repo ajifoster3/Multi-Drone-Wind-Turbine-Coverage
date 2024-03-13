@@ -11,6 +11,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(mavros_msgs REQUIRED)
+find_package (GeographicLib REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -29,8 +30,8 @@ add_library(GreedyIterativeCoveragePathPlanner STATIC IMPORTED)
 # Specify the location of the static library
 set_property(TARGET GreedyIterativeCoveragePathPlanner PROPERTY IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/lib/libGreedyIterativeCoveragePathPlanner.a")
 
-# If there are header files for the library, specify their directory here
-include_directories(${CMAKE_SOURCE_DIR}/include/GreedyIterativeCoveragePathPlanner include)
+include_directories(${CMAKE_SOURCE_DIR}/include/GreedyIterativeCoveragePathPlanner include ${GeographicLib_INCLUDE_DIRS})
+
 
 
 add_executable(
@@ -38,7 +39,7 @@ add_executable(
   src/CentralCoverageController.cpp 
   src/CentralCoverageControllerNode.cpp 
   include/CentralCoverageControllerNode.h )
-target_link_libraries(central_coverage_controller GreedyIterativeCoveragePathPlanner)
+target_link_libraries(central_coverage_controller GreedyIterativeCoveragePathPlanner ${GeographicLib_LIBRARIES})
 ament_target_dependencies(central_coverage_controller rclcpp geometry_msgs mavros_msgs)
 
 install(TARGETS
