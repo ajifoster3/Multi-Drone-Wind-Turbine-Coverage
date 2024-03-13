@@ -12,6 +12,7 @@
 
 using namespace std::chrono_literals;
 
+
 class CentralCoverageControllerNode : public rclcpp::Node
 {
 public:
@@ -21,12 +22,18 @@ public:
 
 private:
     int teamSize_{};
+    GeographicLib::Geoid geoid;
     std::vector<CoveragePath> coveragePaths_{};
     std::vector<rclcpp::Subscription<geographic_msgs::msg::GeoPoseStamped>::SharedPtr> centralGlobalPosSubs_;
     std::vector<rclcpp::Publisher<geographic_msgs::msg::GeoPoseStamped>::SharedPtr> centralGlobalGoalPosPubs_;
     std::vector<geographic_msgs::msg::GeoPoseStamped> goalGpsPositions_;
     std::vector<geographic_msgs::msg::GeoPoseStamped> currentGpsPositions_;
     rclcpp::TimerBase::SharedPtr timer_;
+
+    /**
+     *  Sets currentGpsPositions_ with altitude accounting for geoid height.
+     */
+    void CentralCoverageControllerNode::setCurrentGpsPosition(const geographic_msgs::msg::GeoPoseStamped& geopose, int uas_id);
 
     /**
      *  Sets currentGpsPositions_ to the recieved GeoPoseStamped values recieved
