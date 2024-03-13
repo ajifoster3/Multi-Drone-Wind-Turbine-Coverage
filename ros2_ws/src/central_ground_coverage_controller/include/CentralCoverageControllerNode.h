@@ -31,6 +31,11 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
 
     /**
+     *  Sets currentGpsPositions_ with altitude accounting for geoid height.
+     */
+    void CentralCoverageControllerNode::setCurrentGpsPosition(const geographic_msgs::msg::GeoPoseStamped& geopose, int uas_id);
+
+    /**
      *  Sets currentGpsPositions_ to the recieved GeoPoseStamped values recieved
      *  from the central_control/uas_{i}/global_pose topic.
      */

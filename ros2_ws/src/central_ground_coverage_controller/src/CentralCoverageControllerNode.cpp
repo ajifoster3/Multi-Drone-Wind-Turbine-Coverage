@@ -15,17 +15,21 @@ void CentralCoverageControllerNode::setCoveragePaths(std::vector<CoveragePath> &
     this->coveragePaths_ = coveragePaths;
 }
 
-void CentralCoverageControllerNode::globalPositionCb(const geographic_msgs::msg::GeoPoseStamped::SharedPtr msg, size_t uas_id)
+void CentralCoverageControllerNode::setCurrentGpsPosition(const geographic_msgs::msg::GeoPoseStamped& geopose, int uas_id)
 {
-    // Ensure the vector is large enough to hold the GPS position for the given UAS ID
     if (uas_id < currentGpsPositions_.size())
     {
-        currentGpsPositions_[uas_id] = *msg;
+        currentGpsPositions_[uas_id] = geopose;
         double geoidHeight = geoid(
-                currentGpsPositions_[uas_id].pose.position.latitude, 
-                currentGpsPositions_[uas_id].pose.position.longitude);
+            currentGpsPositions_[uas_id].pose.position.latitude,
+            currentGpsPositions_[uas_id].pose.position.longitude);
         currentGpsPositions_[uas_id].pose.position.altitude -= geoidHeight;
     }
+}
+
+void CentralCoverageControllerNode::globalPositionCb(const geographic_msgs::msg::GeoPoseStamped::SharedPtr msg, size_t uas_id)
+{
+    setCurrentGpsPosition(*msg, uas_id);
 }
 
 void CentralCoverageControllerNode::timerCallback()
@@ -33,11 +37,11 @@ void CentralCoverageControllerNode::timerCallback()
     for (int i = 0; i < teamSize_; ++i) // For each drone
     {
         // Get the publisher for the drone
-        auto publisher = centralGlobalGoalPosPubs_[i]; 
+        auto publisher = centralGlobalGoalPosPubs_[i];
 
         // Get the first unvisited viewpoint for the drone or not if coverage is complete
         std::optional<CoverageViewpoint> goalViewPoint = coveragePaths_[i].getFirstZeroCoverageTimeViewpoint();
-        
+
         // If coverage isn't complete
         if (goalViewPoint)
         {
@@ -46,14 +50,13 @@ void CentralCoverageControllerNode::timerCallback()
 
             // Calculate the distance with the haversine distances and the altitudes adjusted for geoid height
             double distance = HaversineDistance::calculateDistance(
-                    pose.position.latitude, 
-                    pose.position.longitude,
-                    pose.position.altitude,
-                    currentGpsPositions_[i].pose.position.latitude, 
-                    currentGpsPositions_[i].pose.position.longitude, 
-                    currentGpsPositions_[i].pose.position.altitude
-                    );
-                    
+                pose.position.latitude,
+                pose.position.longitude,
+                pose.position.altitude,
+                currentGpsPositions_[i].pose.position.latitude,
+                currentGpsPositions_[i].pose.position.longitude,
+                currentGpsPositions_[i].pose.position.altitude);
+
             // If less than 40cm from the target, set the coverage time to the current time (complete coverage)
             // TODO: replace 0.4 with a variable "goalPoseTolerance", Better being moved to the coverage_library?
             if (distance < 0.4)
@@ -62,7 +65,7 @@ void CentralCoverageControllerNode::timerCallback()
                 RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Coverage Pose reached");
             }
 
-            //build the coverage geopose and publish
+            // build the coverage geopose and publish
             geographic_msgs::msg::GeoPoseStamped geopose;
             coveragePoseToGeoPose(geopose, pose);
             geopose.header.stamp = this->now();
@@ -70,7 +73,7 @@ void CentralCoverageControllerNode::timerCallback()
         }
         else
         {
-            //TODO: Handle coverage completion
+            // TODO: Handle coverage completion
         }
     }
 }
@@ -92,7 +95,7 @@ void CentralCoverageControllerNode::coveragePoseToGeoPose(geographic_msgs::msg::
 void CentralCoverageControllerNode::initializeSubscribers()
 {
     // Resize the vector to hold GPS positions for all team members
-    currentGpsPositions_.resize(teamSize_); 
+    currentGpsPositions_.resize(teamSize_);
 
     // For each drone create the global_pose subscriber
     for (int i = 0; i < teamSize_; ++i)
@@ -111,7 +114,7 @@ void CentralCoverageControllerNode::initializeSubscribers()
 void CentralCoverageControllerNode::initializePublishers()
 {
     // Resize the vector to hold GPS goal positions for all team members
-    goalGpsPositions_.resize(teamSize_); 
+    goalGpsPositions_.resize(teamSize_);
 
     // For each drone create the goal_pose publisher
     for (int i = 0; i < teamSize_; ++i)
@@ -122,4 +125,3 @@ void CentralCoverageControllerNode::initializePublishers()
                 topic_name, rclcpp::SensorDataQoS()));
     }
 }
-
