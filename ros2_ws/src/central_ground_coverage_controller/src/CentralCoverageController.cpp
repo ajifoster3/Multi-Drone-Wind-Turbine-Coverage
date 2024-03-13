@@ -33,6 +33,7 @@ int main(int argc, char **argv)
     // Load the inital poses of the robots from the companion computers via the central_control/uav_i/global_pose topic
     std::vector<Pose> poses{};
 
+    // For each drone, get the initial position
     for (int i = 1; i <= team_size; i++)
     {
         geographic_msgs::msg::GeoPoseStamped geoMsg{};
@@ -49,7 +50,8 @@ int main(int argc, char **argv)
         poses.push_back(pose);
     }
 
-    // Load the goal poses from the specified file * TODO: Make file name an argument *
+    // Load the goal poses from the specified file 
+    // TODO: Make file name an argument 
     std::vector<CoverageViewpoint> viewpoints{CoverageViewpointLoader::load(goalPoseFileName)};
 
     // Compute robot path
@@ -61,12 +63,11 @@ int main(int argc, char **argv)
 
     //*****************************************************************************
 
+    // Print the time of starting coverage
     auto now = std::chrono::system_clock::now();
     
-    // Convert to a time_t, which represents time in seconds since the epoch
     std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
     
-    // Convert to a readable string
     std::cout << "Current time: " << std::ctime(&now_time_t);
 
     //*****************************************************************************

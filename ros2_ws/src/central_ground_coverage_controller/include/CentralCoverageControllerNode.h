@@ -28,17 +28,31 @@ private:
     std::vector<geographic_msgs::msg::GeoPoseStamped> currentGpsPositions_;
     rclcpp::TimerBase::SharedPtr timer_;
 
+    /**
+     *  Sets currentGpsPositions_ to the recieved GeoPoseStamped values recieved
+     *  from the central_control/uas_{i}/global_pose topic.
+     */
     void globalPositionCb(const geographic_msgs::msg::GeoPoseStamped::SharedPtr msg, size_t uasId);
 
+    /**
+     *  Publishes a goal geopose for each drone, based on the next uncovered point.
+     */
     void timerCallback();
 
+    /**
+     *  Allocates the members of the provided geopose with those of the pose.
+     */
     void coveragePoseToGeoPose(geographic_msgs::msg::GeoPoseStamped &geopose, Pose &pose);
 
+    /**
+     *  Creates a global_pose subscriber, for each drone.
+     */
     void initializeSubscribers();
 
+    /**
+     *  Create a goal_pose publisher, for each drone.
+     */
     void initializePublishers();
-
-    void initializeClients(){};
 };
 
 #endif

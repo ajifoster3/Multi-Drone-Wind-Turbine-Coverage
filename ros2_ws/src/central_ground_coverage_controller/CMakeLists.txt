@@ -35,15 +35,15 @@ include_directories(${CMAKE_SOURCE_DIR}/include/GreedyIterativeCoveragePathPlann
 
 
 add_executable(
-  central_coverage_controller 
+  central_ground_coverage_controller 
   src/CentralCoverageController.cpp 
   src/CentralCoverageControllerNode.cpp 
   include/CentralCoverageControllerNode.h )
-target_link_libraries(central_coverage_controller GreedyIterativeCoveragePathPlanner ${GeographicLib_LIBRARIES})
-ament_target_dependencies(central_coverage_controller rclcpp geometry_msgs mavros_msgs)
+target_link_libraries(central_ground_coverage_controller GreedyIterativeCoveragePathPlanner ${GeographicLib_LIBRARIES})
+ament_target_dependencies(central_ground_coverage_controller rclcpp geometry_msgs mavros_msgs)
 
 install(TARGETS
-  central_coverage_controller
+central_ground_coverage_controller
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

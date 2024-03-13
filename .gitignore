@@ -3636,3 +3636,11 @@ ros2_ws/log/build_2024-03-12_02-03-14/offboard_control/stdout_stderr.log
 ros2_ws/log/build_2024-03-12_02-03-14/offboard_control/streams.log
 *.log
 *.internal
+*.d
+*.o
+*.make
+*.cmake
+*.ts
+ros2_ws/build/central_ground_coverage_controller/central_ground_coverage_controller
+ros2_ws/build/central_ground_coverage_controller/CMakeFiles/central_ground_coverage_controller.dir/link.txt
+ros2_ws/install/central_ground_coverage_controller/lib/central_ground_coverage_controller/central_ground_coverage_controller
