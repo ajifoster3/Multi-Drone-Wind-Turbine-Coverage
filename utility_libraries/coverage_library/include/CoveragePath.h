@@ -13,11 +13,12 @@ public:
 
     // Updated method name
     const std::vector<CoverageViewpoint>& getPath() const;
+    std::optional<CoverageViewpoint> getFirstZeroCoverageTimeViewpoint() const;
+    void setFirstZeroCoverageTimeViewpointTime();
 
 private:
     int vehicleID;
     std::vector<CoverageViewpoint> path;
-    std::optional<CoverageViewpoint> getFirstZeroCoverageTimeViewpoint() const;
 };
 
 #endif // COVERAGEPATH_HPP

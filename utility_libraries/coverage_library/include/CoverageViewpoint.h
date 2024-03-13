@@ -2,27 +2,28 @@
 #define COVERAGE_VIEWPOINT_H
 
 #include "Pose.h"
+#include <chrono>
 
 class CoverageViewpoint {
 public:
 
-CoverageViewpoint(const Pose& pose, double coverageTime, bool assigned)
+CoverageViewpoint(const Pose& pose, std::chrono::seconds coverageTime, bool assigned)
 : pose_(pose), coverageTime_(coverageTime), assigned_(assigned) {}
 
 Pose getPose() const { return pose_; }
-double getCoverageTime() const { return coverageTime_; }
+std::chrono::seconds getCoverageTime() const { return coverageTime_; }
 bool isAssigned() const { return assigned_; }
 int getRobotIDAssigned() const { return robotIDAssigned_; }
 
 void setPose(const Pose& pose) { pose_ = pose; }
-void setCoverageTime(double coverageTime) { coverageTime_ = coverageTime; }
+void setCoverageTime(std::chrono::seconds coverageTime) { coverageTime_ = coverageTime; }
 void setAssigned(bool assigned) { assigned_ = assigned; }
 void setRobotIDAssigned(int robotIDAssigned) { robotIDAssigned_ = robotIDAssigned; }
 
 
 private:
     Pose pose_; // Custom Pose
-    double coverageTime_; // Time in seconds
+    std::chrono::seconds coverageTime_; // Time in seconds
     bool assigned_; // Assigned flag
     int robotIDAssigned_;
 };
