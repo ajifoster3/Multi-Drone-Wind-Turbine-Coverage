@@ -59,7 +59,7 @@ void CentralCoverageControllerNode::timerCallback()
                 currentGpsPositions_[i].pose.position.altitude);
             // If less than 40cm from the target, set the coverage time to the current time (complete coverage)
             // TODO: replace 0.4 with a variable "goalPoseTolerance", Better being moved to the coverage_library?
-            if (distance < 0.4)
+            if (distance < goalPoseTolerance)
             {
                 coveragePaths_[i].setFirstZeroCoverageTimeViewpointTime();
                 RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Coverage Pose reached");
