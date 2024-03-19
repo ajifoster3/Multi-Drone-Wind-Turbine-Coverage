@@ -9,8 +9,11 @@
 #include <HaversineDistance.h>
 #include <memory>
 #include <GeographicLib/Geoid.hpp>
+#include <toml.hpp>
+#include <ConfigHeaderPath.h>
 
 using namespace std::chrono_literals;
+
 
 class CentralCoverageControllerNode : public rclcpp::Node
 {
@@ -21,12 +24,19 @@ public:
 
 private:
     int teamSize_{};
+    GeographicLib::Geoid geoid;
     std::vector<CoveragePath> coveragePaths_{};
     std::vector<rclcpp::Subscription<geographic_msgs::msg::GeoPoseStamped>::SharedPtr> centralGlobalPosSubs_;
     std::vector<rclcpp::Publisher<geographic_msgs::msg::GeoPoseStamped>::SharedPtr> centralGlobalGoalPosPubs_;
     std::vector<geographic_msgs::msg::GeoPoseStamped> goalGpsPositions_;
     std::vector<geographic_msgs::msg::GeoPoseStamped> currentGpsPositions_;
     rclcpp::TimerBase::SharedPtr timer_;
+    double goalPoseTolerance;
+
+    /**
+     *  Sets currentGpsPositions_ with altitude accounting for geoid height.
+     */
+    void setCurrentGpsPosition(const geographic_msgs::msg::GeoPoseStamped& geopose, int uas_id);
 
     /**
      *  Sets currentGpsPositions_ to the recieved GeoPoseStamped values recieved
@@ -53,6 +63,8 @@ private:
      *  Create a goal_pose publisher, for each drone.
      */
     void initializePublishers();
+
+    void populateCoverageSettings();
 };
 
 #endif
