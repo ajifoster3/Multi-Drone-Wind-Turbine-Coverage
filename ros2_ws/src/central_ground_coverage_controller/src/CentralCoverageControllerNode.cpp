@@ -2,9 +2,10 @@
 
 CentralCoverageControllerNode::CentralCoverageControllerNode(const std::string &name, int team_size)
     : Node(name), teamSize_(team_size), geoid("egm96-5")
-{
+{ 
     initializeSubscribers();
     initializePublishers();
+    populateCoverageSettings();
 
     timer_ = this->create_wall_timer(
         500ms, std::bind(&CentralCoverageControllerNode::timerCallback, this));
@@ -56,7 +57,6 @@ void CentralCoverageControllerNode::timerCallback()
                 currentGpsPositions_[i].pose.position.latitude,
                 currentGpsPositions_[i].pose.position.longitude,
                 currentGpsPositions_[i].pose.position.altitude);
-
             // If less than 40cm from the target, set the coverage time to the current time (complete coverage)
             // TODO: replace 0.4 with a variable "goalPoseTolerance", Better being moved to the coverage_library?
             if (distance < 0.4)
@@ -113,6 +113,7 @@ void CentralCoverageControllerNode::initializeSubscribers()
 
 void CentralCoverageControllerNode::initializePublishers()
 {
+    
     // Resize the vector to hold GPS goal positions for all team members
     goalGpsPositions_.resize(teamSize_);
 
@@ -123,5 +124,19 @@ void CentralCoverageControllerNode::initializePublishers()
         centralGlobalGoalPosPubs_.push_back(
             this->create_publisher<geographic_msgs::msg::GeoPoseStamped>(
                 topic_name, rclcpp::SensorDataQoS()));
+    }
+}
+
+void CentralCoverageControllerNode::populateCoverageSettings()
+{
+    toml::table tbl;
+    try
+    {
+        tbl = toml::parse_file(config_header_path);
+        goalPoseTolerance = tbl["coverage_settings"]["goal_pose_tolerance"].value_or<double>(0.0);
+    }
+    catch (const toml::parse_error& err)
+    {
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Parsing failed");
     }
 }
