@@ -1,5 +1,4 @@
 #include "CoveragePath.h"
-#include <chrono>
 
 CoveragePath::CoveragePath(int vehicleID) : vehicleID(vehicleID) {}
 

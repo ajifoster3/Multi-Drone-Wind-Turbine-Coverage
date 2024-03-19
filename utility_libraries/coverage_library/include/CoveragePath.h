@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <optional>
+#include <chrono>
 #include "CoverageViewpoint.h"
 
 class CoveragePath {
