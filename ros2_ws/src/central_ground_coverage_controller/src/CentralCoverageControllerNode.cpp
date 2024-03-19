@@ -79,7 +79,7 @@ void CentralCoverageControllerNode::timerCallback()
 }
 
 /*
-** TODO: Move to Pose class
+** TODO: This is suspicious for this class, think about where to move?
 */
 void CentralCoverageControllerNode::coveragePoseToGeoPose(geographic_msgs::msg::GeoPoseStamped &geopose, Pose &pose)
 {
