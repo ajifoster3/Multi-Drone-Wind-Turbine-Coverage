@@ -1,0 +1,4 @@
+
+[coverage_settings]
+# Distance in meters for a coverage viewpoint to be considered reached.
+goal_pose_tolerance = 0.4
