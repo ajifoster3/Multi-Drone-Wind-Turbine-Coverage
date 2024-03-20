@@ -8,7 +8,9 @@
 
 class CoveragePath {
 public:
-    explicit CoveragePath(int vehicleID);
+    CoveragePath() {};
+
+    CoveragePath(int vehicleID) : vehicleID(vehicleID) {};
 
     void addCoverageViewpoint(const CoverageViewpoint& viewpoint);
 

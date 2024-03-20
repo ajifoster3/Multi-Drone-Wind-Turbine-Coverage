@@ -7,6 +7,7 @@
 class CoverageViewpoint {
 public:
 
+CoverageViewpoint() {}
 CoverageViewpoint(const Pose& pose, std::chrono::seconds coverageTime, bool assigned)
 : pose_(pose), assigned_(assigned) {}
 
