@@ -9,16 +9,15 @@
 class CoveragePath {
 public:
     CoveragePath() {};
-
-    CoveragePath(int vehicleID) : vehicleID(vehicleID) {};
+    CoveragePath(int robotID) : robotID(robotID) {};
 
     void addCoverageViewpoint(const CoverageViewpoint& viewpoint);
 
-    // Updated method name
     const std::vector<CoverageViewpoint>& getPath() const;
+    const int getRobotId() const;
 
 private:
-    int vehicleID;
+    int robotID;
     std::vector<CoverageViewpoint> path;
 };
 
