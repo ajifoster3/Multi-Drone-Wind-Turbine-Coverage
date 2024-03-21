@@ -1,8 +1,8 @@
 #include "CentralCoverageControllerNode.h"
 
 CentralCoverageControllerNode::CentralCoverageControllerNode(const std::string &name, int team_size)
-    : Node(name), teamSize_(team_size), geoid("egm96-5")
-{ 
+    : Node(name), teamSize_(team_size), geoid_("egm96-5")
+{
     initializeSubscribers();
     initializePublishers();
     populateCoverageSettings();
@@ -11,17 +11,17 @@ CentralCoverageControllerNode::CentralCoverageControllerNode(const std::string &
         500ms, std::bind(&CentralCoverageControllerNode::timerCallback, this));
 }
 
-void CentralCoverageControllerNode::setCoveragePaths(std::vector<CoveragePath> &coveragePaths)
+void CentralCoverageControllerNode::setCoveragePaths(std::vector<TimedCoveragePath> &coveragePaths)
 {
     this->coveragePaths_ = coveragePaths;
 }
 
-void CentralCoverageControllerNode::setCurrentGpsPosition(const geographic_msgs::msg::GeoPoseStamped& geopose, int uas_id)
+void CentralCoverageControllerNode::setCurrentGpsPosition(const geographic_msgs::msg::GeoPoseStamped &geopose, int uas_id)
 {
     if (uas_id < currentGpsPositions_.size())
     {
         currentGpsPositions_[uas_id] = geopose;
-        double geoidHeight = geoid(
+        double geoidHeight = geoid_(
             currentGpsPositions_[uas_id].pose.position.latitude,
             currentGpsPositions_[uas_id].pose.position.longitude);
         currentGpsPositions_[uas_id].pose.position.altitude -= geoidHeight;
@@ -33,23 +33,30 @@ void CentralCoverageControllerNode::globalPositionCb(const geographic_msgs::msg:
     setCurrentGpsPosition(*msg, uas_id);
 }
 
+void CentralCoverageControllerNode::simulationTimeCb(const rosgraph_msgs::msg::Clock::SharedPtr msg)
+{
+    simulationTime_ = *msg;
+}
+
 void CentralCoverageControllerNode::timerCallback()
 {
+    bool isCoverageComplete{true};
     for (int i = 0; i < teamSize_; ++i) // For each drone
     {
         // Get the publisher for the drone
         auto publisher = centralGlobalGoalPosPubs_[i];
 
         // Get the first unvisited viewpoint for the drone or not if coverage is complete
-        std::optional<CoverageViewpoint> goalViewPoint = coveragePaths_[i].getFirstZeroCoverageTimeViewpoint();
+        std::optional<TimedCoverageViewpoint> goalViewPoint = coveragePaths_[i].getFirstZeroCoverageTimeViewpointTime();
 
         // If coverage isn't complete
         if (goalViewPoint)
         {
+            isCoverageComplete = false;
             // Get the pose from the returned viewpoint
             Pose pose = goalViewPoint.value().getPose();
 
-            // Calculate the distance with the haversine distances and the altitudes adjusted for geoid height
+            // Calculate the distance with the haversine distances and the altitudes adjusted for geoid_ height
             double distance = HaversineDistance::calculateDistance(
                 pose.position.latitude,
                 pose.position.longitude,
@@ -57,12 +64,12 @@ void CentralCoverageControllerNode::timerCallback()
                 currentGpsPositions_[i].pose.position.latitude,
                 currentGpsPositions_[i].pose.position.longitude,
                 currentGpsPositions_[i].pose.position.altitude);
+
             // If less than 40cm from the target, set the coverage time to the current time (complete coverage)
-            // TODO: replace 0.4 with a variable "goalPoseTolerance", Better being moved to the coverage_library?
-            if (distance < goalPoseTolerance)
+            if (distance < goalPoseTolerance_)
             {
-                coveragePaths_[i].setFirstZeroCoverageTimeViewpointTime();
-                RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Coverage Pose reached");
+                coveragePaths_[i].setFirstZeroCoverageTimeViewpointTime(simulationTime_);
+                RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Coverage Pose reached at %d", simulationTime_.clock.sec);
             }
 
             // build the coverage geopose and publish
@@ -71,10 +78,12 @@ void CentralCoverageControllerNode::timerCallback()
             geopose.header.stamp = this->now();
             publisher->publish(geopose);
         }
-        else
-        {
-            // TODO: Handle coverage completion
-        }
+    }
+    if(isCoverageComplete)
+    {
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Coverage Complete");
+        CoverageLogger::setViewpointCoverageTimes(this->coveragePaths_);
+        rclcpp::shutdown();
     }
 }
 
@@ -109,11 +118,15 @@ void CentralCoverageControllerNode::initializeSubscribers()
                     globalPositionCb(msg, i);
                 }));
     }
+
+    simulationTimeSub_ = this->create_subscription<rosgraph_msgs::msg::Clock>(
+        "clock", rclcpp::SensorDataQoS(), [this](const rosgraph_msgs::msg::Clock::SharedPtr msg)
+        { simulationTimeCb(msg); });
 }
 
 void CentralCoverageControllerNode::initializePublishers()
 {
-    
+
     // Resize the vector to hold GPS goal positions for all team members
     goalGpsPositions_.resize(teamSize_);
 
@@ -133,9 +146,9 @@ void CentralCoverageControllerNode::populateCoverageSettings()
     try
     {
         tbl = toml::parse_file(config_header_path);
-        goalPoseTolerance = tbl["coverage_settings"]["goal_pose_tolerance"].value_or<double>(0.0);
+        goalPoseTolerance_ = tbl["coverage_settings"]["goal_pose_tolerance"].value_or<double>(0.0);
     }
-    catch (const toml::parse_error& err)
+    catch (const toml::parse_error &err)
     {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Parsing failed");
     }

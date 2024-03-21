@@ -15,6 +15,7 @@ public:
 
     const std::vector<CoverageViewpoint>& getPath() const;
     const int getRobotId() const;
+    void setRobotId(int);
 
 private:
     int robotID;

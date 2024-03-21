@@ -3,21 +3,22 @@
 
 #include <vector>
 #include <optional>
+#include <chrono>
 #include "CoverageViewpoint.h"
 
 class CoveragePath {
 public:
-    explicit CoveragePath(int vehicleID);
+    CoveragePath() {};
+    CoveragePath(int robotID) : robotID(robotID) {};
 
     void addCoverageViewpoint(const CoverageViewpoint& viewpoint);
 
-    // Updated method name
     const std::vector<CoverageViewpoint>& getPath() const;
-    std::optional<CoverageViewpoint> getFirstZeroCoverageTimeViewpoint() const;
-    void setFirstZeroCoverageTimeViewpointTime();
+    const int getRobotId() const;
+    void setRobotId(int);
 
 private:
-    int vehicleID;
+    int robotID;
     std::vector<CoverageViewpoint> path;
 };
 
