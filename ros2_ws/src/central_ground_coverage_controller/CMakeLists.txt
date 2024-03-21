@@ -42,6 +42,9 @@ add_executable(
   CentralCoverageController 
   src/CentralCoverageController.cpp 
   src/CentralCoverageControllerNode.cpp 
+  src/TimedCoveragePath.cpp 
+  src/TimedCoverageViewpoint.cpp 
+  src/CoverageLogger.cpp
   include/CentralGroundCoverageController/CentralCoverageControllerNode.h )
 target_link_libraries(CentralCoverageController GreedyIterativeCoveragePathPlanner ${GeographicLib_LIBRARIES})
 ament_target_dependencies(CentralCoverageController rclcpp geometry_msgs mavros_msgs)

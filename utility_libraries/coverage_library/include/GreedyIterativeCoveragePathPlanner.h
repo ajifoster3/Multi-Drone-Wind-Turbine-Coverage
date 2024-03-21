@@ -2,6 +2,8 @@
 #define GREEDY_ITERATIVE_COVERAGE_PATH_PLANNER_H
 
 #include <vector>
+#include <limits>
+#include <cmath>
 #include "CoverageViewpoint.h"
 #include "CoveragePath.h" // Include the CoveragePath header
 #include "HaversineDistance.h"
