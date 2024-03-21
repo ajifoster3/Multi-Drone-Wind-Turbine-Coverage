@@ -3647,3 +3647,4 @@ ros2_ws/install/central_ground_coverage_controller/lib/central_ground_coverage_c
 ros2_ws/install/central_ground_coverage_controller/lib/central_ground_coverage_controller/CentralCoverageController
 ros2_ws/build/central_ground_coverage_controller/CMakeFiles/CentralCoverageController.dir/link.txt
 ros2_ws/build/central_ground_coverage_controller/CentralCoverageController
+*.csv
