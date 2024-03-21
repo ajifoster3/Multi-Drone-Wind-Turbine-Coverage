@@ -1,6 +1,4 @@
 #include "GreedyIterativeCoveragePathPlanner.h"
-#include <limits>
-#include <cmath>
 
 GreedyIterativeCoveragePathPlanner::GreedyIterativeCoveragePathPlanner(const std::vector<int> &robotIDs, const std::vector<Pose> &initialPoses, std::vector<CoverageViewpoint> &viewpoints)
     : robotIDs(robotIDs), robotPoses(initialPoses), viewpoints(viewpoints)
@@ -25,7 +23,6 @@ void GreedyIterativeCoveragePathPlanner::planCoveragePath()
             if (closestIndex != -1)
             {
                 viewpoints[closestIndex].setAssigned(true);
-                viewpoints[closestIndex].setRobotIDAssigned(robotIDs[i]); // Set the robot ID for the assigned viewpoint
 
                 robotPoses[i] = viewpoints[closestIndex].getPose(); // Update robot's pose
 

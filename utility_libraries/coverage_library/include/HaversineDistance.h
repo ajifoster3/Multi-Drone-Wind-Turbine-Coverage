@@ -1,6 +1,8 @@
 #ifndef HAVERSINEDISTANCE_H
 #define HAVERSINEDISTANCE_H
 
+#include <cmath>
+
 namespace HaversineDistance
 {
     // Function to convert degrees to radians
