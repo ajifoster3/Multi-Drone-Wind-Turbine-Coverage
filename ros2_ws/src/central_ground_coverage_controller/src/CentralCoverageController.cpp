@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 
     // Load arguments from the ros2 run call
     int team_size{std::stoi(argv[1])};
-    std::string goalPoseFileName{"/home/ajifoster3/Downloads/wind_turbine_relative_positions.json"};
+    std::string goalPoseFileName{"/home/ajifoster3/Downloads/all_geoposes_wind_turbine.json"};
 
     // Setup the ros2 Node "central_coverage_controller_node"
     auto central_coverage_controller_node = std::make_shared<CentralCoverageControllerNode>("central_coverage_controller_node", team_size);
