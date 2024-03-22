@@ -59,18 +59,19 @@ const void CoverageLogger::logTimes()
             << "_" << pose.position.altitude << ",";
     }
     outFile << "\n\n";
-    outFile << "Start Time: " << startTime.sec << "." << startTime.nanosec << "\n\n";
+    outFile << "Start Time," << startTime.sec << "." << startTime.nanosec << "\n\n";
 
 
-    outFile << "Robot_ID, Coordinate, Viewpoint Time\n";
+    outFile << "Robot_ID, Latitude, Longitude, Altitude, Viewpoint Time\n";
 
     // Iterate through each TimedCoveragePath and its TimedCoverageViewpoints
     for (const auto& path : viewpointCoverageTimes) {
         const auto& viewpoints = path.getPath();
         for (const auto& viewpoint : viewpoints) {
             outFile << path.getRobotId() << ",";
-            outFile << viewpoint.getPose().position.latitude << "_" << viewpoint.getPose().position.longitude 
-            << "_" << viewpoint.getPose().position.altitude << ",";
+            outFile << viewpoint.getPose().position.latitude << ",";
+            outFile << viewpoint.getPose().position.longitude << ",";
+            outFile << viewpoint.getPose().position.altitude << ",";
             outFile << viewpoint.getCoverageTime().clock.sec << "." << viewpoint.getCoverageTime().clock.nanosec << "\n";
         }
     }
