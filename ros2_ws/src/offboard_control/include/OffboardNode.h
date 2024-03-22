@@ -9,7 +9,7 @@
 #include <mavros_msgs/srv/set_mode.hpp>
 #include <mavros_msgs/msg/state.hpp>
 
-#define FLIGHT_ALTITUDE 10.0f
+#define FLIGHT_ALTITUDE -50.0f
 
 class OffboardNode : public rclcpp::Node {
 public:
