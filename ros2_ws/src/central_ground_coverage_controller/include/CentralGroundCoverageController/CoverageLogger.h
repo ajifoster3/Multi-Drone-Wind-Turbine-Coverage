@@ -9,18 +9,18 @@
 class CoverageLogger
 {
 public:
-    static void setStartTime(builtin_interfaces::msg::Time);
+static void setStartTime(builtin_interfaces::msg::Time);
 
-    static void setInitalPoses(std::vector<Pose>);
+static void setInitalPoses(std::vector < Pose >);
 
-    static void setViewpointCoverageTimes(std::vector<TimedCoveragePath>);
+static void setViewpointCoverageTimes(std::vector < TimedCoveragePath >);
 
-    const static void logTimes();
+const static void logTimes();
 
 private:
-    static builtin_interfaces::msg::Time startTime;
-    static std::vector<Pose> initalPoses;
-    static std::vector<TimedCoveragePath> viewpointCoverageTimes;
+static builtin_interfaces::msg::Time startTime;
+static std::vector < Pose > initalPoses;
+static std::vector < TimedCoveragePath > viewpointCoverageTimes;
 };
 
 #endif

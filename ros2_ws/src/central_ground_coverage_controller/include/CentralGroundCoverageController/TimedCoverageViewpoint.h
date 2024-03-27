@@ -7,16 +7,17 @@
 class TimedCoverageViewpoint : public CoverageViewpoint
 {
 public:
-    TimedCoverageViewpoint(const CoverageViewpoint&);
+TimedCoverageViewpoint(const CoverageViewpoint &);
 
-    rosgraph_msgs::msg::Clock getCoverageTime() const;
-    void setCoverageTime(rosgraph_msgs::msg::Clock);
+rosgraph_msgs::msg::Clock getCoverageTime() const;
+void setCoverageTime(rosgraph_msgs::msg::Clock);
 
-    const bool getIsCovered() const;
-    void setIsCovered(bool);
+const bool getIsCovered() const;
+void setIsCovered(bool);
+
 private:
-    rosgraph_msgs::msg::Clock coverageTime;
-    bool isCovered;
+rosgraph_msgs::msg::Clock coverageTime;
+bool isCovered;
 };
 
 #endif

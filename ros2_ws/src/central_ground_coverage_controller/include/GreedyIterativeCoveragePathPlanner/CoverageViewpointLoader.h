@@ -25,17 +25,15 @@ namespace CoverageViewpointLoader
         {
             auto &geoPose = item["GeoPose"];
             Pose pose;
-            pose.position.latitude = geoPose["position"]["latitude"];
-            pose.position.longitude = geoPose["position"]["longitude"];
-            pose.position.altitude = geoPose["position"]["altitude"];
-            pose.orientation.x = geoPose["orientation"]["x"];
-            pose.orientation.y = geoPose["orientation"]["y"];
-            pose.orientation.z = geoPose["orientation"]["z"];
-            pose.orientation.w = geoPose["orientation"]["w"];
-            // Assuming default coverageTime and assigned values as placeholders
-            std::chrono::seconds coverageTime = std::chrono::seconds(0); // Placeholder value
+            pose.position.latitude = geoPose["GeoPoint position"]["latitude"];
+            pose.position.longitude = geoPose["GeoPoint position"]["longitude"];
+            pose.position.altitude = geoPose["GeoPoint position"]["altitude"];
+            pose.orientation.x = geoPose["geometry_msgs/Quaternion orientation"]["x"];
+            pose.orientation.y = geoPose["geometry_msgs/Quaternion orientation"]["y"];
+            pose.orientation.z = geoPose["geometry_msgs/Quaternion orientation"]["z"];
+            pose.orientation.w = geoPose["geometry_msgs/Quaternion orientation"]["w"];
             bool assigned = false;   // Placeholder value
-            viewpoints.emplace_back(pose, coverageTime, assigned);
+            viewpoints.emplace_back(pose, assigned);
         }
 
         return viewpoints;

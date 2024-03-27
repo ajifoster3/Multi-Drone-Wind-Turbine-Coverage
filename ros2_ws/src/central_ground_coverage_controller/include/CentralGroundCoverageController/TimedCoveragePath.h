@@ -8,15 +8,14 @@
 class TimedCoveragePath : public CoveragePath
 {
 public:
-    TimedCoveragePath(const CoveragePath &path);
+TimedCoveragePath(const CoveragePath & path);
 
-    std::optional<TimedCoverageViewpoint> getFirstZeroCoverageTimeViewpointTime();
-    void setFirstZeroCoverageTimeViewpointTime(rosgraph_msgs::msg::Clock);
-    const std::vector<TimedCoverageViewpoint> &getPath() const;
-
+std::optional < TimedCoverageViewpoint > getFirstZeroCoverageTimeViewpointTime();
+void setFirstZeroCoverageTimeViewpointTime(rosgraph_msgs::msg::Clock);
+const std::vector < TimedCoverageViewpoint > & getPath() const;
 
 private:
-    std::vector<TimedCoverageViewpoint> path;
+std::vector < TimedCoverageViewpoint > path;
 };
 
 #endif
