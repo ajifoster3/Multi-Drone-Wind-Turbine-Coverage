@@ -1,8 +1,12 @@
 #include "GreedyIterativeCoveragePathPlanner.h"
 
 GreedyIterativeCoveragePathPlanner::GreedyIterativeCoveragePathPlanner(const std::vector<int> &robotIDs, const std::vector<Pose> &initialPoses, std::vector<CoverageViewpoint> &viewpoints)
-    : robotIDs(robotIDs), robotPoses(initialPoses), viewpoints(viewpoints)
+    : CoveragePathPlanner()
 {
+    this->robotIDs = robotIDs;
+    this->robotPoses = initialPoses;
+    this->viewpoints = viewpoints;
+    
     // Initialize a CoveragePath for each robot
     for (int id : robotIDs)
     {
