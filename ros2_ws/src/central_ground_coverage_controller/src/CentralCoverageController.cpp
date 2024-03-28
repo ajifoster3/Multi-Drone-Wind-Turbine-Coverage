@@ -5,7 +5,7 @@
 #include <rosgraph_msgs/msg/clock.hpp>
 #include <GreedyIterativeCoveragePathPlanner.h>
 #include <CoverageViewpointLoader.h>
-#include <CoveragePath.h>
+#include <Path.h>
 #include <Pose.h>
 #include "CentralCoverageControllerNode.h"
 #include "TimedCoveragePath.h"
@@ -59,12 +59,12 @@ int main(int argc, char **argv)
     std::vector<CoverageViewpoint> viewpoints{CoverageViewpointLoader::load(goalPoseFileName)};
 
     // Compute robot path
-    GreedyIterativeCoveragePathPlanner planner{robotIds, poses, viewpoints};
+    CoveragePathPlanner *planner = new GreedyIterativeCoveragePathPlanner{robotIds, poses, viewpoints};
     std::vector<TimedCoveragePath> coveragePaths;
 
-    for(auto path : planner.getCoveragePaths())
+    for(auto id : robotIds)
     {
-        coveragePaths.push_back(TimedCoveragePath{path});
+        coveragePaths.push_back(TimedCoveragePath{planner->getCoveragePaths().getCoveragePathForRobot(id)});
     }
 
     // Give paths to the central_coverage_controller_node

@@ -1,68 +1,39 @@
 #include "GreedyIterativeCoveragePathPlanner.h"
 
-GreedyIterativeCoveragePathPlanner::GreedyIterativeCoveragePathPlanner(const std::vector<int> &robotIDs, const std::vector<Pose> &initialPoses, std::vector<CoverageViewpoint> &viewpoints)
+GreedyIterativeCoveragePathPlanner::GreedyIterativeCoveragePathPlanner(
+    const std::vector<int> &robotIDs,
+    const std::vector<Pose> &initialPoses,
+    std::vector<CoverageViewpoint> &viewpoints)
     : CoveragePathPlanner()
 {
     this->robotIDs = robotIDs;
     this->robotPoses = initialPoses;
-    this->viewpoints = viewpoints;
-    
-    // Initialize a CoveragePath for each robot
-    for (int id : robotIDs)
-    {
-        coveragePaths.emplace_back(id);
-    }
+    this->viewpoints = GoalCoverageViewpoints(viewpoints);
+    this->coveragePaths = CoveragePaths(robotIDs);
+
     planCoveragePath();
 }
 
-void GreedyIterativeCoveragePathPlanner::planCoveragePath()
-{
-    bool allAssigned = false;
-    while (!allAssigned)
-    {
-        allAssigned = true;
-        for (size_t i = 0; i < robotIDs.size(); ++i)
-        {
-            int closestIndex = findClosestUnassignedViewpointIndex(robotPoses[i]);
-            if (closestIndex != -1)
-            {
-                viewpoints[closestIndex].setAssigned(true);
-
-                robotPoses[i] = viewpoints[closestIndex].getPose(); // Update robot's pose
-
-                // Add the assigned viewpoint to the corresponding CoveragePath
-                coveragePaths[i].addCoverageViewpoint(viewpoints[closestIndex]);
-
-                allAssigned = false;
-            }
-        }
-    }
-}
-
-std::vector<CoveragePath> GreedyIterativeCoveragePathPlanner::getCoveragePaths() const
+CoveragePaths GreedyIterativeCoveragePathPlanner::getCoveragePaths() const
 {
     return coveragePaths;
 }
 
-int GreedyIterativeCoveragePathPlanner::findClosestUnassignedViewpointIndex(const Pose &pose)
+void GreedyIterativeCoveragePathPlanner::planCoveragePath()
 {
-    double minDistance = std::numeric_limits<double>::max();
-    int closestIndex = -1;
-    for (size_t i = 0; i < viewpoints.size(); ++i)
+    while (viewpoints.hasUnassignedViewpoints())
     {
-        if (!viewpoints[i].isAssigned())
+        for (size_t i = 0; i < robotIDs.size(); ++i)
         {
-            double distance = std::sqrt(
-                std::pow(HaversineDistance::calculateDistance(
-                             pose.position.latitude, pose.position.longitude,
-                             viewpoints[i].getPose().position.latitude, viewpoints[i].getPose().position.longitude), 2) +
-                std::pow(pose.position.altitude - viewpoints[i].getPose().position.altitude, 2));
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                closestIndex = i;
-            }
+            AssignClosestViewpointToRobot(i);
         }
     }
-    return closestIndex;
+}
+
+void GreedyIterativeCoveragePathPlanner::AssignClosestViewpointToRobot(int robotId)
+{
+    auto& viewpoint = viewpoints.getClosestUnassignedViewpoint(robotPoses[robotId]);
+    robotPoses[robotId] = viewpoint.getPose(); 
+    coveragePaths.addCoverageViewpointForRobot(robotId, viewpoint);
+    viewpoint.setAssigned(true); // setting assigned
 }

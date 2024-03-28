@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
-#include "CoveragePath.h"
+#include "Path.h"
 
 TEST(CoveragePathTest, AddViewpointsCorrectly)
 {
   Pose pose1{Pose::Position{50.381589, -4.133504, 200}, Pose::Orientation{1, 1, 1, 1}};
-  CoveragePath coveragePath{};
+  Path coveragePath{};
   CoverageViewpoint viewpoint1{pose1, 0};
   coveragePath.addCoverageViewpoint(viewpoint1);
 
