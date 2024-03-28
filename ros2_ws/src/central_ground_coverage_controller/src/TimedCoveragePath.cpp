@@ -1,7 +1,7 @@
 
 #include "TimedCoveragePath.h"
 
-TimedCoveragePath::TimedCoveragePath(const CoveragePath &path)
+TimedCoveragePath::TimedCoveragePath(const Path &path)
 {
     this->setRobotId(path.getRobotId());
     for (auto viewpoint : path.getPath())

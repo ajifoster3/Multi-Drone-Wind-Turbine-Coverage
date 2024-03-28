@@ -1,14 +1,14 @@
 #ifndef TIMEDCOVERAGEPATHH
 #define TIMEDCOVERAGEPATHH
 
-#include <CoveragePath.h>
+#include <Path.h>
 #include <optional>
 #include "TimedCoverageViewpoint.h"
 
-class TimedCoveragePath : public CoveragePath
+class TimedCoveragePath : public Path
 {
 public:
-    TimedCoveragePath(const CoveragePath &path);
+    TimedCoveragePath(const Path &path);
 
     std::optional<TimedCoverageViewpoint> getFirstZeroCoverageTimeViewpointTime();
     void setFirstZeroCoverageTimeViewpointTime(rosgraph_msgs::msg::Clock);

@@ -14,10 +14,10 @@ TEST(GreedyIterativeCoveragePathPlannerTest, findClosestUnassignedViewpointIndex
         CoverageViewpoint{coverageViewpointPoseFar, false }
         };
     
-    GreedyIterativeCoveragePathPlanner planner(std::vector<int>{0}, initalPoses, coverageViewpoints);
+    CoveragePathPlanner *planner = new GreedyIterativeCoveragePathPlanner(std::vector<int>{0}, initalPoses, coverageViewpoints);
 
-    EXPECT_EQ(0, planner.getCoveragePaths()[0].getRobotId()) << "RobotId not assigned correct value.";
-    EXPECT_EQ(5.500200, planner.getCoveragePaths()[0].getPath()[0].getPose().position.longitude) << "Incorrect robotic path: The more distant longitude pose was selected first.";
+    EXPECT_EQ(0, planner->getCoveragePaths().getCoveragePathForRobot(0).getRobotId()) << "RobotId not assigned correct value.";
+    EXPECT_EQ(5.500200, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[0].getPose().position.longitude) << "Incorrect robotic path: The more distant longitude pose was selected first.";
 }
 
 TEST(GreedyIterativeCoveragePathPlannerTest, findClosestUnassignedViewpointIndexLatitudeTest)
@@ -32,10 +32,10 @@ TEST(GreedyIterativeCoveragePathPlannerTest, findClosestUnassignedViewpointIndex
         CoverageViewpoint{coverageViewpointPoseFar, false }
         };
     
-    GreedyIterativeCoveragePathPlanner planner(std::vector<int>{0}, initalPoses, coverageViewpoints);
+    CoveragePathPlanner *planner = new GreedyIterativeCoveragePathPlanner(std::vector<int>{0}, initalPoses, coverageViewpoints);
 
-    EXPECT_EQ(0, planner.getCoveragePaths()[0].getRobotId()) << "RobotId not assigned correct value.";
-    EXPECT_EQ(5.1, planner.getCoveragePaths()[0].getPath()[0].getPose().position.latitude) << "Incorrect robotic path: The more distant latitude pose was selected first.";
+    EXPECT_EQ(0, planner->getCoveragePaths().getCoveragePathForRobot(0).getRobotId()) << "RobotId not assigned correct value.";
+    EXPECT_EQ(5.1, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[0].getPose().position.latitude) << "Incorrect robotic path: The more distant latitude pose was selected first.";
 }
 
 TEST(GreedyIterativeCoveragePathPlannerTest, findClosestUnassignedViewpointIndexAltitudeTest)
@@ -50,10 +50,10 @@ TEST(GreedyIterativeCoveragePathPlannerTest, findClosestUnassignedViewpointIndex
         CoverageViewpoint{coverageViewpointPoseFar, false }
         };
     
-    GreedyIterativeCoveragePathPlanner planner(std::vector<int>{0}, initalPoses, coverageViewpoints);
+    CoveragePathPlanner *planner = new GreedyIterativeCoveragePathPlanner(std::vector<int>{0}, initalPoses, coverageViewpoints);
 
-    EXPECT_EQ(0, planner.getCoveragePaths()[0].getRobotId()) << "RobotId not assigned correct value.";
-    EXPECT_EQ(30, planner.getCoveragePaths()[0].getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The more distant altitude pose was selected first.";
+    EXPECT_EQ(0, planner->getCoveragePaths().getCoveragePathForRobot(0).getRobotId()) << "RobotId not assigned correct value.";
+    EXPECT_EQ(30, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The more distant altitude pose was selected first.";
 }
 
 TEST(GreedyIterativeCoveragePathPlannerTest, findClosestUnassignedViewpointIndexAltitudeAndLatitudeTest)
@@ -68,10 +68,10 @@ TEST(GreedyIterativeCoveragePathPlannerTest, findClosestUnassignedViewpointIndex
         CoverageViewpoint{coverageViewpointPoseFar, false }
         };
     
-    GreedyIterativeCoveragePathPlanner planner(std::vector<int>{0}, initalPoses, coverageViewpoints);
+    CoveragePathPlanner *planner = new GreedyIterativeCoveragePathPlanner(std::vector<int>{0}, initalPoses, coverageViewpoints);
 
-    EXPECT_EQ(0, planner.getCoveragePaths()[0].getRobotId()) << "RobotId not assigned correct value.";
-    EXPECT_EQ(0, planner.getCoveragePaths()[0].getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The more distant altitude pose was selected first.";
+    EXPECT_EQ(0, planner->getCoveragePaths().getCoveragePathForRobot(0).getRobotId()) << "RobotId not assigned correct value.";
+    EXPECT_EQ(0, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The more distant altitude pose was selected first.";
 }
 
 TEST(GreedyIterativeCoveragePathPlannerTest, plannerSingleRobotThreeCoveragePointsTest)
@@ -87,12 +87,12 @@ TEST(GreedyIterativeCoveragePathPlannerTest, plannerSingleRobotThreeCoveragePoin
         CoverageViewpoint{coverageViewpointPoseFar, false }
         };
     
-    GreedyIterativeCoveragePathPlanner planner(std::vector<int>{0}, initalPoses, coverageViewpoints);
+    CoveragePathPlanner *planner = new GreedyIterativeCoveragePathPlanner(std::vector<int>{0}, initalPoses, coverageViewpoints);
 
-    EXPECT_EQ(0, planner.getCoveragePaths()[0].getRobotId()) << "RobotId not assigned correct value.";
-    EXPECT_EQ(20, planner.getCoveragePaths()[0].getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The first Viewpoint assigned is incorrect.";
-    EXPECT_EQ(30, planner.getCoveragePaths()[0].getPath()[1].getPose().position.altitude) << "Incorrect robotic path: The second Viewpoint assigned is incorrect.";
-    EXPECT_EQ(40, planner.getCoveragePaths()[0].getPath()[2].getPose().position.altitude) << "Incorrect robotic path: The third Viewpoint assigned is incorrect.";
+    EXPECT_EQ(0, planner->getCoveragePaths().getCoveragePathForRobot(0).getRobotId()) << "RobotId not assigned correct value.";
+    EXPECT_EQ(20, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The first Viewpoint assigned is incorrect.";
+    EXPECT_EQ(30, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[1].getPose().position.altitude) << "Incorrect robotic path: The second Viewpoint assigned is incorrect.";
+    EXPECT_EQ(40, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[2].getPose().position.altitude) << "Incorrect robotic path: The third Viewpoint assigned is incorrect.";
 }
 
 TEST(GreedyIterativeCoveragePathPlannerTest, plannerTwoRobotSixLinearCoveragePointsTest)
@@ -119,15 +119,14 @@ TEST(GreedyIterativeCoveragePathPlannerTest, plannerTwoRobotSixLinearCoveragePoi
         CoverageViewpoint{coverageViewpointPose6, false }
         };
     
-    GreedyIterativeCoveragePathPlanner planner(std::vector<int>{0,2}, initalPoses, coverageViewpoints);
+    CoveragePathPlanner *planner = new GreedyIterativeCoveragePathPlanner(std::vector<int>{0, 1}, initalPoses, coverageViewpoints);
 
-    EXPECT_EQ(0, planner.getCoveragePaths()[0].getRobotId()) << "RobotId not assigned correct value.";
-    EXPECT_EQ(20, planner.getCoveragePaths()[0].getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The first Viewpoint assigned to the first robot is incorrect.";
-    EXPECT_EQ(40, planner.getCoveragePaths()[0].getPath()[1].getPose().position.altitude) << "Incorrect robotic path: The second Viewpoint assigned to the first robot  is incorrect.";
-    EXPECT_EQ(60, planner.getCoveragePaths()[0].getPath()[2].getPose().position.altitude) << "Incorrect robotic path: The third Viewpoint assigned to the first robot  is incorrect.";
-
-    EXPECT_EQ(30, planner.getCoveragePaths()[1].getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The first Viewpoint assigned to the second robot  is incorrect.";
-    EXPECT_EQ(50, planner.getCoveragePaths()[1].getPath()[1].getPose().position.altitude) << "Incorrect robotic path: The second Viewpoint assigned to the second robot  is incorrect.";
-    EXPECT_EQ(70, planner.getCoveragePaths()[1].getPath()[2].getPose().position.altitude) << "Incorrect robotic path: The third Viewpoint assigned to the second robot  is incorrect.";
+    EXPECT_EQ(0, planner->getCoveragePaths().getCoveragePathForRobot(0).getRobotId()) << "RobotId not assigned correct value.";
+    EXPECT_EQ(20, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The first Viewpoint assigned to the first robot is incorrect.";
+    EXPECT_EQ(40, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[1].getPose().position.altitude) << "Incorrect robotic path: The second Viewpoint assigned to the first robot  is incorrect.";
+    EXPECT_EQ(60, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[2].getPose().position.altitude) << "Incorrect robotic path: The third Viewpoint assigned to the first robot  is incorrect.";
+    EXPECT_EQ(30, planner->getCoveragePaths().getCoveragePathForRobot(1).getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The first Viewpoint assigned to the second robot  is incorrect.";
+    EXPECT_EQ(50, planner->getCoveragePaths().getCoveragePathForRobot(1).getPath()[1].getPose().position.altitude) << "Incorrect robotic path: The second Viewpoint assigned to the second robot  is incorrect.";
+    EXPECT_EQ(70, planner->getCoveragePaths().getCoveragePathForRobot(1).getPath()[2].getPose().position.altitude) << "Incorrect robotic path: The third Viewpoint assigned to the second robot  is incorrect.";
 }
 

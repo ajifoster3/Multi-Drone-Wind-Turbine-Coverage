@@ -11,7 +11,7 @@ CoverageViewpoint() {}
 CoverageViewpoint(const Pose& pose, bool assigned)
 : pose_(pose), assigned_(assigned) {}
 
-Pose getPose() const { return pose_; }
+const Pose& getPose() const { return pose_; }
 bool isAssigned() const { return assigned_; }
 
 void setPose(const Pose& pose) { pose_ = pose; }

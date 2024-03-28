@@ -6,10 +6,10 @@
 #include <chrono>
 #include "CoverageViewpoint.h"
 
-class CoveragePath {
+class Path {
 public:
-    CoveragePath() {};
-    CoveragePath(int robotID) : robotID(robotID) {};
+    Path() {};
+    Path(int robotID) : robotID(robotID) {};
 
     void addCoverageViewpoint(const CoverageViewpoint& viewpoint);
 
