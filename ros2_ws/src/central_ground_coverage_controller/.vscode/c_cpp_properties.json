@@ -12,6 +12,7 @@
         "/home/ajifoster3/Documents/Code/ros2_ws/src/cpp_srvcli/include/**",
         "/home/ajifoster3/Documents/Code/ros2_ws/src/drone_control/include/**",
         "include/**",
+        "include/CoverageLibrary/nlohmann/**",
         "/usr/include/**"
       ],
       "name": "ROS",
