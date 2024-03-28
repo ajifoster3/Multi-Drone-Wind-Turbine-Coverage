@@ -14,7 +14,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # Include the directory where the header files are located
-include_directories(include)
+include_directories(include/CoverageLibrary include/CoverageLibrary/nlohmann)
 
 # Collect all source files except main.cpp into a variable
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")

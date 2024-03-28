@@ -32,7 +32,8 @@ set_property(TARGET GreedyIterativeCoveragePathPlanner PROPERTY IMPORTED_LOCATIO
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController 
-  ${CMAKE_SOURCE_DIR}/include/GreedyIterativeCoveragePathPlanner 
+  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary 
+  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/nlohmann
   ${CMAKE_SOURCE_DIR}/include/tomlpp
   ${GeographicLib_INCLUDE_DIRS})
 

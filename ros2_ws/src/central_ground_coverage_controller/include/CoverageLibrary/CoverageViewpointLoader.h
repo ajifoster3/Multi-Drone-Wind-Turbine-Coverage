@@ -32,6 +32,8 @@ namespace CoverageViewpointLoader
             pose.orientation.y = geoPose["orientation"]["y"];
             pose.orientation.z = geoPose["orientation"]["z"];
             pose.orientation.w = geoPose["orientation"]["w"];
+            // Assuming default coverageTime and assigned values as placeholders
+            std::chrono::seconds coverageTime = std::chrono::seconds(0); // Placeholder value
             bool assigned = false;   // Placeholder value
             viewpoints.emplace_back(pose, assigned);
         }
