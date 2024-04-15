@@ -13,8 +13,21 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+# Define the static library
+add_library(GeneticAlgorithm STATIC IMPORTED)
+# Specify the location of the static library
+set_property(TARGET GeneticAlgorithm PROPERTY IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/lib/libGeneticAlgorithm.a")
+
+
 # Include the directory where the header files are located
-include_directories(include/CoverageLibrary include/CoverageLibrary/nlohmann)
+include_directories(
+  include/CoverageLibrary 
+  include/CoverageLibrary/nlohmann 
+  include/CoverageLibrary/GeneticAlgorithmLibrary 
+  include/CoverageLibrary/GeneticAlgorithmLibrary/EncodingMechanism
+  include/CoverageLibrary/GeneticAlgorithmLibrary/FitnessFunction
+  include/CoverageLibrary/GeneticAlgorithmLibrary/ReproductionMechanism
+  include/CoverageLibrary/GeneticAlgorithmLibrary/TerminationCriterion)
 
 # Collect all source files except main.cpp into a variable
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")

@@ -4,6 +4,7 @@
 #include <geographic_msgs/msg/geo_pose_stamped.hpp>
 #include <rosgraph_msgs/msg/clock.hpp>
 #include <GreedyIterativeCoveragePathPlanner.h>
+#include <GeneticAlgorithmCoveragePathPlanner.h>
 #include <CoverageViewpointLoader.h>
 #include <Path.h>
 #include <Pose.h>
@@ -59,7 +60,7 @@ int main(int argc, char **argv)
     std::vector<CoverageViewpoint> viewpoints{CoverageViewpointLoader::load(goalPoseFileName)};
 
     // Compute robot path
-    CoveragePathPlanner *planner = new GreedyIterativeCoveragePathPlanner{robotIds, poses, viewpoints};
+    CoveragePathPlanner *planner = new GeneticAlgorithmCoveragePathPlanner{robotIds, poses, viewpoints};
     std::vector<TimedCoveragePath> coveragePaths;
 
     for(auto id : robotIds)

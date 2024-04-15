@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include "CoveragePathPlanner.h"
 #include "GreedyIterativeCoveragePathPlanner.h"
 #include "Pose.h"
 

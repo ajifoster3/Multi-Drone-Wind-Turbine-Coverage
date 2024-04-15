@@ -13,8 +13,6 @@ public:
                                        const std::vector<Pose> &initialPoses,
                                        std::vector<CoverageViewpoint> &viewpoints);
 
-    CoveragePaths getCoveragePaths() const override;
-
 private:
     void planCoveragePath() override;
     void AssignClosestViewpointToRobot(int i);

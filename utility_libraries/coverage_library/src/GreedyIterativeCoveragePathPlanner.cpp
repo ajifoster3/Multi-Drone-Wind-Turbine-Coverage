@@ -14,11 +14,6 @@ GreedyIterativeCoveragePathPlanner::GreedyIterativeCoveragePathPlanner(
     planCoveragePath();
 }
 
-CoveragePaths GreedyIterativeCoveragePathPlanner::getCoveragePaths() const
-{
-    return coveragePaths;
-}
-
 void GreedyIterativeCoveragePathPlanner::planCoveragePath()
 {
     while (viewpoints.hasUnassignedViewpoints())

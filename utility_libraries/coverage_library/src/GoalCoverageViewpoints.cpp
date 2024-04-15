@@ -1,11 +1,11 @@
 #include "GoalCoverageViewpoints.h"
 
-GoalCoverageViewpoints::GoalCoverageViewpoints(std::vector<CoverageViewpoint> goalViewpoints) 
-: goalViewpoints(goalViewpoints){};
+GoalCoverageViewpoints::GoalCoverageViewpoints(std::vector<CoverageViewpoint> goalViewpoints)
+    : goalViewpoints_(goalViewpoints){};
 
 bool GoalCoverageViewpoints::hasUnassignedViewpoints()
 {
-    for (const auto viewpoint : goalViewpoints)
+    for (const auto viewpoint : goalViewpoints_)
     {
         if (!viewpoint.isAssigned())
         {
@@ -19,16 +19,16 @@ int GoalCoverageViewpoints::findClosestUnassignedViewpointIndex(const Pose &pose
 {
     double minDistance = std::numeric_limits<double>::max();
     int closestIndex = -1;
-    for (size_t i = 0; i < goalViewpoints.size(); ++i)
+    for (size_t i = 0; i < goalViewpoints_.size(); ++i)
     {
-        if (!goalViewpoints[i].isAssigned())
+        if (!goalViewpoints_[i].isAssigned())
         {
             double distance = std::sqrt(
                 std::pow(HaversineDistance::calculateDistance(
                              pose.position.latitude, pose.position.longitude,
-                             goalViewpoints[i].getPose().position.latitude, goalViewpoints[i].getPose().position.longitude),
+                             goalViewpoints_[i].getPose().position.latitude, goalViewpoints_[i].getPose().position.longitude),
                          2) +
-                std::pow(pose.position.altitude - goalViewpoints[i].getPose().position.altitude, 2));
+                std::pow(pose.position.altitude - goalViewpoints_[i].getPose().position.altitude, 2));
             if (distance < minDistance)
             {
                 minDistance = distance;
@@ -39,26 +39,47 @@ int GoalCoverageViewpoints::findClosestUnassignedViewpointIndex(const Pose &pose
     return closestIndex;
 }
 
-CoverageViewpoint& GoalCoverageViewpoints::getClosestUnassignedViewpoint(const Pose &pose)
+CoverageViewpoint &GoalCoverageViewpoints::getClosestUnassignedViewpoint(const Pose &pose)
 {
-    CoverageViewpoint* closestViewpoint;
+    CoverageViewpoint *closestViewpoint;
     double minDistance = std::numeric_limits<double>::max();
-    for (size_t i = 0; i < goalViewpoints.size(); ++i)
+    for (size_t i = 0; i < goalViewpoints_.size(); ++i)
     {
-        if (!goalViewpoints[i].isAssigned())
+        if (!goalViewpoints_[i].isAssigned())
         {
             double distance = std::sqrt(
                 std::pow(HaversineDistance::calculateDistance(
                              pose.position.latitude, pose.position.longitude,
-                             goalViewpoints[i].getPose().position.latitude, goalViewpoints[i].getPose().position.longitude),
+                             goalViewpoints_[i].getPose().position.latitude, goalViewpoints_[i].getPose().position.longitude),
                          2) +
-                std::pow(pose.position.altitude - goalViewpoints[i].getPose().position.altitude, 2));
+                std::pow(pose.position.altitude - goalViewpoints_[i].getPose().position.altitude, 2));
             if (distance < minDistance)
             {
-                closestViewpoint = &goalViewpoints[i];
+                closestViewpoint = &goalViewpoints_[i];
                 minDistance = distance;
             }
         }
     }
     return *closestViewpoint;
+}
+
+std::vector<Position> GoalCoverageViewpoints::getViewpointPositions()
+{
+    std::vector<Position> positions;
+    positions.resize(goalViewpoints_.size());
+    std::transform(
+        goalViewpoints_.begin(),
+        goalViewpoints_.end(),
+        positions.begin(),
+        [](const CoverageViewpoint &viewpoint) -> Position
+        { return Position{
+              viewpoint.getPose().position.latitude,
+              viewpoint.getPose().position.longitude,
+              viewpoint.getPose().position.altitude}; });
+    return positions;
+}
+
+CoverageViewpoint GoalCoverageViewpoints::getViewpointAtIndex(int i)
+{
+    return goalViewpoints_[i];
 }
