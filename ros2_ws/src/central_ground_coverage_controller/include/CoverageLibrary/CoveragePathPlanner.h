@@ -12,7 +12,7 @@
 class CoveragePathPlanner {
 public:
     virtual ~CoveragePathPlanner() {}
-    virtual CoveragePaths getCoveragePaths() const = 0;
+    CoveragePaths getCoveragePaths() const;
 
 protected:
     std::vector<int> robotIDs;

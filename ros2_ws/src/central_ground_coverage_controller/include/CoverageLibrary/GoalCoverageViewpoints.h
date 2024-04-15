@@ -2,9 +2,11 @@
 #define GOAL_COVERAGE_VIEWPOINTS_H
 
 #include <vector>
+#include <algorithm>
 #include "CoverageViewpoint.h"
 #include "HaversineDistance.h"
 #include "Pose.h"
+#include "Position.h"
 
 class GoalCoverageViewpoints
 {
@@ -14,8 +16,10 @@ public:
     bool hasUnassignedViewpoints();
     int findClosestUnassignedViewpointIndex(const Pose &);
     CoverageViewpoint& getClosestUnassignedViewpoint(const Pose &pose);
+    std::vector<Position> getViewpointPositions();
+    CoverageViewpoint getViewpointAtIndex(int i);
 private:
-    std::vector<CoverageViewpoint> goalViewpoints;
+    std::vector<CoverageViewpoint> goalViewpoints_;
 };
 
 #endif

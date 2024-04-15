@@ -29,10 +29,18 @@ endif()
 add_library(GreedyIterativeCoveragePathPlanner STATIC IMPORTED)
 # Specify the location of the static library
 set_property(TARGET GreedyIterativeCoveragePathPlanner PROPERTY IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/lib/libGreedyIterativeCoveragePathPlanner.a")
+add_library(GeneticAlgorithm STATIC IMPORTED)
+set_property(TARGET GeneticAlgorithm PROPERTY IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/lib/libGeneticAlgorithm.a")
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController 
-  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary 
+
+  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary
+  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary
+  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary/EncodingMechanism
+  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary/FitnessFunction
+  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary/ReproductionMechanism
+  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary/TerminationCriterion
   ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/nlohmann
   ${CMAKE_SOURCE_DIR}/include/tomlpp
   ${GeographicLib_INCLUDE_DIRS})
@@ -47,7 +55,7 @@ add_executable(
   src/TimedCoverageViewpoint.cpp 
   src/CoverageLogger.cpp
   include/CentralGroundCoverageController/CentralCoverageControllerNode.h )
-target_link_libraries(CentralCoverageController GreedyIterativeCoveragePathPlanner ${GeographicLib_LIBRARIES})
+target_link_libraries(CentralCoverageController GreedyIterativeCoveragePathPlanner GeneticAlgorithm ${GeographicLib_LIBRARIES})
 ament_target_dependencies(CentralCoverageController rclcpp geometry_msgs mavros_msgs)
 
 install(TARGETS
