@@ -16,6 +16,7 @@ public:
 
 protected:
     std::vector<int> robotIDs;
+    std::vector<Pose> initalRobotPoses;
     std::vector<Pose> robotPoses;
     GoalCoverageViewpoints viewpoints;
     CoveragePaths coveragePaths;

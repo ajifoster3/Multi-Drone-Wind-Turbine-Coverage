@@ -7,6 +7,7 @@ GreedyIterativeCoveragePathPlanner::GreedyIterativeCoveragePathPlanner(
     : CoveragePathPlanner()
 {
     this->robotIDs = robotIDs;
+    this->initalRobotPoses = initialPoses;
     this->robotPoses = initialPoses;
     this->viewpoints = GoalCoverageViewpoints(viewpoints);
     this->coveragePaths = CoveragePaths(robotIDs);
@@ -22,6 +23,10 @@ void GreedyIterativeCoveragePathPlanner::planCoveragePath()
         {
             AssignClosestViewpointToRobot(i);
         }
+    }
+    for(size_t i; i = 0; i < robotPoses.size())
+    {
+        coveragePaths.addCoverageViewpointForRobot(i, CoverageViewpoint(initalRobotPoses[i], 0));
     }
 }
 
