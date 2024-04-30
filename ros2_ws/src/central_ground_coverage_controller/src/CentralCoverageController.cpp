@@ -10,21 +10,40 @@
 #include <Pose.h>
 #include "CentralCoverageControllerNode.h"
 #include "TimedCoveragePath.h"
+#include <GeographicLib/Geoid.hpp>
 
+std::unique_ptr<CoveragePathPlanner> createPlanner(const std::string_view approach, std::vector<int> &robotIds, std::vector<Pose> &poses, std::vector<CoverageViewpoint> &viewpoints)
+{
+    if (approach == "GreedyIterative")
+    {
+        return std::make_unique<GreedyIterativeCoveragePathPlanner>(robotIds, poses, viewpoints);
+    }
+    else if (approach == "GeneticAlgorithm")
+    {
+        return std::make_unique<GeneticAlgorithmCoveragePathPlanner>(robotIds, poses, viewpoints);
+    }
+    else
+    {
+        throw std::invalid_argument("Unsupported coverage approach");
+    }
+}
 
 int main(int argc, char **argv)
 {
+
+    GeographicLib::Geoid geoid("egm96-5");
     rclcpp::init(argc, argv);
-    if (argc < 2)
+    if (argc < 4)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Usage: ros2 run [package_name] [executable_name] [team_size]");
+        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Usage: ros2 run [package_name] [executable_name] [team_size] [coverage_approach] [goal_pose_filename]");
         rclcpp::shutdown();
         return 1;
     }
 
     // Load arguments from the ros2 run call
     int team_size{std::stoi(argv[1])};
-    std::string goalPoseFileName{"/home/ajifoster3/Downloads/all_geoposes_wind_turbine.json"};
+    std::string_view coverage_approach{argv[2]};
+    std::string goal_pose_filename{argv[3]};
 
     // Setup the ros2 Node "central_coverage_controller_node"
     auto central_coverage_controller_node = std::make_shared<CentralCoverageControllerNode>("central_coverage_controller_node", team_size);
@@ -49,21 +68,25 @@ int main(int argc, char **argv)
         Pose pose{};
         pose.position.longitude = geoMsg.pose.position.longitude;
         pose.position.latitude = geoMsg.pose.position.latitude;
-        pose.position.altitude = geoMsg.pose.position.altitude;
+        double geoidHeight = geoid(
+            pose.position.latitude,
+            pose.position.longitude);
+        pose.position.altitude = geoMsg.pose.position.altitude - geoidHeight;
         poses.push_back(pose);
     }
 
     CoverageLogger::setInitalPoses(poses);
 
-    // Load the goal poses from the specified file 
-    // TODO: Make file name an argument 
-    std::vector<CoverageViewpoint> viewpoints{CoverageViewpointLoader::load(goalPoseFileName)};
-
+    // Load the goal poses from the specified file
+    // TODO: Make file name an argument
+    std::vector<CoverageViewpoint> viewpoints{CoverageViewpointLoader::load(goal_pose_filename)};
+    std::unique_ptr<CoveragePathPlanner> planner;
     // Compute robot path
-    CoveragePathPlanner *planner = new GeneticAlgorithmCoveragePathPlanner{robotIds, poses, viewpoints};
+    planner = createPlanner(coverage_approach, robotIds, poses, viewpoints);
+
     std::vector<TimedCoveragePath> coveragePaths;
 
-    for(auto id : robotIds)
+    for (auto id : robotIds)
     {
         coveragePaths.push_back(TimedCoveragePath{planner->getCoveragePaths().getCoveragePathForRobot(id)});
     }

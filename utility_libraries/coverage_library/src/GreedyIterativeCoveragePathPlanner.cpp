@@ -24,9 +24,9 @@ void GreedyIterativeCoveragePathPlanner::planCoveragePath()
             AssignClosestViewpointToRobot(i);
         }
     }
-    for(size_t i; i = 0; i < robotPoses.size())
+    for(size_t i = 0; i < robotPoses.size(); i++)
     {
-        coveragePaths.addCoverageViewpointForRobot(i, CoverageViewpoint(initalRobotPoses[i], 0));
+        coveragePaths.addCoverageViewpointForRobot(i, CoverageViewpoint(initalRobotPoses[i], true));
     }
 }
 
