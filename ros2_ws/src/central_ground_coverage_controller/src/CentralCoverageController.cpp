@@ -33,17 +33,17 @@ int main(int argc, char **argv)
 
     GeographicLib::Geoid geoid("egm96-5");
     rclcpp::init(argc, argv);
-    if (argc < 3)
+    if (argc < 4)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Usage: ros2 run [package_name] [executable_name] [team_size] [coverage_approach]");
+        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Usage: ros2 run [package_name] [executable_name] [team_size] [coverage_approach] [goal_pose_filename]");
         rclcpp::shutdown();
         return 1;
     }
 
     // Load arguments from the ros2 run call
     int team_size{std::stoi(argv[1])};
-    std::string goalPoseFileName{"/home/ajifoster3/Downloads/all_geoposes_wind_turbine.json"};
     std::string_view coverage_approach{argv[2]};
+    std::string goal_pose_filename{argv[3]};
 
     // Setup the ros2 Node "central_coverage_controller_node"
     auto central_coverage_controller_node = std::make_shared<CentralCoverageControllerNode>("central_coverage_controller_node", team_size);
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 
     // Load the goal poses from the specified file
     // TODO: Make file name an argument
-    std::vector<CoverageViewpoint> viewpoints{CoverageViewpointLoader::load(goalPoseFileName)};
+    std::vector<CoverageViewpoint> viewpoints{CoverageViewpointLoader::load(goal_pose_filename)};
     std::unique_ptr<CoveragePathPlanner> planner;
     // Compute robot path
     planner = createPlanner(coverage_approach, robotIds, poses, viewpoints);
