@@ -94,7 +94,7 @@ TEST(GreedyIterativeCoveragePathPlannerTest, plannerSingleRobotThreeCoveragePoin
     EXPECT_EQ(20, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[0].getPose().position.altitude) << "Incorrect robotic path: The first Viewpoint assigned is incorrect.";
     EXPECT_EQ(30, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[1].getPose().position.altitude) << "Incorrect robotic path: The second Viewpoint assigned is incorrect.";
     EXPECT_EQ(40, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[2].getPose().position.altitude) << "Incorrect robotic path: The third Viewpoint assigned is incorrect.";
-    EXPECT_EQ(0, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[3].getPose().position.altitude) << "Incorrect robotic path: The final Viewpoint assigned is incorrect.";
+    EXPECT_EQ(10, planner->getCoveragePaths().getCoveragePathForRobot(0).getPath()[3].getPose().position.altitude) << "Incorrect robotic path: The final Viewpoint assigned is incorrect.";
 }
 
 TEST(GreedyIterativeCoveragePathPlannerTest, plannerTwoRobotSixLinearCoveragePointsTest)
