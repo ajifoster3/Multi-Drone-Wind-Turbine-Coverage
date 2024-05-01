@@ -55,7 +55,13 @@ double DistanceFitnessFunction::getInversePathLength(
     {
         pathLength += costMap_[std::pair(path[i - 1], path[i])];
     }
-
+    pathLength += HaversineDistance::calculateDistance(
+        cities[path[path.size() - 1]].latitude,
+        cities[path[path.size() - 1]].longitude,
+        cities[path[path.size() - 1]].altitude,
+        initialAgentPose.latitude,
+        initialAgentPose.longitude,
+        initialAgentPose.altitude);
     return 1 / pathLength;
 }
 
@@ -78,7 +84,6 @@ std::vector<std::vector<int>> DistanceFitnessFunction::getPaths(Chromosome &chro
     for (size_t i = 0; i < chromosome.getNumberOfAgents(); i++)
     {
         int agentPathLength{chromosome.getGenesAtIndex(chromosome.getNumberOfCities() + i)};
-
         paths.emplace_back(chromosome.getGenesBetweenIndices(numberProcessedPositions, numberProcessedPositions + agentPathLength));
         numberProcessedPositions += agentPathLength;
     }

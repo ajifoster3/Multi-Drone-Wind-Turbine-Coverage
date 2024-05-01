@@ -21,9 +21,9 @@ void GeneticAlgorithmCoveragePathPlanner::planCoveragePath()
         ReproductionMechanisms::IPGA_REPRODUCTION_MECHANISM,
         FitnessFunctions::DISTANCE_FITNESS_FUNCTION,
         TerminationCriteria::ITERATION_COUNT_TERMINATION_CRITERION};
+
     ParthenoGeneticAlgorithm pga{config};
     auto cities = viewpoints.getViewpointPositions();
-
     std::vector<Position> initalrobotPositions;
     initalrobotPositions.resize(robotPoses.size());
     std::transform(
@@ -44,35 +44,38 @@ void GeneticAlgorithmCoveragePathPlanner::planCoveragePath()
         pgaCities.begin(),
         [](const Pose::Position &position) -> Position
         { return Position{
-            position.latitude,
-            position.longitude,
-            position.altitude}; });
-
+              position.latitude,
+              position.longitude,
+              position.altitude}; });
 
     auto bestChromosome = pga.run(pgaCities, initalrobotPositions.size(), initalrobotPositions);
 
     auto routes = extractRoutes(bestChromosome, initalrobotPositions.size());
-    
+
     for (int i = 0; i < initalrobotPositions.size(); i++)
     {
         for (auto &&viewpoint : routes[i])
         {
             coveragePaths.addCoverageViewpointForRobot(robotIDs[i], viewpoints.getViewpointAtIndex(viewpoint));
         }
+        coveragePaths.addCoverageViewpointForRobot(robotIDs[i], CoverageViewpoint(this->initialRobotPoses[i], 1));
     }
 }
 
-std::vector<std::vector<int>> GeneticAlgorithmCoveragePathPlanner::extractRoutes(const std::vector<int>& bestChromosome, int numberOfRobots) {
+std::vector<std::vector<int>> GeneticAlgorithmCoveragePathPlanner::extractRoutes(const std::vector<int> &bestChromosome, int numberOfRobots)
+{
     std::vector<std::vector<int>> routes(numberOfRobots);
     std::vector<int> routeLengths(bestChromosome.end() - numberOfRobots, bestChromosome.end());
-    
+
     int currentPositionIndex = 0;
-    for (int i = 0; i < numberOfRobots; ++i) {
+    for (int i = 0; i < numberOfRobots; ++i)
+    {
         // Extract positions for each robot based on its route length
-        for (int j = 0; j < routeLengths[i]; ++j) {
+        for (int j = 0; j < routeLengths[i]; ++j)
+        {
             routes[i].push_back(bestChromosome[currentPositionIndex++]);
         }
     }
-    
+
     return routes;
 }

@@ -6,8 +6,8 @@
         "limitSymbolsToIncludedHeaders": false
       },
       "includePath": [
+        "${workspaceFolder}/**",
         "/opt/ros/humble/include/**",
-        "/home/ajifoster3/Documents/Code/ros2_ws/src/central_coverage_controller/include/**",
         "/home/ajifoster3/Documents/Code/ros2_ws/src/cpp_pubsub/include/**",
         "/home/ajifoster3/Documents/Code/ros2_ws/src/cpp_srvcli/include/**",
         "/home/ajifoster3/Documents/Code/ros2_ws/src/drone_control/include/**",

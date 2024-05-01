@@ -45,6 +45,7 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position>& cities, in
         Population pop = reproducer_.Reproduce(currentPopulation, agentStartPositions, cities);
         double fitness = pop.getPopulationFitness(fitnessCalculator_, agentStartPositions, cities);
         populationFitnesses.push_back(fitness);
+        std::cout << fitness << "\n";
         currentPopulation = pop;
     }
     return currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities);
