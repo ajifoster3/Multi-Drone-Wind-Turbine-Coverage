@@ -39,7 +39,7 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position>& cities, in
     PopulationInitialiser populationInitialiser{chromosomeBuilder_};
     Population currentPopulation = populationInitialiser.InitialisePopulation(cities.size(), agents);
     std::vector<double> populationFitnesses;
-    fitnessCalculator_.populateCostMap(cities);
+    fitnessCalculator_.populateCostMap(cities, agentStartPositions);
     while (!terminator_.isTerminationCriteriaMet(populationFitnesses))
     {
         Population pop = reproducer_.Reproduce(currentPopulation, agentStartPositions, cities);

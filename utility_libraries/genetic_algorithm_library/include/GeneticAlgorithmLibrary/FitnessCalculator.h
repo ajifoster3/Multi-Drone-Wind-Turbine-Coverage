@@ -13,10 +13,9 @@ public:
     FitnessCalculator(){};
     FitnessCalculator(std::shared_ptr<FitnessFunction> fitnessFunction)
         : fitnessFunction_(std::move(fitnessFunction)){};
-    void populateCostMap(std::vector<Position> &cities);
+    void populateCostMap(std::vector<Position> &cities, std::vector<Position> &initialPositions);
     double calculateFitness(
         Chromosome &chromosome,
-        std::vector<Position> &initialAgentPoses,
         std::vector<Position> &cities);
 
 private:

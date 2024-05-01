@@ -2,21 +2,22 @@
 #include "Chromosome.h"
 #include "DistanceFitnessFunction.h"
 
-// TEST(DistanceFitnessFunctionTest, calulateChromosomeFitnessSingleRobot)
-// {
-//     std::vector<int> genes{0, 1, 2};
-//     int numberOfCities = 2;
-//     Chromosome chromosome{genes, numberOfCities};
+TEST(DistanceFitnessFunctionTest, calulateChromosomeFitnessSingleRobot)
+{
+    std::vector<int> genes{0, 1, 2};
+    int numberOfCities = 2;
+    Chromosome chromosome{genes, numberOfCities};
 
-//     std::vector<Position> initalRobotPositions{Position{5.0, 5.0, 5.0}};
+    std::vector<Position> initialRobotPositions{Position{5.0, 5.0, 5.0}};
 
-//     std::vector<Position> cities{Position{5.0, 5.0, 10.0}, Position{5.0, 5.0, 20.0}};
+    std::vector<Position> cities{Position{5.0, 5.0, 10.0}, Position{5.0, 5.0, 20.0}};
 
-//     DistanceFitnessFunction fitnessFunction{};
-//     double fitness = fitnessFunction.calulateChromosomeFitness(chromosome, initalRobotPositions, cities);
-//     std::cerr << "[          ] fitness = " << fitness << std::endl;
-//     ASSERT_NEAR(fitness, 0.0333, 0.01);
-// }
+    DistanceFitnessFunction fitnessFunction{};
+    fitnessFunction.calculateCostMap(cities, initialRobotPositions);
+    double fitness = fitnessFunction.calulateChromosomeFitness(chromosome, cities);
+    std::cerr << "[          ] fitness = " << fitness << std::endl;
+    ASSERT_NEAR(fitness, 0.0333, 0.01);
+}
 
 TEST(DistanceFitnessFunctionTest, CalculateChromosomeFitnessSingleRobotSingleCity)
 {
@@ -28,7 +29,8 @@ TEST(DistanceFitnessFunctionTest, CalculateChromosomeFitnessSingleRobotSingleCit
     std::vector<Position> cities{{10.0, 0.0, 0.0}};
 
     DistanceFitnessFunction fitnessFunction{};
-    double fitness = fitnessFunction.calulateChromosomeFitness(chromosome, initialRobotPositions, cities);
+    fitnessFunction.calculateCostMap(cities, initialRobotPositions);
+    double fitness = fitnessFunction.calulateChromosomeFitness(chromosome, cities);
     std::cerr << "[          ] fitness = " << fitness << std::endl;
     ASSERT_NEAR(fitness, 0.05, 0.01); // Expect the robot to travel 10 units
 }
