@@ -25,7 +25,6 @@ void GeneticAlgorithmCoveragePathPlanner::planCoveragePath()
     auto cities = viewpoints.getViewpointPositions();
 
     std::vector<Position> initalrobotPositions;
-    
     initalrobotPositions.resize(robotPoses.size());
     std::transform(
         robotPoses.begin(),
@@ -37,7 +36,20 @@ void GeneticAlgorithmCoveragePathPlanner::planCoveragePath()
               pose.position.longitude,
               pose.position.altitude}; });
 
-    auto bestChromosome = pga.run(cities, initalrobotPositions.size(), initalrobotPositions);
+    std::vector<Position> pgaCities;
+    pgaCities.resize(cities.size());
+    std::transform(
+        cities.begin(),
+        cities.end(),
+        pgaCities.begin(),
+        [](const Pose::Position &position) -> Position
+        { return Position{
+            position.latitude,
+            position.longitude,
+            position.altitude}; });
+
+
+    auto bestChromosome = pga.run(pgaCities, initalrobotPositions.size(), initalrobotPositions);
 
     auto routes = extractRoutes(bestChromosome, initalrobotPositions.size());
     

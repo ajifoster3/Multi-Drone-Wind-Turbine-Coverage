@@ -63,16 +63,16 @@ CoverageViewpoint &GoalCoverageViewpoints::getClosestUnassignedViewpoint(const P
     return *closestViewpoint;
 }
 
-std::vector<Position> GoalCoverageViewpoints::getViewpointPositions()
+std::vector<Pose::Position> GoalCoverageViewpoints::getViewpointPositions()
 {
-    std::vector<Position> positions;
+    std::vector<Pose::Position> positions;
     positions.resize(goalViewpoints_.size());
     std::transform(
         goalViewpoints_.begin(),
         goalViewpoints_.end(),
         positions.begin(),
-        [](const CoverageViewpoint &viewpoint) -> Position
-        { return Position{
+        [](const CoverageViewpoint &viewpoint) -> Pose::Position
+        { return Pose::Position{
               viewpoint.getPose().position.latitude,
               viewpoint.getPose().position.longitude,
               viewpoint.getPose().position.altitude}; });

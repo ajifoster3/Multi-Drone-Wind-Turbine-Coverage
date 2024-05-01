@@ -8,9 +8,10 @@
 #include <CoverageViewpointLoader.h>
 #include <Path.h>
 #include <Pose.h>
+#include <GeographicLib/Geoid.hpp>
 #include "CentralCoverageControllerNode.h"
 #include "TimedCoveragePath.h"
-#include <GeographicLib/Geoid.hpp>
+#include "LogDistanceCostMatrixPlanner.h"
 
 std::unique_ptr<CoveragePathPlanner> createPlanner(const std::string_view approach, std::vector<int> &robotIds, std::vector<Pose> &poses, std::vector<CoverageViewpoint> &viewpoints)
 {
@@ -21,6 +22,10 @@ std::unique_ptr<CoveragePathPlanner> createPlanner(const std::string_view approa
     else if (approach == "GeneticAlgorithm")
     {
         return std::make_unique<GeneticAlgorithmCoveragePathPlanner>(robotIds, poses, viewpoints);
+    }
+    else if (approach == "LogDistance")
+    {
+        return std::make_unique<LogDistanceCostMatrixPlanner>(robotIds, poses, viewpoints);
     }
     else
     {
