@@ -34,18 +34,15 @@ set_property(TARGET GeneticAlgorithm PROPERTY IMPORTED_LOCATION "${CMAKE_SOURCE_
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController 
-
-  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary
-  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary
-  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary/EncodingMechanism
-  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary/FitnessFunction
-  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary/ReproductionMechanism
-  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/GeneticAlgorithmLibrary/TerminationCriterion
-  ${CMAKE_SOURCE_DIR}/include/CoverageLibrary/nlohmann
+  ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary
+  ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary/GeneticAlgorithmLibrary
+  ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary/GeneticAlgorithmLibrary/EncodingMechanism
+  ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary/GeneticAlgorithmLibrary/FitnessFunction
+  ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary/GeneticAlgorithmLibrary/ReproductionMechanism
+  ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary/GeneticAlgorithmLibrary/TerminationCriterion
+  ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary/nlohmann
   ${CMAKE_SOURCE_DIR}/include/tomlpp
   ${GeographicLib_INCLUDE_DIRS})
-
-
 
 add_executable(
   CentralCoverageController 
