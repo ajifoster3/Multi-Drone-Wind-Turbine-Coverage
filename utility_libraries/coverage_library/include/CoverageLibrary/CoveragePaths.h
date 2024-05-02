@@ -11,6 +11,7 @@ public:
     CoveragePaths(std::vector<int>);
     
     Path getCoveragePathForRobot(int id); // maybe unnecessary?
+    std::vector<Path> getCoveragePathForRobot() const; // maybe unnecessary?
     void addCoverageViewpointForRobot(int robotId, CoverageViewpoint);
 
 private:
