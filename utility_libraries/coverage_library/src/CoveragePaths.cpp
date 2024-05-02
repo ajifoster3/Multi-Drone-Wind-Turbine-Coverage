@@ -16,7 +16,7 @@ Path CoveragePaths::getCoveragePathForRobot(int id)
     }
     return Path();
 }
-std::vector<Path> CoveragePaths::getCoveragePathForRobot() const
+std::vector<Path> CoveragePaths::getPaths() const
 {
     return paths;
 };

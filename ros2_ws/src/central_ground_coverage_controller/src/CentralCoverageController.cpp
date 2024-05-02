@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     // Compute robot path
     planner = createPlanner(coverage_approach, robotIds, poses, viewpoints);
 
-    planner->logCoveragePath();
+    planner->logCoveragePath(planner->getCoveragePaths().getPaths());
 
     std::vector<TimedCoveragePath> coveragePaths;
 
