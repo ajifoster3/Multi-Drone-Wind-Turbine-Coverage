@@ -4,7 +4,7 @@
 bool IterationCountTerminationCriterion::isTerminationCriterionMet(std::vector<double> &populationFitnesses)
 {
     auto popSize = populationFitnesses.size();
-    return populationFitnesses.size() > 40000;
+    return populationFitnesses.size() > 200;
     // double stdDev = calculateStdDev(populationFitnesses);
     // return stdDev > 0.1;
 }

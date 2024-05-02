@@ -1,4 +1,5 @@
 #include "GeneticAlgorithmCoveragePathPlanner.h"
+#include <iostream>
 
 GeneticAlgorithmCoveragePathPlanner::GeneticAlgorithmCoveragePathPlanner(
     const std::vector<int> &robotIDs,
@@ -7,7 +8,7 @@ GeneticAlgorithmCoveragePathPlanner::GeneticAlgorithmCoveragePathPlanner(
     : CoveragePathPlanner()
 {
     this->robotIDs = robotIDs;
-    this->robotPoses = initialPoses;
+    this->initialRobotPoses = initialPoses;
     this->viewpoints = GoalCoverageViewpoints(viewpoints);
     this->coveragePaths = CoveragePaths(robotIDs);
 
@@ -25,10 +26,10 @@ void GeneticAlgorithmCoveragePathPlanner::planCoveragePath()
     ParthenoGeneticAlgorithm pga{config};
     auto cities = viewpoints.getViewpointPositions();
     std::vector<Position> initalrobotPositions;
-    initalrobotPositions.resize(robotPoses.size());
+    initalrobotPositions.resize(initialRobotPoses.size());
     std::transform(
-        robotPoses.begin(),
-        robotPoses.end(),
+        initialRobotPoses.begin(),
+        initialRobotPoses.end(),
         initalrobotPositions.begin(),
         [](const Pose &pose) -> Position
         { return Position{
@@ -51,22 +52,23 @@ void GeneticAlgorithmCoveragePathPlanner::planCoveragePath()
     auto bestChromosome = pga.run(pgaCities, initalrobotPositions.size(), initalrobotPositions);
 
     auto routes = extractRoutes(bestChromosome, initalrobotPositions.size());
-
     for (int i = 0; i < initalrobotPositions.size(); i++)
     {
         for (auto &&viewpoint : routes[i])
         {
             coveragePaths.addCoverageViewpointForRobot(robotIDs[i], viewpoints.getViewpointAtIndex(viewpoint));
         }
-        coveragePaths.addCoverageViewpointForRobot(robotIDs[i], CoverageViewpoint(this->initialRobotPoses[i], 1));
+        auto initialViewpoint = CoverageViewpoint(this->initialRobotPoses[i], 1);
+        coveragePaths.addCoverageViewpointForRobot(robotIDs[i], initialViewpoint);
     }
 }
 
 std::vector<std::vector<int>> GeneticAlgorithmCoveragePathPlanner::extractRoutes(const std::vector<int> &bestChromosome, int numberOfRobots)
 {
+    
     std::vector<std::vector<int>> routes(numberOfRobots);
     std::vector<int> routeLengths(bestChromosome.end() - numberOfRobots, bestChromosome.end());
-
+    
     int currentPositionIndex = 0;
     for (int i = 0; i < numberOfRobots; ++i)
     {
@@ -76,6 +78,5 @@ std::vector<std::vector<int>> GeneticAlgorithmCoveragePathPlanner::extractRoutes
             routes[i].push_back(bestChromosome[currentPositionIndex++]);
         }
     }
-
     return routes;
 }
