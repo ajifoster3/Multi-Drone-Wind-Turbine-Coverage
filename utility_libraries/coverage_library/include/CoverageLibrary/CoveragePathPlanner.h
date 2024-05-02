@@ -6,13 +6,13 @@
 #include "Path.h"
 #include "GoalCoverageViewpoints.h"
 #include "CoveragePaths.h"
-
-
+#include "CoveragePathPlannerLogger.h"
 
 class CoveragePathPlanner {
 public:
     virtual ~CoveragePathPlanner() {}
     CoveragePaths getCoveragePaths() const;
+    void logCoveragePath(std::vector<Path> paths);
 
 protected:
     std::vector<int> robotIDs;

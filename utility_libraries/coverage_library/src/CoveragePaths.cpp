@@ -15,6 +15,10 @@ Path CoveragePaths::getCoveragePathForRobot(int id)
         }
     }
     return Path();
+}
+std::vector<Path> CoveragePaths::getPaths() const
+{
+    return paths;
 };
 
 void CoveragePaths::addCoverageViewpointForRobot(int id, CoverageViewpoint viewpoint)

@@ -9,7 +9,6 @@
 #include "FitnessFunction.h"
 #include "Position.h"
 #include "Chromosome.h"
-#include "HaversineDistance.h"
 
 class DistanceFitnessFunction : public FitnessFunction
 {

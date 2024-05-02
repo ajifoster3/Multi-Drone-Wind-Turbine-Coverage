@@ -4698,3 +4698,4 @@ utility_libraries/coverage_library/build/compile_commands.json
 utility_libraries/coverage_library/.vscode/tasks.json
 utility_libraries/coverage_library/.vscode/settings.json
 utility_libraries/coverage_library/.vscode/c_cpp_properties.json
+ros2_ws/pathlog/
