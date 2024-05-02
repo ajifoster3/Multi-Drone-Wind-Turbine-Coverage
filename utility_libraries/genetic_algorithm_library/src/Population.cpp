@@ -15,7 +15,7 @@ double Population::getPopulationFitness(FitnessCalculator &fitnessCalculator, st
     double sumOfFitness{0};
     for (auto chromosome : this->getPopulationList())
     {
-        sumOfFitness += fitnessCalculator.calculateFitness(chromosome, agentStartPositions, cities);
+        sumOfFitness += fitnessCalculator.calculateFitness(chromosome, cities);
     }
     return sumOfFitness;
 }
@@ -29,7 +29,7 @@ std::vector<int> Population::getFittestChromosomeGenes(
     double maxFitness = 0;
     for (auto chromosome : this->getPopulationList())
     {
-        auto fitness = fitnessCalculator.calculateFitness(chromosome, agentStartPositions, cities);
+        auto fitness = fitnessCalculator.calculateFitness(chromosome, cities);
         if (maxFitness < fitness)
         {
             fittestChromosomeGenes = chromosome.getGenes();

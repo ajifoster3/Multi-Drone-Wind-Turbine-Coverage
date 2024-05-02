@@ -269,7 +269,7 @@ ReproductionPopulation::ReproductionPopulation(Population population)
 ReproductionChromosome::ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities)
 {
     chromosome_ = chromosome;
-    fitness_ = fitnessCalculator->calculateFitness(chromosome, initialAgentPoses, cities);
+    fitness_ = fitnessCalculator->calculateFitness(chromosome, cities);
 }
 
 double ReproductionChromosome::getFitness() const { return fitness_; };

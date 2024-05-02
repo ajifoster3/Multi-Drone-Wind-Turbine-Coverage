@@ -18,12 +18,11 @@ public:
 
     double calulateChromosomeFitness(
         Chromosome &,
-        std::vector<Position> &initialAgentPoses,
         std::vector<Position> &cities);
 
     std::vector<std::vector<int>> getPaths(Chromosome &chromosome);
 
-    void calculateCostMap(std::vector<Position> &cities);
+    void calculateCostMap(std::vector<Position> &cities, std::vector<Position> &initialPositions);
 
 private:
     // Define a custom hash function for std::pair<int, int>
@@ -38,16 +37,16 @@ private:
         }
     };
 
-    std::unordered_map<std::pair<int, int>, double, pair_hash> costMap_;
+    std::unordered_map<std::pair<int, int>, double, pair_hash> initialPoseCostMap_;
+    std::unordered_map<std::pair<int, int>, double, pair_hash> cityCostMap_;
 
     const std::vector<double> getInversePathLengths(
         std::vector<std::vector<int>> &paths,
-        std::vector<Position> &initialAgentPoses,
         std::vector<Position> &cities);
 
     double getInversePathLength(
         std::vector<int> &path,
-        Position &initialAgentPoses,
+        int agentID,
         std::vector<Position> &cities);
 };
 

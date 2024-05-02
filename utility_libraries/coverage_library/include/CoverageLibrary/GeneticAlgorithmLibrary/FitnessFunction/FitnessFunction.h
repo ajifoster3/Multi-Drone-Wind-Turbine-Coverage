@@ -14,9 +14,8 @@ public:
     virtual ~FitnessFunction() = default;
     virtual double calulateChromosomeFitness(
         Chromosome &, 
-        std::vector<Position> &initialAgentPoses, 
         std::vector<Position> &cities) = 0;
-    virtual void calculateCostMap(std::vector<Position> &cities) = 0;
+    virtual void calculateCostMap(std::vector<Position> &cities, std::vector<Position> &initialPositions) = 0;
 };
 
 #endif
