@@ -155,9 +155,9 @@ void OffboardNode::armDrone()
 geographic_msgs::msg::GeoPoseStamped OffboardNode::getCurrentGeoPose()
 {
     geographic_msgs::msg::GeoPoseStamped geo_pose;
-    geo_pose.pose.position.latitude = currentGps_.latitude;
-    geo_pose.pose.position.longitude = currentGps_.longitude;
-    geo_pose.pose.position.altitude = currentGps_.altitude;
+    geo_pose.pose.position.latitude = initialGps_.latitude;
+    geo_pose.pose.position.longitude = initialGps_.longitude;
+    geo_pose.pose.position.altitude = initialGps_.altitude;
     geo_pose.header.stamp = this->now();
     return geo_pose;
 }
