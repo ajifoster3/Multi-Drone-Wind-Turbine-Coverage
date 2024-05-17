@@ -72,7 +72,10 @@
         "future": "cpp",
         "shared_mutex": "cpp",
         "cfenv": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "any": "cpp",
+        "ranges": "cpp",
+        "valarray": "cpp"
     },
     "ros.distro": "humble",
     "python.autoComplete.extraPaths": [
