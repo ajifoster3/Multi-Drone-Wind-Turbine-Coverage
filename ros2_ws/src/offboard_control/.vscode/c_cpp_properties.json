@@ -4,7 +4,10 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/opt/ros/humble/include/**"
+                "/opt/ros/humble/include/**",
+                "~/Documents/GitHub/Multi-Drone-Wind-Turbine-Coverage/ros2_ws/install/offboard_control_interfaces/include/**",
+                "include/**",
+                "include/nlohmann/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
