@@ -53,7 +53,6 @@ namespace trackingNode
 
     void TrackingNode::droneEnvironmentalRepresentationSubCB(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg)
     {
-        RCLCPP_INFO(this->get_logger(), "droneEnvironmentalRepresentationSubCB cb");
         auto droneEnvironmentalRepresentation = *msg.get();
         droneEnvironmentalRepresentation_.push_back(std::pair<rosgraph_msgs::msg::Clock, offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>(currentTime, droneEnvironmentalRepresentation));
         if (std::find(droneEnvironmentalRepresentation.is_covered.begin(), droneEnvironmentalRepresentation.is_covered.end(), false) == droneEnvironmentalRepresentation.is_covered.end())
@@ -64,13 +63,11 @@ namespace trackingNode
 
     void TrackingNode::droneAllocationSubCB(const offboard_control_interfaces::msg::DroneAllocation::SharedPtr msg)
     {
-        RCLCPP_INFO(this->get_logger(), "droneAllocationSubCB");
         droneAllocations_.push_back(std::pair<rosgraph_msgs::msg::Clock, offboard_control_interfaces::msg::DroneAllocation>(currentTime, *msg));
     }
 
     void TrackingNode::dronePositionSubCB(const geographic_msgs::msg::GeoPoseStamped::SharedPtr msg, int robotId)
     {
-        RCLCPP_INFO(this->get_logger(), "dronePositionSubCB");
         if (robotId >= 0 && robotId < teamsize_)
         {
             dronePositions_[robotId].emplace_back(currentTime, msg->pose);
@@ -118,7 +115,7 @@ namespace trackingNode
             {
                 for (const auto &position : dronePositions_[i])
                 {
-                    positionFile << i + 1 << ","
+                    positionFile << std::setprecision(12) << i + 1 << ","
                                  << position.first.clock.sec << "." << position.first.clock.nanosec << ","
                                  << position.second.position.latitude << ","
                                  << position.second.position.longitude << ","
