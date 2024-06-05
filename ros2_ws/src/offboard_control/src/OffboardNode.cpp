@@ -34,7 +34,7 @@ void OffboardNode::spinNode()
 
         publishGeoPose();
         publishTargetPose();
-        if (isCoverageStarted_)
+        if (coverageMode_ == CoverageMode::Decentralised && isCoverageStarted_)
         {
             if (viewpointAssigned_ == -1)
             {
