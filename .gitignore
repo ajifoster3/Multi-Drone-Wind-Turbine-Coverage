@@ -4699,3 +4699,8 @@ utility_libraries/coverage_library/.vscode/tasks.json
 utility_libraries/coverage_library/.vscode/settings.json
 utility_libraries/coverage_library/.vscode/c_cpp_properties.json
 ros2_ws/pathlog/
+/ros2_ws/build
+/ros2_ws/install
+/ros2_ws/src/central_ground_coverage_controller/build
+/ros2_ws/src/decentralised_coverage_tracker/build
+/ros2_ws/src/offboard_control/build
