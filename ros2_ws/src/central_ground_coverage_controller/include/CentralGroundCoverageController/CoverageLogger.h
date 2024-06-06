@@ -1,10 +1,13 @@
 #ifndef COVERAGELOGGERH
 #define COVERAGELOGGERH
+
+#include <rclcpp/rclcpp.hpp>
 #include "builtin_interfaces/msg/time.h"
 #include "TimedCoveragePath.h"
 #include <fstream>
 #include <iostream>
 #include <chrono>
+#include <filesystem>
 
 class CoverageLogger
 {

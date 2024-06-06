@@ -34,11 +34,10 @@ void OffboardNode::spinNode()
 
         publishGeoPose();
         publishTargetPose();
-        if (isCoverageStarted_)
+        if (coverageMode_ == CoverageMode::Decentralised && isCoverageStarted_)
         {
             if (viewpointAssigned_ == -1)
             {
-                RCLCPP_INFO(this->get_logger(), "***Allocating viewpoint because viewpointAssigned_ = -1");
                 allocateUnassignedViewpoint();
             }
             else
@@ -108,6 +107,7 @@ void OffboardNode::droneEnvironmentalRepresentationCb(const offboard_control_int
     {
         if (i < droneEnvironmentalRepresentation_.is_covered.size() && msg->is_covered[i] && !droneEnvironmentalRepresentation_.is_covered[i])
         {
+            RCLCPP_INFO(this->get_logger(), "Discovered new coverage information");
             droneEnvironmentalRepresentation_.is_covered[i] = true;
         }
     }
@@ -247,9 +247,9 @@ void OffboardNode::armDrone()
 geographic_msgs::msg::GeoPoseStamped OffboardNode::getCurrentGeoPose()
 {
     geographic_msgs::msg::GeoPoseStamped geo_pose;
-    geo_pose.pose.position.latitude = initialGps_.latitude;
-    geo_pose.pose.position.longitude = initialGps_.longitude;
-    geo_pose.pose.position.altitude = initialGps_.altitude;
+    geo_pose.pose.position.latitude = currentGps_.latitude;
+    geo_pose.pose.position.longitude = currentGps_.longitude;
+    geo_pose.pose.position.altitude = currentGps_.altitude;
     geo_pose.header.stamp = this->now();
     return geo_pose;
 }
@@ -284,7 +284,8 @@ int OffboardNode::getClosestViewpointIndex()
 void OffboardNode::allocateUnassignedViewpoint()
 {
     viewpointAssigned_ = getClosestViewpointIndex();
-    droneAllocation_.allocations[viewpointAssigned_] = uasNumber_;
+    if(viewpointAssigned_ != -1){
+        droneAllocation_.allocations[viewpointAssigned_] = uasNumber_;
 
     RCLCPP_INFO(this->get_logger(), "Assigning viewpoint %d to UAS %d.", viewpointAssigned_, uasNumber_);
 
@@ -293,6 +294,7 @@ void OffboardNode::allocateUnassignedViewpoint()
     coveragePoseToGeoPose(geopose, pose);
     geopose.header.stamp = this->now();
     geoposeGoalGps_ = geopose;
+    }
 }
 
 void OffboardNode::checkCoveragePositionReached()
@@ -312,8 +314,8 @@ void OffboardNode::checkCoveragePositionReached()
     if (distance < goalPoseTolerance_)
     {
         RCLCPP_INFO(this->get_logger(), "Coverage position %d reached by UAS %d.", viewpointAssigned_, uasNumber_);
-        viewpointAssigned_ = -1;
         droneEnvironmentalRepresentation_.is_covered[viewpointAssigned_] = true;
+        viewpointAssigned_ = -1;
     }
 }
 
