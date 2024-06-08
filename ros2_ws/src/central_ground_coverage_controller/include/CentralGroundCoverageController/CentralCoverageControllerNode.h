@@ -34,6 +34,7 @@ private:
     rosgraph_msgs::msg::Clock simulationTime_;
     rclcpp::TimerBase::SharedPtr timer_;
     double goalPoseTolerance_;
+    std::vector<std::vector<std::pair<rosgraph_msgs::msg::Clock, geographic_msgs::msg::GeoPose>>> dronePositions_;
     
 
     /**
