@@ -8,3 +8,7 @@
 /utility_libraries/coverage_library/build
 /utility_libraries/genetic_algorithm_library/.vscode
 /utility_libraries/genetic_algorithm_library/build
+/ros2_ws/build
+/ros2_ws/install
+/ros2_ws/log
+/ros2_ws/pathlog
