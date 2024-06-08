@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     //*****************************************************************************
 
     rclcpp::spin(central_coverage_controller_node);
-    CoverageLogger::logTimes();
+    CoverageLogger::logCoverage(coverage_approach);
     rclcpp::shutdown();
     return 0;
 }

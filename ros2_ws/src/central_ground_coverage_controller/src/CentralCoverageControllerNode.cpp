@@ -3,6 +3,7 @@
 CentralCoverageControllerNode::CentralCoverageControllerNode(const std::string &name, int team_size)
     : Node(name), teamSize_(team_size), geoid_("egm96-5")
 {
+    dronePositions_.resize(team_size);
     initializeSubscribers();
     initializePublishers();
     populateCoverageSettings();
@@ -25,6 +26,8 @@ void CentralCoverageControllerNode::setCurrentGpsPosition(const geographic_msgs:
             currentGpsPositions_[uas_id].pose.position.latitude,
             currentGpsPositions_[uas_id].pose.position.longitude);
         currentGpsPositions_[uas_id].pose.position.altitude -= geoidHeight;
+
+        dronePositions_[uas_id].emplace_back(simulationTime_, geopose.pose);
     }
 }
 
@@ -83,6 +86,7 @@ void CentralCoverageControllerNode::timerCallback()
     {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Coverage Complete");
         CoverageLogger::setViewpointCoverageTimes(this->coveragePaths_);
+        CoverageLogger::setDronePositions(this->dronePositions_);
         rclcpp::shutdown();
     }
 }
