@@ -214,8 +214,8 @@ void OffboardNode::publishTargetPose()
     if (!isCoverageStarted_)
     {
         geographic_msgs::msg::GeoPoseStamped geo_pose;
-        geo_pose.pose.position.latitude = currentGps_.latitude;
-        geo_pose.pose.position.longitude = currentGps_.longitude;
+        geo_pose.pose.position.latitude = initialGps_.latitude;
+        geo_pose.pose.position.longitude = initialGps_.longitude;
         geo_pose.pose.position.altitude = initialGps_.altitude + FLIGHT_ALTITUDE;
         geo_pose.header.stamp = this->now();
         globalPosPub_->publish(geo_pose);
@@ -268,7 +268,7 @@ int OffboardNode::getClosestViewpointIndex()
                 currentGps_.latitude,
                 currentGps_.longitude,
                 viewpoint.getPose().position.latitude,
-                viewpoint.getPose().position.longitude);
+                viewpoint.getPose().positionpublishGeoPose.longitude);
 
             if (distance < closestViewpointDistance)
             {
