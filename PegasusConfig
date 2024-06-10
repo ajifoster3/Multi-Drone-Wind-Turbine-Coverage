@@ -1,0 +1,8 @@
+config.yaml
+
+
+global_coordinates:
+  altitude: 230
+  latitude: 55.70972
+  longitude: -4.33519
+px4_dir: ~/Applications/PX4-Autopilot

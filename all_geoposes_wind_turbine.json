@@ -1,0 +1,2702 @@
+[
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71106,
+                "longitude": -4.33468,
+                "altitude": 317.47
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7111,
+                "longitude": -4.33468,
+                "altitude": 314.04
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71113,
+                "longitude": -4.33468,
+                "altitude": 310.61
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71117,
+                "longitude": -4.33468,
+                "altitude": 307.18
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71121,
+                "longitude": -4.33468,
+                "altitude": 303.75
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71124,
+                "longitude": -4.33468,
+                "altitude": 300.32
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71128,
+                "longitude": -4.33468,
+                "altitude": 296.89
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71131,
+                "longitude": -4.33468,
+                "altitude": 293.46
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71135,
+                "longitude": -4.33468,
+                "altitude": 290.03
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71139,
+                "longitude": -4.33468,
+                "altitude": 286.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71098,
+                "longitude": -4.33468,
+                "altitude": 319.25
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71094,
+                "longitude": -4.33468,
+                "altitude": 317.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71089,
+                "longitude": -4.33468,
+                "altitude": 315.95
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71085,
+                "longitude": -4.33468,
+                "altitude": 314.3
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71081,
+                "longitude": -4.33468,
+                "altitude": 312.65
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71076,
+                "longitude": -4.33468,
+                "altitude": 311.0
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71072,
+                "longitude": -4.33468,
+                "altitude": 309.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71068,
+                "longitude": -4.33468,
+                "altitude": 307.7
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71063,
+                "longitude": -4.33468,
+                "altitude": 306.05
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71059,
+                "longitude": -4.33468,
+                "altitude": 304.4
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71103,
+                "longitude": -4.33468,
+                "altitude": 325.99
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71104,
+                "longitude": -4.33468,
+                "altitude": 331.08
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71105,
+                "longitude": -4.33468,
+                "altitude": 336.17
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71105,
+                "longitude": -4.33468,
+                "altitude": 341.26
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71106,
+                "longitude": -4.33468,
+                "altitude": 346.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71107,
+                "longitude": -4.33468,
+                "altitude": 351.44
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71107,
+                "longitude": -4.33468,
+                "altitude": 356.53
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71108,
+                "longitude": -4.33468,
+                "altitude": 361.62
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71109,
+                "longitude": -4.33468,
+                "altitude": 366.71
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7111,
+                "longitude": -4.33468,
+                "altitude": 371.8
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71106,
+                "longitude": -4.3341,
+                "altitude": 317.47
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7111,
+                "longitude": -4.3341,
+                "altitude": 314.04
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71113,
+                "longitude": -4.3341,
+                "altitude": 310.61
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71117,
+                "longitude": -4.3341,
+                "altitude": 307.18
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71121,
+                "longitude": -4.3341,
+                "altitude": 303.75
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71124,
+                "longitude": -4.3341,
+                "altitude": 300.32
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71128,
+                "longitude": -4.3341,
+                "altitude": 296.89
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71131,
+                "longitude": -4.3341,
+                "altitude": 293.46
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71135,
+                "longitude": -4.3341,
+                "altitude": 290.03
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71139,
+                "longitude": -4.3341,
+                "altitude": 286.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71098,
+                "longitude": -4.3341,
+                "altitude": 319.25
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71094,
+                "longitude": -4.3341,
+                "altitude": 317.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71089,
+                "longitude": -4.3341,
+                "altitude": 315.95
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71085,
+                "longitude": -4.3341,
+                "altitude": 314.3
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71081,
+                "longitude": -4.3341,
+                "altitude": 312.65
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71076,
+                "longitude": -4.3341,
+                "altitude": 311.0
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71072,
+                "longitude": -4.3341,
+                "altitude": 309.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71068,
+                "longitude": -4.3341,
+                "altitude": 307.7
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71063,
+                "longitude": -4.3341,
+                "altitude": 306.05
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71059,
+                "longitude": -4.3341,
+                "altitude": 304.4
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71103,
+                "longitude": -4.3341,
+                "altitude": 325.99
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71104,
+                "longitude": -4.3341,
+                "altitude": 331.08
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71105,
+                "longitude": -4.3341,
+                "altitude": 336.17
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71105,
+                "longitude": -4.3341,
+                "altitude": 341.26
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71106,
+                "longitude": -4.3341,
+                "altitude": 346.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71107,
+                "longitude": -4.3341,
+                "altitude": 351.44
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71107,
+                "longitude": -4.3341,
+                "altitude": 356.53
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71108,
+                "longitude": -4.3341,
+                "altitude": 361.62
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71109,
+                "longitude": -4.3341,
+                "altitude": 366.71
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7111,
+                "longitude": -4.3341,
+                "altitude": 371.8
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71401,
+                "longitude": -4.32962,
+                "altitude": 317.47
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71405,
+                "longitude": -4.32962,
+                "altitude": 314.04
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71408,
+                "longitude": -4.32962,
+                "altitude": 310.61
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71412,
+                "longitude": -4.32962,
+                "altitude": 307.18
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71416,
+                "longitude": -4.32962,
+                "altitude": 303.75
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71419,
+                "longitude": -4.32962,
+                "altitude": 300.32
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71423,
+                "longitude": -4.32962,
+                "altitude": 296.89
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71427,
+                "longitude": -4.32962,
+                "altitude": 293.46
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7143,
+                "longitude": -4.32962,
+                "altitude": 290.03
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71434,
+                "longitude": -4.32962,
+                "altitude": 286.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71393,
+                "longitude": -4.32962,
+                "altitude": 319.25
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71389,
+                "longitude": -4.32962,
+                "altitude": 317.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71384,
+                "longitude": -4.32962,
+                "altitude": 315.95
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7138,
+                "longitude": -4.32962,
+                "altitude": 314.3
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71376,
+                "longitude": -4.32962,
+                "altitude": 312.65
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71371,
+                "longitude": -4.32962,
+                "altitude": 311.0
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71367,
+                "longitude": -4.32962,
+                "altitude": 309.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71363,
+                "longitude": -4.32962,
+                "altitude": 307.7
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71358,
+                "longitude": -4.32962,
+                "altitude": 306.05
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71354,
+                "longitude": -4.32962,
+                "altitude": 304.4
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71398,
+                "longitude": -4.32962,
+                "altitude": 325.99
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71399,
+                "longitude": -4.32962,
+                "altitude": 331.08
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.714,
+                "longitude": -4.32962,
+                "altitude": 336.17
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.714,
+                "longitude": -4.32962,
+                "altitude": 341.26
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71401,
+                "longitude": -4.32962,
+                "altitude": 346.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71402,
+                "longitude": -4.32962,
+                "altitude": 351.44
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71403,
+                "longitude": -4.32962,
+                "altitude": 356.53
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71403,
+                "longitude": -4.32962,
+                "altitude": 361.62
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71404,
+                "longitude": -4.32962,
+                "altitude": 366.71
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71405,
+                "longitude": -4.32962,
+                "altitude": 371.8
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71401,
+                "longitude": -4.32905,
+                "altitude": 317.47
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71405,
+                "longitude": -4.32905,
+                "altitude": 314.04
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71408,
+                "longitude": -4.32905,
+                "altitude": 310.61
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71412,
+                "longitude": -4.32905,
+                "altitude": 307.18
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71416,
+                "longitude": -4.32905,
+                "altitude": 303.75
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71419,
+                "longitude": -4.32905,
+                "altitude": 300.32
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71423,
+                "longitude": -4.32905,
+                "altitude": 296.89
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71427,
+                "longitude": -4.32905,
+                "altitude": 293.46
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7143,
+                "longitude": -4.32905,
+                "altitude": 290.03
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71434,
+                "longitude": -4.32905,
+                "altitude": 286.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71393,
+                "longitude": -4.32905,
+                "altitude": 319.25
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71389,
+                "longitude": -4.32905,
+                "altitude": 317.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71384,
+                "longitude": -4.32905,
+                "altitude": 315.95
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7138,
+                "longitude": -4.32905,
+                "altitude": 314.3
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71376,
+                "longitude": -4.32905,
+                "altitude": 312.65
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71371,
+                "longitude": -4.32905,
+                "altitude": 311.0
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71367,
+                "longitude": -4.32905,
+                "altitude": 309.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71363,
+                "longitude": -4.32905,
+                "altitude": 307.7
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71358,
+                "longitude": -4.32905,
+                "altitude": 306.05
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71354,
+                "longitude": -4.32905,
+                "altitude": 304.4
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71398,
+                "longitude": -4.32905,
+                "altitude": 325.99
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71399,
+                "longitude": -4.32905,
+                "altitude": 331.08
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.714,
+                "longitude": -4.32905,
+                "altitude": 336.17
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.714,
+                "longitude": -4.32905,
+                "altitude": 341.26
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71401,
+                "longitude": -4.32905,
+                "altitude": 346.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71402,
+                "longitude": -4.32905,
+                "altitude": 351.44
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71403,
+                "longitude": -4.32905,
+                "altitude": 356.53
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71403,
+                "longitude": -4.32905,
+                "altitude": 361.62
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71404,
+                "longitude": -4.32905,
+                "altitude": 366.71
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.71405,
+                "longitude": -4.32905,
+                "altitude": 371.8
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70883,
+                "longitude": -4.32981,
+                "altitude": 317.47
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70886,
+                "longitude": -4.32981,
+                "altitude": 314.04
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7089,
+                "longitude": -4.32981,
+                "altitude": 310.61
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70894,
+                "longitude": -4.32981,
+                "altitude": 307.18
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70897,
+                "longitude": -4.32981,
+                "altitude": 303.75
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70901,
+                "longitude": -4.32981,
+                "altitude": 300.32
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70905,
+                "longitude": -4.32981,
+                "altitude": 296.89
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70908,
+                "longitude": -4.32981,
+                "altitude": 293.46
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70912,
+                "longitude": -4.32981,
+                "altitude": 290.03
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70916,
+                "longitude": -4.32981,
+                "altitude": 286.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70875,
+                "longitude": -4.32981,
+                "altitude": 319.25
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70871,
+                "longitude": -4.32981,
+                "altitude": 317.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70866,
+                "longitude": -4.32981,
+                "altitude": 315.95
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70862,
+                "longitude": -4.32981,
+                "altitude": 314.3
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70857,
+                "longitude": -4.32981,
+                "altitude": 312.65
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70853,
+                "longitude": -4.32981,
+                "altitude": 311.0
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70849,
+                "longitude": -4.32981,
+                "altitude": 309.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70844,
+                "longitude": -4.32981,
+                "altitude": 307.7
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7084,
+                "longitude": -4.32981,
+                "altitude": 306.05
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70836,
+                "longitude": -4.32981,
+                "altitude": 304.4
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7088,
+                "longitude": -4.32981,
+                "altitude": 325.99
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70881,
+                "longitude": -4.32981,
+                "altitude": 331.08
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70881,
+                "longitude": -4.32981,
+                "altitude": 336.17
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70882,
+                "longitude": -4.32981,
+                "altitude": 341.26
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70883,
+                "longitude": -4.32981,
+                "altitude": 346.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70884,
+                "longitude": -4.32981,
+                "altitude": 351.44
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70884,
+                "longitude": -4.32981,
+                "altitude": 356.53
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70885,
+                "longitude": -4.32981,
+                "altitude": 361.62
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70886,
+                "longitude": -4.32981,
+                "altitude": 366.71
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70886,
+                "longitude": -4.32981,
+                "altitude": 371.8
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70883,
+                "longitude": -4.32923,
+                "altitude": 317.47
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70886,
+                "longitude": -4.32923,
+                "altitude": 314.04
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7089,
+                "longitude": -4.32923,
+                "altitude": 310.61
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70894,
+                "longitude": -4.32923,
+                "altitude": 307.18
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70897,
+                "longitude": -4.32923,
+                "altitude": 303.75
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70901,
+                "longitude": -4.32923,
+                "altitude": 300.32
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70905,
+                "longitude": -4.32923,
+                "altitude": 296.89
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70908,
+                "longitude": -4.32923,
+                "altitude": 293.46
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70912,
+                "longitude": -4.32923,
+                "altitude": 290.03
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70916,
+                "longitude": -4.32923,
+                "altitude": 286.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70875,
+                "longitude": -4.32923,
+                "altitude": 319.25
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70871,
+                "longitude": -4.32923,
+                "altitude": 317.6
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70866,
+                "longitude": -4.32923,
+                "altitude": 315.95
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70862,
+                "longitude": -4.32923,
+                "altitude": 314.3
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70857,
+                "longitude": -4.32923,
+                "altitude": 312.65
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70853,
+                "longitude": -4.32923,
+                "altitude": 311.0
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70849,
+                "longitude": -4.32923,
+                "altitude": 309.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70844,
+                "longitude": -4.32923,
+                "altitude": 307.7
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7084,
+                "longitude": -4.32923,
+                "altitude": 306.05
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70836,
+                "longitude": -4.32923,
+                "altitude": 304.4
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.7088,
+                "longitude": -4.32923,
+                "altitude": 325.99
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70881,
+                "longitude": -4.32923,
+                "altitude": 331.08
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70881,
+                "longitude": -4.32923,
+                "altitude": 336.17
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70882,
+                "longitude": -4.32923,
+                "altitude": 341.26
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70883,
+                "longitude": -4.32923,
+                "altitude": 346.35
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70884,
+                "longitude": -4.32923,
+                "altitude": 351.44
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70884,
+                "longitude": -4.32923,
+                "altitude": 356.53
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70885,
+                "longitude": -4.32923,
+                "altitude": 361.62
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70886,
+                "longitude": -4.32923,
+                "altitude": 366.71
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    },
+    {
+        "GeoPose": {
+            "position": {
+                "latitude": 55.70886,
+                "longitude": -4.32923,
+                "altitude": 371.8
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 2,
+                "w": 1
+            }
+        }
+    }
+]
