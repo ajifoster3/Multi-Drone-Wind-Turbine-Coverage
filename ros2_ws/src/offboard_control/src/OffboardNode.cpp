@@ -268,7 +268,7 @@ int OffboardNode::getClosestViewpointIndex()
                 currentGps_.latitude,
                 currentGps_.longitude,
                 viewpoint.getPose().position.latitude,
-                viewpoint.getPose().positionpublishGeoPose.longitude);
+                viewpoint.getPose().position.longitude);
 
             if (distance < closestViewpointDistance)
             {
