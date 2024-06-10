@@ -12,6 +12,7 @@
 #include "CentralCoverageControllerNode.h"
 #include "TimedCoveragePath.h"
 #include "LogDistanceCostMatrixPlanner.h"
+#include "CoverageLogReader.h"
 
 std::unique_ptr<CoveragePathPlanner> createPlanner(const std::string_view approach, std::vector<int> &robotIds, std::vector<Pose> &poses, std::vector<CoverageViewpoint> &viewpoints)
 {
@@ -45,10 +46,17 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    std::string goal_pose_filename;
+    std::string path_filename;
+
     // Load arguments from the ros2 run call
     int team_size{std::stoi(argv[1])};
     std::string_view coverage_approach{argv[2]};
-    std::string goal_pose_filename{argv[3]};
+    goal_pose_filename = argv[3];
+    if (coverage_approach == "PreComputed")
+    {
+        path_filename = argv[4];
+    }
 
     // Setup the ros2 Node "central_coverage_controller_node"
     auto central_coverage_controller_node = std::make_shared<CentralCoverageControllerNode>("central_coverage_controller_node", team_size);
@@ -80,22 +88,37 @@ int main(int argc, char **argv)
         poses.push_back(pose);
     }
 
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Boopoopboopoop");
+
     CoverageLogger::setInitalPoses(poses);
 
-    // Load the goal poses from the specified file
-    // TODO: Make file name an argument
     std::vector<CoverageViewpoint> viewpoints{CoverageViewpointLoader::load(goal_pose_filename)};
     std::unique_ptr<CoveragePathPlanner> planner;
-    // Compute robot path
-    planner = createPlanner(coverage_approach, robotIds, poses, viewpoints);
 
-    planner->logCoveragePath(planner->getCoveragePaths().getPaths());
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Boopoopboopoop");
 
     std::vector<TimedCoveragePath> coveragePaths;
 
-    for (auto id : robotIds)
+    // Compute robot path
+    if (coverage_approach == "PreComputed")
     {
-        coveragePaths.push_back(TimedCoveragePath{planner->getCoveragePaths().getCoveragePathForRobot(id)});
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "LaunchingCoverageDelogger");
+        auto paths = CoverageLogReader::deLogCoveragePath(path_filename);
+        for (auto id : robotIds)
+        {
+            coveragePaths.push_back(paths.getCoveragePathForRobot(id));
+        }
+    }
+    else
+    {
+        planner = createPlanner(coverage_approach, robotIds, poses, viewpoints);
+
+        planner->logCoveragePath(planner->getCoveragePaths().getPaths());
+
+        for (auto id : robotIds)
+        {
+            coveragePaths.push_back(TimedCoveragePath{planner->getCoveragePaths().getCoveragePathForRobot(id)});
+        }
     }
 
     // Give paths to the central_coverage_controller_node
