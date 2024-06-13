@@ -13,7 +13,9 @@
 #include <GeographicLib/Geoid.hpp>
 #include "offboard_control_interfaces/msg/drone_allocation.hpp"
 #include "offboard_control_interfaces/msg/drone_environmental_representation.hpp"
+#include "offboard_control_interfaces/msg/drone_ping.hpp"
 #include "CoverageModes.h"
+#include "Pose.h"
 #include "CoverageViewpointLoader.h"
 #include "HaversineDistance.h"
 
@@ -23,6 +25,8 @@ class OffboardNode : public rclcpp::Node
 {
 public:
     OffboardNode(const std::string &name, int uas_number, CoverageMode);
+
+    void OffboardNodeSetup();
 
     void spinNode();
 
@@ -48,10 +52,14 @@ private:
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr decentralisedCoverageSub_;
     rclcpp::Subscription<offboard_control_interfaces::msg::DroneAllocation>::SharedPtr droneAllocationSub_;
     rclcpp::Subscription<offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>::SharedPtr droneEnvironmentalRepresentationSub_;
+    rclcpp::Subscription<offboard_control_interfaces::msg::DronePing>::SharedPtr dronePingSub_;
+    rclcpp::TimerBase::SharedPtr pubTimer_;
+    rclcpp::TimerBase::SharedPtr decentralisedPubTimer_;
     rclcpp::Publisher<geographic_msgs::msg::GeoPoseStamped>::SharedPtr globalPosPub_;
     rclcpp::Publisher<geographic_msgs::msg::GeoPoseStamped>::SharedPtr centralGlobalPosPub_;
     rclcpp::Publisher<offboard_control_interfaces::msg::DroneAllocation>::SharedPtr droneAllocationPub_;
     rclcpp::Publisher<offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>::SharedPtr droneEnvironmentalRepresentationPub_;
+    rclcpp::Publisher<offboard_control_interfaces::msg::DronePing>::SharedPtr dronePingPub_;
     rclcpp::Client<mavros_msgs::srv::CommandBool>::SharedPtr armingClient_;
     rclcpp::Client<mavros_msgs::srv::SetMode>::SharedPtr setModeClient_;
 
@@ -67,11 +75,19 @@ private:
 
     void droneEnvironmentalRepresentationCb(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg);
 
+    void dronePingCb(const offboard_control_interfaces::msg::DronePing::SharedPtr msg);
+
     void initializeSubscribers();
 
     void initializeDecentralisedSubscribers();
 
     void initializePublishers();
+
+    void initializeDecentralisedPublishers();
+
+    void positionTimerCallback();
+
+    void decentralisedCoverageTimerCallback();
 
     void initializeClients();
 
@@ -84,6 +100,8 @@ private:
     void publishDroneAllocation();
 
     void publishDroneEnvironmentalRepresentation();
+
+    void publishDronePing();
 
     void publishTargetPose();
 

@@ -8,7 +8,7 @@ CentralCoverageControllerNode::CentralCoverageControllerNode(const std::string &
     initializePublishers();
     populateCoverageSettings();
 
-    timer_ = this->create_wall_timer(
+    pubTimer_ = this->create_wall_timer(
         500ms, std::bind(&CentralCoverageControllerNode::timerCallback, this));
 }
 

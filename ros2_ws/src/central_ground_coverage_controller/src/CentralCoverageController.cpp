@@ -88,14 +88,10 @@ int main(int argc, char **argv)
         poses.push_back(pose);
     }
 
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Boopoopboopoop");
-
     CoverageLogger::setInitalPoses(poses);
 
     std::vector<CoverageViewpoint> viewpoints{CoverageViewpointLoader::load(goal_pose_filename)};
     std::unique_ptr<CoveragePathPlanner> planner;
-
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Boopoopboopoop");
 
     std::vector<TimedCoveragePath> coveragePaths;
 
