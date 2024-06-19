@@ -4,6 +4,7 @@ TimedCoverageViewpoint::TimedCoverageViewpoint(const CoverageViewpoint& viewpoin
 {
     this->setAssigned(viewpoint.isAssigned());
     this->setPose(viewpoint.getPose());
+    this->setIsCovered(false);
 }
 
 rosgraph_msgs::msg::Clock TimedCoverageViewpoint::getCoverageTime() const
