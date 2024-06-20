@@ -5,6 +5,9 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+
 # find dependencies
 find_package(rosidl_default_generators REQUIRED)
 find_package(ament_cmake REQUIRED)
@@ -12,7 +15,7 @@ find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(mavros_msgs REQUIRED)
 find_package(offboard_control_interfaces REQUIRED)
-find_package (GeographicLib REQUIRED)
+find_package(GeographicLib REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -33,11 +36,11 @@ include_directories(
 )
 
 
-add_executable(takeoff src/Takeoff.cpp src/OffboardNode.cpp src/HaversineDistance.cpp src/CoverageViewpointLoader.cpp)
+add_executable(takeoff src/Takeoff.cpp src/OffboardNode.cpp src/HaversineDistance.cpp src/CoverageViewpointLoader.cpp src/DecentralisedCoverageNode.cpp)
 
 target_link_libraries(takeoff ${GeographicLib_LIBRARIES})
 
-ament_target_dependencies(takeoff rclcpp geometry_msgs mavros_msgs offboard_control_interfaces)
+ament_target_dependencies(takeoff rclcpp geometry_msgs mavros_msgs offboard_control_interfaces rosidl_default_runtime)
 
 install(TARGETS
    takeoff
