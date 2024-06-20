@@ -1,6 +1,3 @@
-#include "OffboardNode.h"
-#include <rclcpp/rclcpp.hpp>
-#include "CoverageModes.h"
 #include "Takeoff.h"
 
 int main(int argc, char **argv)
@@ -29,6 +26,8 @@ int main(int argc, char **argv)
     }
     offboardNode->OffboardNodeSetup();
     executor.add_node(offboardNode);
+    auto decentralisedCoverageNode = std::make_shared<DecentralisedCoverageNode>("decentralised_coverage_node", uasNumber);
+    executor.add_node(decentralisedCoverageNode);
     executor.spin();
 
     rclcpp::shutdown();
