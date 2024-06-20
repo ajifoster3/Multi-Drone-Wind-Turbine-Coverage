@@ -10,6 +10,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME} 
   "msg/DroneAllocation.msg" 
   "msg/DroneEnvironmentalRepresentation.msg"
+  "msg/DronePing.msg"
  )
 ament_export_dependencies(rosidl_default_runtime)
 ament_package()

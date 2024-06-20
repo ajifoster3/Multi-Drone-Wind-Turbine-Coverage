@@ -43,52 +43,10 @@ void OffboardNode::globalGoalPositionCb(const geographic_msgs::msg::GeoPoseStamp
 {
     if (!isCoverageStarted_)
     {
-        RCLCPP_INFO(this->get_logger(), "Switching to central control...");
+        RCLCPP_INFO(this->get_logger(), "Switching to external control...");
         isCoverageStarted_ = true;
     }
     geoposeGoalGps_ = *msg;
-}
-
-void OffboardNode::startDecentralisedCoverageCb(const std_msgs::msg::Bool::SharedPtr msg)
-{
-    if (!isCoverageStarted_)
-    {
-        RCLCPP_INFO(this->get_logger(), "Loading Viewpoints...");
-        coverageViewpoints_ = CoverageViewpointLoader::load("/home/ajifoster3/Downloads/all_geoposes_wind_turbine.json");
-        RCLCPP_INFO(this->get_logger(), "Starting decentralised coverage...");
-        isCoverageStarted_ = true;
-        droneAllocation_.allocations = std::vector<int>(coverageViewpoints_.size(), -1);
-        droneEnvironmentalRepresentation_.is_covered = std::vector<bool>(coverageViewpoints_.size(), false);
-        initializeDecentralisedSubscribers();
-        initializeDecentralisedPublishers();
-        }
-}
-
-void OffboardNode::droneAllocationCb(const offboard_control_interfaces::msg::DroneAllocation::SharedPtr msg)
-{
-    for (size_t i = 0; i < msg->allocations.size(); i++)
-    {
-        if (msg->allocations[i] != droneAllocation_.allocations[i])
-        {
-            droneAllocation_.allocations[i] = msg->allocations[i] > droneAllocation_.allocations[i] ? msg->allocations[i] : droneAllocation_.allocations[i];
-        }
-    }
-    if (droneAllocation_.allocations[viewpointAssigned_] != uasNumber_)
-    {
-        allocateUnassignedViewpoint();
-    }
-}
-
-void OffboardNode::droneEnvironmentalRepresentationCb(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg)
-{
-    for (std::vector<bool>::size_type i = 0; i < msg->is_covered.size(); i++)
-    {
-        if (i < droneEnvironmentalRepresentation_.is_covered.size() && msg->is_covered[i] && !droneEnvironmentalRepresentation_.is_covered[i])
-        {
-            RCLCPP_INFO(this->get_logger(), "Discovered new coverage information");
-            droneEnvironmentalRepresentation_.is_covered[i] = true;
-        }
-    }
 }
 
 void OffboardNode::dronePingCb(const offboard_control_interfaces::msg::DronePing::SharedPtr msg)
@@ -103,17 +61,8 @@ void OffboardNode::initializeSubscribers()
         "mavros/uas_" + std::to_string(uasNumber_) + "/global_position/global", rclcpp::SensorDataQoS(), std::bind(&OffboardNode::globalPositionCb, this, std::placeholders::_1));
     centralGoalPosSub_ = this->create_subscription<geographic_msgs::msg::GeoPoseStamped>(
         "central_control/uas_" + std::to_string(uasNumber_) + "/goal_pose", rclcpp::SensorDataQoS(), std::bind(&OffboardNode::globalGoalPositionCb, this, std::placeholders::_1));
-    decentralisedCoverageSub_ = this->create_subscription<std_msgs::msg::Bool>(
-        "decentralised_control/start_decentralised_coverage", rclcpp::SensorDataQoS(), std::bind(&OffboardNode::startDecentralisedCoverageCb, this, std::placeholders::_1));
-}
-void OffboardNode::initializeDecentralisedSubscribers()
-{
-    droneAllocationSub_ = this->create_subscription<offboard_control_interfaces::msg::DroneAllocation>(
-        "decentralised_control/drone_allocation", rclcpp::SensorDataQoS(), std::bind(&OffboardNode::droneAllocationCb, this, std::placeholders::_1));
-    droneEnvironmentalRepresentationSub_ = this->create_subscription<offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>(
-        "decentralised_control/drone_environmental_representation", rclcpp::SensorDataQoS(), std::bind(&OffboardNode::droneEnvironmentalRepresentationCb, this, std::placeholders::_1));
-    dronePingSub_ = this->create_subscription<offboard_control_interfaces::msg::DronePing>(
-        "decentralised_control/drone_ping", rclcpp::SensorDataQoS(), std::bind(&OffboardNode::dronePingCb, this, std::placeholders::_1));
+    //decentralisedCoverageSub_ = this->create_subscription<std_msgs::msg::Bool>(
+    //    "decentralised_control/start_decentralised_coverage", rclcpp::SensorDataQoS(), std::bind(&OffboardNode::startDecentralisedCoverageCb, this, std::placeholders::_1));
 }
 
 void OffboardNode::initializePublishers()
@@ -126,37 +75,10 @@ void OffboardNode::initializePublishers()
     pubTimer_ = this->create_wall_timer(50ms, std::bind(&OffboardNode::positionTimerCallback, this));
 }
 
-void OffboardNode::initializeDecentralisedPublishers()
-{
-    droneAllocationPub_ = this->create_publisher<offboard_control_interfaces::msg::DroneAllocation>(
-        "decentralised_control/drone_allocation", 10);
-    droneEnvironmentalRepresentationPub_ = this->create_publisher<offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>(
-        "decentralised_control/drone_environmental_representation", 10);
-    dronePingPub_ = this->create_publisher<offboard_control_interfaces::msg::DronePing>(
-        "decentralised_control/drone_ping", 10);
-
-    decentralisedPubTimer_ = this->create_wall_timer(50ms, std::bind(&OffboardNode::decentralisedCoverageTimerCallback, this));
-}
-
 void OffboardNode::positionTimerCallback()
 {
     publishGeoPose();
     publishTargetPose();
-}
-
-void OffboardNode::decentralisedCoverageTimerCallback()
-{
-    RCLCPP_INFO(this->get_logger(), "decentralisedCoverageTimerCallback");
-    if (viewpointAssigned_ == -1)
-    {
-        allocateUnassignedViewpoint();
-    }
-    else
-    {
-        checkCoveragePositionReached();
-    }
-    publishDroneAllocation();
-    publishDroneEnvironmentalRepresentation();
 }
 
 void OffboardNode::initializeClients()
@@ -205,32 +127,6 @@ void OffboardNode::publishGeoPose()
     centralGlobalPosPub_->publish(geoPose);
 }
 
-void OffboardNode::publishDroneAllocation()
-{
-    offboard_control_interfaces::msg::DroneAllocation droneAllocation = droneAllocation_;
-    droneAllocationPub_->publish(droneAllocation);
-}
-
-void OffboardNode::publishDroneEnvironmentalRepresentation()
-{
-    offboard_control_interfaces::msg::DroneEnvironmentalRepresentation DroneEnvironmentalRepresentation = droneEnvironmentalRepresentation_;
-    droneEnvironmentalRepresentationPub_->publish(DroneEnvironmentalRepresentation);
-}
-
-void OffboardNode::publishDronePing()
-{
-    offboard_control_interfaces::msg::DronePing dronePing = offboard_control_interfaces::msg::DronePing();
-    dronePing.drone_id = uasNumber_;
-    dronePingPub_->publish(dronePing);
-}
-
-// void OffboardNode::publishDroneAllocation()
-// {
-//     offboard_control_interfaces::msg::DroneAllocation droneAllocation;
-//     droneAllocation.allocations[0] = 1;
-//     bool allocation = droneAllocation.allocations[0];
-// }
-
 void OffboardNode::publishTargetPose()
 {
     if (!isCoverageStarted_)
@@ -274,50 +170,6 @@ geographic_msgs::msg::GeoPoseStamped OffboardNode::getCurrentGeoPose()
     geo_pose.pose.position.altitude = currentGps_.altitude;
     geo_pose.header.stamp = this->now();
     return geo_pose;
-}
-
-int OffboardNode::getClosestViewpointIndex()
-{
-    int closestViewpointIndex = -1;
-    double closestViewpointDistance = std::numeric_limits<double>::max();
-
-    for (size_t i = 0; i < coverageViewpoints_.size(); ++i)
-    {
-        if (droneAllocation_.allocations[i] == -1 && droneEnvironmentalRepresentation_.is_covered[i] != true)
-        {
-            auto viewpoint = coverageViewpoints_[i];
-            double distance = HaversineDistance::calculateDistance(
-                currentGps_.latitude,
-                currentGps_.longitude,
-                viewpoint.getPose().position.latitude,
-                viewpoint.getPose().position.longitude);
-
-            if (distance < closestViewpointDistance)
-            {
-                closestViewpointDistance = distance;
-                closestViewpointIndex = i;
-            }
-        }
-    }
-
-    return closestViewpointIndex;
-}
-
-void OffboardNode::allocateUnassignedViewpoint()
-{
-    viewpointAssigned_ = getClosestViewpointIndex();
-    if (viewpointAssigned_ != -1)
-    {
-        droneAllocation_.allocations[viewpointAssigned_] = uasNumber_;
-
-        RCLCPP_INFO(this->get_logger(), "Assigning viewpoint %d to UAS %d.", viewpointAssigned_, uasNumber_);
-
-        geographic_msgs::msg::GeoPoseStamped geopose;
-        auto pose = coverageViewpoints_[viewpointAssigned_].getPose();
-        coveragePoseToGeoPose(geopose, pose);
-        geopose.header.stamp = this->now();
-        geoposeGoalGps_ = geopose;
-    }
 }
 
 void OffboardNode::checkCoveragePositionReached()
