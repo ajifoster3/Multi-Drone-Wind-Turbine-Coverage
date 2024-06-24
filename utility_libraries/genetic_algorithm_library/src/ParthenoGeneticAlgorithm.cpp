@@ -90,7 +90,7 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, in
     fitnessCalculator_.populateCostMap(cities, agentStartPositions);
 
     int logFileNumber = getNextLogFileNumber();
-    std::string logFileName = "algorithm_log_" + std::to_string(logFileNumber) + ".txt";
+    std::string logFileName = "galog/algorithm_log_" + std::to_string(logFileNumber) + ".txt";
     std::ofstream logFile(logFileName);
     if (!logFile)
     {
@@ -106,20 +106,27 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, in
         currentPopulation = pop;
     }
 
+    logFile << "GA Settings \n";
+    logFile << "citiesPerSalesmanMutationProbability:" << citiesPerSalesmanMutationProbability_ << "\n";
+    logFile << "routeMutationProbability:" << routeMutationProbability_ << "\n";
+    logFile << "sampleSize:" << sampleSize_ << "\n";
+    logFile << "populationSize:" << populationSize_ << "\n";
+    logFile << "numberOfIterations:" << numberOfIterations_ << "\n\n";
+
     std::vector<int> fittestGenes = currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities);
-    logFile << "Fittest Chromosome Genes: ";
+    logFile << "Fittest Chromosome Genes: \n";
     for (int gene : fittestGenes)
     {
-        logFile << gene << " ";
+        logFile << gene << "\n";
     }
-    logFile << "\n";
+    logFile << "\n\n";
 
-    logFile << "All Population Fitnesses: ";
+    logFile << "All Population Fitnesses: \n";
     for (auto fit : populationFitnesses)
     {
-        logFile << fit << " ";
+        logFile << fit << "\n";
     }
-    logFile << "\n";
+    logFile << "\n\n";
 
     logFile.close();
     return fittestGenes;
