@@ -4,4 +4,4 @@ citiesPerSalesmanMutationProbability = 0.025
 routeMutationProbability = 0.75
 sampleSize = 10
 populationSize = 1000
-numberOfIterations = 2000
+numberOfIterations = 5

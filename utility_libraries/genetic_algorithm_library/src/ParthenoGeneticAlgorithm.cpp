@@ -83,7 +83,7 @@ void ParthenoGeneticAlgorithm::populateGASettings()
 
 std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, int agents, std::vector<Position> &agentStartPositions)
 {
-    
+
     PopulationInitialiser populationInitialiser{chromosomeBuilder_, populationSize_};
     Population currentPopulation = populationInitialiser.InitialisePopulation(cities.size(), agents);
     std::vector<double> populationFitnesses;
@@ -107,7 +107,6 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, in
     }
 
     std::vector<int> fittestGenes = currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities);
-
     logFile << "Fittest Chromosome Genes: ";
     for (int gene : fittestGenes)
     {
@@ -116,13 +115,12 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, in
     logFile << "\n";
 
     logFile << "All Population Fitnesses: ";
-    for (double fit : populationFitnesses)
+    for (auto fit : populationFitnesses)
     {
         logFile << fit << " ";
     }
     logFile << "\n";
 
     logFile.close();
-
     return fittestGenes;
 }
