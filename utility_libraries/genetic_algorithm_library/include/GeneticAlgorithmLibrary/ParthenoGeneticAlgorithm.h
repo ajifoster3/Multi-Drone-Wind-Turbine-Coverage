@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <memory>
+#include <toml.hpp>
+#include "ConfigHeaderPath.h"
 #include "Position.h"
 #include "Population.h"
 #include "PopulationInitialiser.h"
@@ -39,6 +41,12 @@ private:
     std::shared_ptr<ReproductionMechanism> reproductionMechanism_;
     std::shared_ptr<FitnessFunction> fitnessFunction_;
     std::shared_ptr<TerminationCriterion> terminationCriterion_;
+    void populateGASettings();
+    double citiesPerSalesmanMutationProbability_;
+    double routeMutationProbability_;
+    int sampleSize_;
+    int populationSize_;
+    int numberOfIterations_;
 };
 
 #endif

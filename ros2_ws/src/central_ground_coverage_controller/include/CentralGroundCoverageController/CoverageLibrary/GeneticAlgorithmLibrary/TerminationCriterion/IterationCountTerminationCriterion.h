@@ -9,11 +9,11 @@
 class IterationCountTerminationCriterion : public TerminationCriterion
 {
 private:
-    double
-    calculateStdDev(const std::vector<double> &fitnessValues);
+    double calculateStdDev(const std::vector<double> &fitnessValues);
+    int numberOfIterations_;
 
 public:
-    IterationCountTerminationCriterion(){};
+    IterationCountTerminationCriterion(int numberOfIterations);
     bool isTerminationCriterionMet(std::vector<double> &populationFitnesses);
 };
 

@@ -1,10 +1,15 @@
 #include "IterationCountTerminationCriterion.h"
 #include <iostream>
 
+IterationCountTerminationCriterion::IterationCountTerminationCriterion(int numberOfIterations)
+: numberOfIterations_(numberOfIterations)
+{
+}
+
 bool IterationCountTerminationCriterion::isTerminationCriterionMet(std::vector<double> &populationFitnesses)
 {
     auto popSize = populationFitnesses.size();
-    return populationFitnesses.size() > 200;
+    return populationFitnesses.size() > numberOfIterations_;
     // double stdDev = calculateStdDev(populationFitnesses);
     // return stdDev > 0.1;
 }

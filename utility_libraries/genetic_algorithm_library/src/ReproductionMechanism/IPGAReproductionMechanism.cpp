@@ -1,7 +1,14 @@
 #include "IPGAReproductionMechanism.h"
+#include <iostream>
 
-IPGAReproductionMechanism::IPGAReproductionMechanism(std::shared_ptr<FitnessCalculator> fitnessCalculator)
-    : ReproductionMechanism(std::move(fitnessCalculator))
+IPGAReproductionMechanism::IPGAReproductionMechanism(std::shared_ptr<FitnessCalculator> fitnessCalculator, 
+double citiesPerSalesmanMutationProbability,
+double routeMutationProbability,
+int sampleSize)
+    : ReproductionMechanism(std::move(fitnessCalculator)), 
+    citiesPerSalesmanMutationProbability_(citiesPerSalesmanMutationProbability),
+    routeMutationProbability_(routeMutationProbability),
+    sampleSize_(sampleSize)
 {
     std::random_device rd;
     gen_ = std::mt19937(rd());
@@ -28,7 +35,6 @@ Population IPGAReproductionMechanism::Reproduce(
     {
         size_t safeSampleSize = std::min(sampleSize_, (int)reproductionChromosomes.size());
         auto firstSample = std::vector<ReproductionChromosome>(reproductionChromosomes.begin(), reproductionChromosomes.begin() + safeSampleSize);
-
         auto selectedChromosome = std::max_element(firstSample.begin(), firstSample.end(), [](const auto &a, const auto &b)
                                                    { return a.getFitness() < b.getFitness(); });
 

@@ -19,7 +19,8 @@ include_directories(
   include/GeneticAlgorithmLibrary/EncodingMechanism
   include/GeneticAlgorithmLibrary/FitnessFunction
   include/GeneticAlgorithmLibrary/ReproductionMechanism
-  include/GeneticAlgorithmLibrary/TerminationCriterion)
+  include/GeneticAlgorithmLibrary/TerminationCriterion
+  include/GeneticAlgorithmLibrary/tomlpp)
 
 # Collect all source files except main.cpp into a variable
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")

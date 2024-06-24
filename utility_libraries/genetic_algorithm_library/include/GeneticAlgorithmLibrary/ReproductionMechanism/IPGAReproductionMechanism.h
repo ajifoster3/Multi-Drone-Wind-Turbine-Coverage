@@ -27,7 +27,7 @@ class ReproductionChromosome
 public:
     ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities);
     double getFitness() const;
-    Chromosome& getChromosome();
+    Chromosome &getChromosome();
 
 private:
     Chromosome chromosome_;
@@ -37,7 +37,11 @@ private:
 class IPGAReproductionMechanism : public ReproductionMechanism
 {
 public:
-    IPGAReproductionMechanism(std::shared_ptr<FitnessCalculator>);
+    IPGAReproductionMechanism(
+        std::shared_ptr<FitnessCalculator>,
+        double citiesPerSalesmanMutationProbability,
+        double routeMutationProbability,
+        int sampleSize);
 
     Population Reproduce(
         Population &oldPopulation,
@@ -46,9 +50,9 @@ public:
     void shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness);
 
 private:
-    const int sampleSize_ = 10;
-    const double citiesPerSalesmanMutationProbability_{0.025};
-    const double routeMutationProbability_{0.5};
+    const int sampleSize_;
+    const double citiesPerSalesmanMutationProbability_;
+    const double routeMutationProbability_;
 
     std::mt19937 gen_;
     void flipInsert(std::vector<int> &vec, int numberOfCities);
@@ -56,7 +60,7 @@ private:
     void lSlideInsert(std::vector<int> &vec, int numberOfCities);
     void rSlideInsert(std::vector<int> &vec, int numberOfCities);
     void randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities);
-    void distributeCities(std::vector<int>& vec, int numberOfCities, int numberOfAgents);
+    void distributeCities(std::vector<int> &vec, int numberOfCities, int numberOfAgents);
 };
 
 #endif
