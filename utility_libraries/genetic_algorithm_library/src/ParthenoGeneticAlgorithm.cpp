@@ -1,5 +1,8 @@
 #include "ParthenoGeneticAlgorithm.h"
 #include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <regex>
 
 ParthenoGeneticAlgorithmConfig::ParthenoGeneticAlgorithmConfig(
     EncodingMechanisms encodingMechanism,
@@ -34,20 +37,69 @@ ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfi
     }
 }
 
+int getNextLogFileNumber()
+{
+    int maxNumber = 0;
+    std::regex logFilePattern("algorithm_log_(\\d+)\\.txt");
+    for (const auto& entry : std::filesystem::directory_iterator("."))
+    {
+        std::string filename = entry.path().filename().string();
+        std::smatch match;
+        if (std::regex_match(filename, match, logFilePattern))
+        {
+            int number = std::stoi(match[1]);
+            if (number > maxNumber)
+            {
+                maxNumber = number;
+            }
+        }
+    }
+    return maxNumber + 1;
+}
+
 std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position>& cities, int agents, std::vector<Position>& agentStartPositions)
 {
     PopulationInitialiser populationInitialiser{chromosomeBuilder_};
     Population currentPopulation = populationInitialiser.InitialisePopulation(cities.size(), agents);
     std::vector<double> populationFitnesses;
     fitnessCalculator_.populateCostMap(cities, agentStartPositions);
+
+    int logFileNumber = getNextLogFileNumber();
+    std::string logFileName = "algorithm_log_" + std::to_string(logFileNumber) + ".txt";
+    std::ofstream logFile(logFileName);
+    if (!logFile)
+    {
+        std::cerr << "Failed to open log file." << std::endl;
+        return {};
+    }
+
     while (!terminator_.isTerminationCriteriaMet(populationFitnesses))
     {
         Population pop = reproducer_.Reproduce(currentPopulation, agentStartPositions, cities);
         double fitness = pop.getPopulationFitness(fitnessCalculator_, agentStartPositions, cities);
         populationFitnesses.push_back(fitness);
         std::cout << fitness << "\n";
+        logFile << "Population Fitness: " << fitness << "\n";
         currentPopulation = pop;
     }
-    return currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities);
-}
 
+    std::vector<int> fittestGenes = currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities);
+
+    logFile << "Fittest Chromosome Genes: ";
+    for (int gene : fittestGenes)
+    {
+        logFile << gene << " ";
+    }
+    logFile << "\n";
+
+    logFile << "All Population Fitnesses: ";
+    for (double fit : populationFitnesses)
+    {
+        logFile << fit << " ";
+    }
+    logFile << "\n";
+
+    logFile.close();
+
+    return fittestGenes;
+}

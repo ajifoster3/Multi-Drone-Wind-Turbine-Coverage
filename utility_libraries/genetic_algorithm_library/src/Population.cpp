@@ -12,12 +12,13 @@ std::vector<Chromosome> Population::getPopulationList()
 
 double Population::getPopulationFitness(FitnessCalculator &fitnessCalculator, std::vector<Position> &agentStartPositions, std::vector<Position> &cities)
 {
-    double sumOfFitness{0};
+    double maxFitness;
     for (auto chromosome : this->getPopulationList())
     {
-        sumOfFitness += fitnessCalculator.calculateFitness(chromosome, cities);
+        auto fitness = fitnessCalculator.calculateFitness(chromosome, cities);
+        if(maxFitness < fitness){maxFitness = fitness;}
     }
-    return sumOfFitness;
+    return maxFitness;
 }
 
 std::vector<int> Population::getFittestChromosomeGenes(

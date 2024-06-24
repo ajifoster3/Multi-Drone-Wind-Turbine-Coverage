@@ -34,11 +34,11 @@ Population IPGAReproductionMechanism::Reproduce(
 
         ReproductionChromosome selected = *selectedChromosome;
 
-        std::vector<ReproductionChromosome> cloneChromosomes(10, selected);
+        std::vector<ReproductionChromosome> cloneChromosomes(safeSampleSize, selected);
 
         std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
-        for (size_t i = 0; i < sampleSize_; i++)
+        for (size_t i = 0; i < safeSampleSize; i++)
         {
             auto genes = cloneChromosomes[i].getChromosome().getGenes();
 
