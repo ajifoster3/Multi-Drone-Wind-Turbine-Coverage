@@ -140,13 +140,22 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, in
 void ParthenoGeneticAlgorithm::logIterations(std::vector<int> &fittestGenes, std::vector<double> &populationFitnesses)
 {
     int logFileNumber = getNextLogFileNumber();
-    std::string logFileName = "galog/algorithm_log_" + std::to_string(logFileNumber) + ".txt";
+    std::string logDirectoryName = "galog"; // Directory name
+    std::string logFileName = logDirectoryName + "/algorithm_log_" + std::to_string(logFileNumber) + ".txt";
+
+    // Check if the directory exists, if not, create it
+    if (!std::filesystem::exists(logDirectoryName)) {
+        std::filesystem::create_directory(logDirectoryName);
+    }
+
     std::ofstream logFile(logFileName);
     if (!logFile)
     {
         std::cerr << "Failed to open log file." << std::endl;
+        return; // Exit if file could not be opened
     }
 
+    // Log genetic algorithm settings
     logFile << "GA_Settings \n";
     logFile << "EncodingMechanism:" << config_.encodingMechanism << "\n";
     logFile << "FitnessFunction:" << config_.fitnessFunction << "\n";
@@ -158,6 +167,7 @@ void ParthenoGeneticAlgorithm::logIterations(std::vector<int> &fittestGenes, std
     logFile << "populationSize:" << populationSize_ << "\n";
     logFile << "numberOfIterations:" << numberOfIterations_ << "\n\n";
 
+    // Log fittest chromosome genes
     logFile << "Fittest_Chromosome_Genes: \n";
     for (int gene : fittestGenes)
     {
@@ -165,6 +175,7 @@ void ParthenoGeneticAlgorithm::logIterations(std::vector<int> &fittestGenes, std
     }
     logFile << "\n\n";
 
+    // Log all population fitnesses
     logFile << "All_Population_Fitnesses: \n";
     for (auto fit : populationFitnesses)
     {
