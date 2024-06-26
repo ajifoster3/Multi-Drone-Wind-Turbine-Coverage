@@ -24,6 +24,13 @@ public:
     ReproductionMechanisms reproductionMechanism;
     FitnessFunctions fitnessFunction;
     TerminationCriteria terminationCriteria;
+    bool isManualConfig;
+    double citiesPerSalesmanMutationProbability;
+    double routeMutationProbability;
+    int sampleSize;
+    int populationSize;
+    int numberOfIterations;
+
 
 
 private:

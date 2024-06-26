@@ -5,15 +5,19 @@
 #include "Chromosome.h"
 #include "Position.h"
 
-enum FitnessFunctions { DISTANCE_FITNESS_FUNCTION };
+enum FitnessFunctions
+{
+    DISTANCE_FITNESS_FUNCTION,
+    MULTI_DISTANCE_FITNESS_FUNCTION
+};
 
 class FitnessFunction
 {
-    
+
 public:
     virtual ~FitnessFunction() = default;
     virtual double calulateChromosomeFitness(
-        Chromosome &, 
+        Chromosome &,
         std::vector<Position> &cities) = 0;
     virtual void calculateCostMap(std::vector<Position> &cities, std::vector<Position> &initialPositions) = 0;
 };

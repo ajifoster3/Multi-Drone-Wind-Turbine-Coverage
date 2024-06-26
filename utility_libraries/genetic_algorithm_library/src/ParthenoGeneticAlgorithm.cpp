@@ -1,8 +1,4 @@
 #include "ParthenoGeneticAlgorithm.h"
-#include <iostream>
-#include <fstream>
-#include <filesystem>
-#include <regex>
 
 ParthenoGeneticAlgorithmConfig::ParthenoGeneticAlgorithmConfig(
     EncodingMechanisms encodingMechanism,
@@ -13,9 +9,21 @@ ParthenoGeneticAlgorithmConfig::ParthenoGeneticAlgorithmConfig(
                                                 fitnessFunction(fitnessFunction),
                                                 terminationCriteria(terminationCriterion){};
 
-ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfig config)
+ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfig config) : config_{config}
 {
-    populateGASettings();
+    if (!config.isManualConfig)
+    {
+        populateGASettings();
+    }
+    else
+    {
+        citiesPerSalesmanMutationProbability_ = config.citiesPerSalesmanMutationProbability;
+        routeMutationProbability_ = config.routeMutationProbability;
+        sampleSize_ = config.sampleSize;
+        populationSize_ = config.populationSize;
+        numberOfIterations_ = config.numberOfIterations;
+    }
+
     if (config.encodingMechanism == EncodingMechanisms::SEQUENCE_ENCODING_MECHANISM)
     {
         chromosomeBuilder_ = ChromosomeBuilder{encodingMechanism_ = std::shared_ptr<EncodingMechanism>(new SequenceEncodingMechanism)};
@@ -24,6 +32,10 @@ ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfi
     if (config.fitnessFunction == FitnessFunctions::DISTANCE_FITNESS_FUNCTION)
     {
         fitnessCalculator_ = FitnessCalculator{fitnessFunction_ = std::shared_ptr<FitnessFunction>(new DistanceFitnessFunction)};
+    }
+    else if (config.fitnessFunction == FitnessFunctions::MULTI_DISTANCE_FITNESS_FUNCTION)
+    {
+        fitnessCalculator_ = FitnessCalculator{fitnessFunction_ = std::shared_ptr<FitnessFunction>(new MultiDistanceFitnessFunction)};
     }
 
     if (config.reproductionMechanism == ReproductionMechanisms::IPGA_REPRODUCTION_MECHANISM)
@@ -45,21 +57,42 @@ ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfi
 
 int getNextLogFileNumber()
 {
+
     int maxNumber = 0;
-    std::regex logFilePattern("algorithm_log_(\\d+)\\.txt");
-    for (const auto &entry : std::filesystem::directory_iterator("."))
+    std::regex logFilePattern(R"(algorithm_log_(\d+)\.txt)");
+
+    try
     {
-        std::string filename = entry.path().filename().string();
-        std::smatch match;
-        if (std::regex_match(filename, match, logFilePattern))
+        for (const auto &entry : std::filesystem::directory_iterator("galog"))
         {
-            int number = std::stoi(match[1]);
-            if (number > maxNumber)
+            if (entry.is_regular_file()) // Ensure it's a file
             {
-                maxNumber = number;
+                std::string filename = entry.path().filename().string();
+                std::smatch match;
+                if (std::regex_match(filename, match, logFilePattern))
+                {
+                    int number = std::stoi(match[1].str());
+                    if (number > maxNumber)
+                    {
+                        maxNumber = number;
+                    }
+                }
             }
         }
     }
+    catch (const std::filesystem::filesystem_error &e)
+    {
+        std::cerr << "Filesystem error: " << e.what() << std::endl;
+    }
+    catch (const std::regex_error &e)
+    {
+        std::cerr << "Regex error: " << e.what() << std::endl;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
     return maxNumber + 1;
 }
 
@@ -83,20 +116,11 @@ void ParthenoGeneticAlgorithm::populateGASettings()
 
 std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, int agents, std::vector<Position> &agentStartPositions)
 {
-
     PopulationInitialiser populationInitialiser{chromosomeBuilder_, populationSize_};
     Population currentPopulation = populationInitialiser.InitialisePopulation(cities.size(), agents);
     std::vector<double> populationFitnesses;
     fitnessCalculator_.populateCostMap(cities, agentStartPositions);
 
-    int logFileNumber = getNextLogFileNumber();
-    std::string logFileName = "galog/algorithm_log_" + std::to_string(logFileNumber) + ".txt";
-    std::ofstream logFile(logFileName);
-    if (!logFile)
-    {
-        std::cerr << "Failed to open log file." << std::endl;
-        return {};
-    }
     while (!terminator_.isTerminationCriteriaMet(populationFitnesses))
     {
         Population pop = reproducer_.Reproduce(currentPopulation, agentStartPositions, cities);
@@ -106,22 +130,42 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, in
         currentPopulation = pop;
     }
 
-    logFile << "GA Settings \n";
+    std::vector<int> fittestGenes = currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities);
+
+    
+    logIterations(fittestGenes, populationFitnesses);
+    return fittestGenes;
+}
+
+void ParthenoGeneticAlgorithm::logIterations(std::vector<int> &fittestGenes, std::vector<double> &populationFitnesses)
+{
+    int logFileNumber = getNextLogFileNumber();
+    std::string logFileName = "galog/algorithm_log_" + std::to_string(logFileNumber) + ".txt";
+    std::ofstream logFile(logFileName);
+    if (!logFile)
+    {
+        std::cerr << "Failed to open log file." << std::endl;
+    }
+
+    logFile << "GA_Settings \n";
+    logFile << "EncodingMechanism:" << config_.encodingMechanism << "\n";
+    logFile << "FitnessFunction:" << config_.fitnessFunction << "\n";
+    logFile << "ReproductionMechanism:" << config_.reproductionMechanism << "\n";
+    logFile << "TerminationCriteria:" << config_.terminationCriteria << "\n";
     logFile << "citiesPerSalesmanMutationProbability:" << citiesPerSalesmanMutationProbability_ << "\n";
     logFile << "routeMutationProbability:" << routeMutationProbability_ << "\n";
     logFile << "sampleSize:" << sampleSize_ << "\n";
     logFile << "populationSize:" << populationSize_ << "\n";
     logFile << "numberOfIterations:" << numberOfIterations_ << "\n\n";
 
-    std::vector<int> fittestGenes = currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities);
-    logFile << "Fittest Chromosome Genes: \n";
+    logFile << "Fittest_Chromosome_Genes: \n";
     for (int gene : fittestGenes)
     {
         logFile << gene << "\n";
     }
     logFile << "\n\n";
 
-    logFile << "All Population Fitnesses: \n";
+    logFile << "All_Population_Fitnesses: \n";
     for (auto fit : populationFitnesses)
     {
         logFile << fit << "\n";
@@ -129,5 +173,4 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, in
     logFile << "\n\n";
 
     logFile.close();
-    return fittestGenes;
 }

@@ -4,6 +4,13 @@
 #include <vector>
 #include <memory>
 #include <toml.hpp>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <regex>
+#include <map>
+#include <variant>
+#include "ProblemLogUtility.h"
 #include "ConfigHeaderPath.h"
 #include "Position.h"
 #include "Population.h"
@@ -21,6 +28,7 @@
 #include "DistanceFitnessFunction.h"
 #include "IterationCountTerminationCriterion.h"
 #include "ParthenoGeneticAlgorithmConfig.h"
+#include "MultiDistanceFitnessFunction.h"
 
 class ParthenoGeneticAlgorithm
 {
@@ -28,15 +36,19 @@ class ParthenoGeneticAlgorithm
 public:
     ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfig);
 
-    std::vector<int> run(std::vector<Position>& cities, int agents, std::vector<Position>& agentStartPositions);
+    std::vector<int> run(std::vector<Position> &cities, int agents, std::vector<Position> &agentStartPositions);
 
+    void logIterations(std::vector<int> &fittestGenes, std::vector<double> &populationFitnesses);
 
 private:
+    void logData(const std::string &fileName, const std::vector<Position> &cities, int agents, const std::vector<Position> &agentStartPositions);
+    bool readData(const std::string &fileName, std::vector<Position> &cities, int &agents, std::vector<Position> &agentStartPositions);
     std::vector<Population> generations_;
     ChromosomeBuilder chromosomeBuilder_;
     Reproducer reproducer_;
     FitnessCalculator fitnessCalculator_;
     Terminator terminator_;
+    ParthenoGeneticAlgorithmConfig config_;
     std::shared_ptr<EncodingMechanism> encodingMechanism_;
     std::shared_ptr<ReproductionMechanism> reproductionMechanism_;
     std::shared_ptr<FitnessFunction> fitnessFunction_;

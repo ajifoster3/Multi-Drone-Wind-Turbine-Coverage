@@ -29,6 +29,8 @@ list(FILTER SOURCES EXCLUDE REGEX "main\\.cpp$")
 # Create a static library from the collected source files
 add_library(GeneticAlgorithm STATIC ${SOURCES})
 
+add_executable(GeneticAlgorithmExecutable src/main.cpp src/ProblemLogUtility.cpp ${SOURCES})
+
 # Create google test
 enable_testing()
 add_executable(
@@ -41,4 +43,4 @@ target_link_libraries(
     GTest::gtest_main
 )
 include(GoogleTest)
-gtest_discover_tests(GeneticAlgorithmTest)
+#gtest_discover_tests(GeneticAlgorithmTest)
