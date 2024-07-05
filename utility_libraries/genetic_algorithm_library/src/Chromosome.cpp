@@ -1,6 +1,5 @@
 #include "Chromosome.h"
 
-
 Chromosome::Chromosome(std::vector<int> &genes, int numberOfCites)
 {
     genes_ = genes;
@@ -33,4 +32,9 @@ int Chromosome::getNumberOfCities()
 int Chromosome::getNumberOfAgents()
 {
     return genes_.size() - numberOfCites_;
+}
+
+bool Chromosome::operator==(const Chromosome& other) const
+{
+    return (genes_ == other.genes_) && (numberOfCites_ == other.numberOfCites_);
 }

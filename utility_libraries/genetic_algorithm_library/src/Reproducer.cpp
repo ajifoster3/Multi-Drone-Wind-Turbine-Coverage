@@ -1,4 +1,5 @@
 #include "Reproducer.h"
+#include <iostream>
 
 Population Reproducer::Reproduce(
     Population& oldPopulation,

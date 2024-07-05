@@ -5,7 +5,7 @@ void FitnessCalculator::populateCostMap(std::vector<Position> &cities, std::vect
     fitnessFunction_->calculateCostMap(cities, initialPositions);
 }
 
-double FitnessCalculator::calculateFitness(
+std::map<Fitness, double> FitnessCalculator::calculateFitness(
     Chromosome &chromosome,
     std::vector<Position> &cities)
 {

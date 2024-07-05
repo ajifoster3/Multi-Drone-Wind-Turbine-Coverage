@@ -1,7 +1,7 @@
 [genetic_algorithm_settings]
 # Distance in meters for a coverage viewpoint to be considered reached.
 citiesPerSalesmanMutationProbability = 0.025
-routeMutationProbability = 0.75
+routeMutationProbability = 1
 sampleSize = 10
 populationSize = 1000
-numberOfIterations = 5
+numberOfIterations = 5000

@@ -6,7 +6,7 @@ IterationCountTerminationCriterion::IterationCountTerminationCriterion(int numbe
 {
 }
 
-bool IterationCountTerminationCriterion::isTerminationCriterionMet(std::vector<double> &populationFitnesses)
+bool IterationCountTerminationCriterion::isTerminationCriterionMet(std::vector<double>& populationFitnesses)
 {
     auto popSize = populationFitnesses.size();
     return populationFitnesses.size() > numberOfIterations_;

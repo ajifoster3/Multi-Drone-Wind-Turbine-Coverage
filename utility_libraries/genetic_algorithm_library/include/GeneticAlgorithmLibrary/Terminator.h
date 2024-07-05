@@ -3,6 +3,8 @@
 
 
 #include "TerminationCriterion.h"
+#include "Fitnesses.h"
+#include <map>
 #include <vector>
 #include <memory>
 

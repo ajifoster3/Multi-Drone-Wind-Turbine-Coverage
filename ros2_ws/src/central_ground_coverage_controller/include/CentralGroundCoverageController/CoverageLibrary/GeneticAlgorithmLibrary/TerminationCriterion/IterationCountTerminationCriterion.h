@@ -2,9 +2,11 @@
 #define ITERATIONCOUNTTERMINATIONCRITERIA_H
 
 #include "TerminationCriterion.h"
+#include "Fitnesses.h"
 #include <vector>
 #include <numeric>
 #include <cmath>
+#include <map>
 
 class IterationCountTerminationCriterion : public TerminationCriterion
 {
@@ -14,7 +16,7 @@ private:
 
 public:
     IterationCountTerminationCriterion(int numberOfIterations);
-    bool isTerminationCriterionMet(std::vector<double> &populationFitnesses);
+    bool isTerminationCriterionMet(std::vector<std::map<Fitness, double>>& populationFitnesses);
 };
 
 #endif

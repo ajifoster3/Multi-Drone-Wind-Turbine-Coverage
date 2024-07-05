@@ -16,7 +16,7 @@ class DistanceFitnessFunction : public FitnessFunction
 
 public:
 
-    double calulateChromosomeFitness(
+    std::map<Fitness, double> calulateChromosomeFitness(
         Chromosome &,
         std::vector<Position> &cities);
 
@@ -40,11 +40,11 @@ private:
     std::unordered_map<std::pair<int, int>, double, pair_hash> initialPoseCostMap_;
     std::unordered_map<std::pair<int, int>, double, pair_hash> cityCostMap_;
 
-    const std::vector<double> getInversePathLengths(
+    const std::vector<double> getPathLengths(
         std::vector<std::vector<int>> &paths,
         std::vector<Position> &cities);
 
-    double getInversePathLength(
+    double getPathLength(
         std::vector<int> &path,
         int agentID,
         std::vector<Position> &cities);

@@ -30,7 +30,7 @@ void DistanceFitnessFunction::calculateCostMap(std::vector<Position> &cities, st
     }
 }
 
-const std::vector<double> DistanceFitnessFunction::getInversePathLengths(
+const std::vector<double> DistanceFitnessFunction::getPathLengths(
     std::vector<std::vector<int>> &paths,
     std::vector<Position> &cities)
 {
@@ -39,14 +39,14 @@ const std::vector<double> DistanceFitnessFunction::getInversePathLengths(
 
     for (size_t i = 0; i < paths.size(); i++)
     {
-        auto pathLength = getInversePathLength(paths[i], i, cities);
+        auto pathLength = getPathLength(paths[i], i, cities);
         pathFitnesses.emplace_back(pathLength);
     }
 
     return pathFitnesses;
 }
 
-double DistanceFitnessFunction::getInversePathLength(
+double DistanceFitnessFunction::getPathLength(
     std::vector<int> &path,
     int agentID,
     std::vector<Position> &cities)
@@ -65,14 +65,14 @@ double DistanceFitnessFunction::getInversePathLength(
     return 1 / pathLength;
 }
 
-double DistanceFitnessFunction::calulateChromosomeFitness(
+std::map<Fitness, double> DistanceFitnessFunction::calulateChromosomeFitness(
     Chromosome &chromosome,
     std::vector<Position> &cities)
 {
     auto paths{getPaths(chromosome)};
-    auto pathDistances{getInversePathLengths(paths, cities)};
+    auto pathDistances{getPathLengths(paths, cities)};
 
-    return *std::min_element(pathDistances.begin(), pathDistances.end());
+    return std::map<Fitness, double>{{Fitness::MAXPATHLENGTH, *std::max_element(pathDistances.begin(), pathDistances.end())}};
 }
 
 std::vector<std::vector<int>> DistanceFitnessFunction::getPaths(Chromosome &chromosome)

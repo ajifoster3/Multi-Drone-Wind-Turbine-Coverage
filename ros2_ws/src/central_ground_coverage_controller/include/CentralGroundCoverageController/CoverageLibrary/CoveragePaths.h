@@ -10,8 +10,8 @@ public:
     CoveragePaths() = default;
     CoveragePaths(std::vector<int>);
     
-    Path getCoveragePathForRobot(int id); // maybe unnecessary?
-    std::vector<Path> getPaths() const; // maybe unnecessary?
+    Path getCoveragePathForRobot(int id);
+    std::vector<Path> getPaths() const;
     void addCoverageViewpointForRobot(int robotId, CoverageViewpoint);
 
 private:

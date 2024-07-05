@@ -31,27 +31,46 @@ ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfi
 
     if (config.fitnessFunction == FitnessFunctions::DISTANCE_FITNESS_FUNCTION)
     {
-        fitnessCalculator_ = FitnessCalculator{fitnessFunction_ = std::shared_ptr<FitnessFunction>(new DistanceFitnessFunction)};
+        fitnessCalculator_ = FitnessCalculator{fitnessFunction_ = std::shared_ptr<DistanceFitnessFunction>(new DistanceFitnessFunction)};
+        fitnessCalculatorPtr_ = std::make_shared<FitnessCalculator>(fitnessCalculator_);
     }
     else if (config.fitnessFunction == FitnessFunctions::MULTI_DISTANCE_FITNESS_FUNCTION)
     {
-        fitnessCalculator_ = FitnessCalculator{fitnessFunction_ = std::shared_ptr<FitnessFunction>(new MultiDistanceFitnessFunction)};
+        fitnessCalculator_ = FitnessCalculator{fitnessFunction_ = std::shared_ptr<MultiDistanceFitnessFunction>(new MultiDistanceFitnessFunction)};
+        fitnessCalculatorPtr_ = std::make_shared<FitnessCalculator>(fitnessCalculator_);
     }
 
     if (config.reproductionMechanism == ReproductionMechanisms::IPGA_REPRODUCTION_MECHANISM)
     {
-        reproducer_ = Reproducer{reproductionMechanism_ = std::shared_ptr<ReproductionMechanism>(
-                                     new IPGAReproductionMechanism(
+        reproductionMechanism_ = std::make_shared<IPGAReproductionMechanism>(
+                                         fitnessCalculatorPtr_,
+                                         citiesPerSalesmanMutationProbability_,
+                                         routeMutationProbability_,
+                                         sampleSize_);
+        reproducer_ = Reproducer(reproductionMechanism_);
+    }
+    else if (config.reproductionMechanism == ReproductionMechanisms::IPGA_ELITISM_REPRODUCTION_MECHANISM)
+    {
+        reproductionMechanism_ = std::make_shared<IPGAElitismReproductionMechanism>(
+                                         fitnessCalculatorPtr_,
+                                         citiesPerSalesmanMutationProbability_,
+                                         routeMutationProbability_,
+                                         sampleSize_);
+        reproducer_ = Reproducer(reproductionMechanism_);
+    }
+    else if (config.reproductionMechanism == ReproductionMechanisms::NSGAII_REPRODUCTION_MECHANISM)
+    {
+        reproductionMechanism_ = std::make_shared<NSGAIIReproductionMechanism>(
                                          std::make_shared<FitnessCalculator>(fitnessCalculator_),
                                          citiesPerSalesmanMutationProbability_,
                                          routeMutationProbability_,
-                                         sampleSize_))};
+                                         sampleSize_);
+        reproducer_ = Reproducer(reproductionMechanism_);
     }
 
     if (config.terminationCriteria == TerminationCriteria::ITERATION_COUNT_TERMINATION_CRITERION)
     {
         terminator_ = Terminator{terminationCriterion_ = std::shared_ptr<TerminationCriterion>(new IterationCountTerminationCriterion(numberOfIterations_))};
-        ;
     }
 }
 
@@ -116,35 +135,38 @@ void ParthenoGeneticAlgorithm::populateGASettings()
 
 std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, int agents, std::vector<Position> &agentStartPositions)
 {
+    Fitness fitnessChoice = Fitness::MAXPATHTOTALPATHWEIGHTEDSUM;
+
     PopulationInitialiser populationInitialiser{chromosomeBuilder_, populationSize_};
     Population currentPopulation = populationInitialiser.InitialisePopulation(cities.size(), agents);
     std::vector<double> populationFitnesses;
     fitnessCalculator_.populateCostMap(cities, agentStartPositions);
+    ProblemLogUtility::logData("log.txt", cities, agents, agentStartPositions);
 
     while (!terminator_.isTerminationCriteriaMet(populationFitnesses))
     {
         Population pop = reproducer_.Reproduce(currentPopulation, agentStartPositions, cities);
-        double fitness = pop.getPopulationFitness(fitnessCalculator_, agentStartPositions, cities);
+        double fitness = pop.getPopulationFitness(fitnessCalculator_, agentStartPositions, cities, fitnessChoice);
         populationFitnesses.push_back(fitness);
         std::cout << fitness << "\n";
         currentPopulation = pop;
     }
 
-    std::vector<int> fittestGenes = currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities);
+    std::vector<int> fittestGenes = currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities, Fitness::MAXPATHTOTALPATHWEIGHTEDSUM);
 
-    
-    logIterations(fittestGenes, populationFitnesses);
+    logIterations(fittestGenes, populationFitnesses, fitnessChoice);
     return fittestGenes;
 }
 
-void ParthenoGeneticAlgorithm::logIterations(std::vector<int> &fittestGenes, std::vector<double> &populationFitnesses)
+void ParthenoGeneticAlgorithm::logIterations(std::vector<int> &fittestGenes, std::vector<double> &populationFitnesses, Fitness fitnessChoice)
 {
     int logFileNumber = getNextLogFileNumber();
     std::string logDirectoryName = "galog"; // Directory name
     std::string logFileName = logDirectoryName + "/algorithm_log_" + std::to_string(logFileNumber) + ".txt";
 
     // Check if the directory exists, if not, create it
-    if (!std::filesystem::exists(logDirectoryName)) {
+    if (!std::filesystem::exists(logDirectoryName))
+    {
         std::filesystem::create_directory(logDirectoryName);
     }
 

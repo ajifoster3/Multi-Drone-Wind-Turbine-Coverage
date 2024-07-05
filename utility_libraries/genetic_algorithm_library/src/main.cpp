@@ -11,7 +11,7 @@ int main(int argc, char const *argv[])
     std::vector<Position> agentStartPositions;
 
     // Read data from the file
-    if (!ProblemLogUtility::readData("log.txt", cities, agents, agentStartPositions))
+    if (!ProblemLogUtility::readData("/home/soair/Documents/Multi-Drone-Wind-Turbine-Coverage/utility_libraries/genetic_algorithm_library/build/log2.txt", cities, agents, agentStartPositions))
     {
         std::cerr << "Failed to read data from log.txt" << std::endl;
         return 1;
@@ -20,7 +20,7 @@ int main(int argc, char const *argv[])
     // Initialize the genetic algorithm configuration
     ParthenoGeneticAlgorithmConfig config(
         EncodingMechanisms::SEQUENCE_ENCODING_MECHANISM,
-        ReproductionMechanisms::IPGA_REPRODUCTION_MECHANISM,
+        ReproductionMechanisms::IPGA_ELITISM_REPRODUCTION_MECHANISM,
         FitnessFunctions::MULTI_DISTANCE_FITNESS_FUNCTION,
         TerminationCriteria::ITERATION_COUNT_TERMINATION_CRITERION);
 

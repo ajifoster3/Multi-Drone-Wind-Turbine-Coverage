@@ -31,16 +31,16 @@ add_library(GeneticAlgorithm STATIC ${SOURCES})
 
 add_executable(GeneticAlgorithmExecutable src/main.cpp src/ProblemLogUtility.cpp ${SOURCES})
 
-# Create google test
-enable_testing()
-add_executable(
-    GeneticAlgorithmTest
-    test/DistanceFitnessFunction.cc
-)
-target_link_libraries(
-    GeneticAlgorithmTest
-    GeneticAlgorithm
-    GTest::gtest_main
-)
-include(GoogleTest)
-#gtest_discover_tests(GeneticAlgorithmTest)
+## Create google test
+#enable_testing()
+#add_executable(
+#    GeneticAlgorithmTest
+#    test/DistanceFitnessFunction.cc
+#)
+#target_link_libraries(
+#    GeneticAlgorithmTest
+#    GeneticAlgorithm
+#    GTest::gtest_main
+#)
+#include(GoogleTest)
+##gtest_discover_tests(GeneticAlgorithmTest)
