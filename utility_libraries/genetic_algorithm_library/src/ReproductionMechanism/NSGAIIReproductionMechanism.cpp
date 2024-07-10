@@ -168,7 +168,7 @@ void NSGAIIReproductionMechanism::Mutate(ReproductionChromosome &chromosome, std
     chromosome.fitnessValues_ = fitnessCalculator_->calculateFitness(newChromosome, cities);
 }
 
-std::vector<std::vector<NSGAIIReproductionMechanism::ReproductionChromosome>> NSGAIIReproductionMechanism::FastNonDominatedSort(Population &population, std::vector<Position> agentStartPositions, std::vector<Position> &cities)
+std::vector<std::vector<NSGAIIReproductionMechanism::ReproductionChromosome>> NSGAIIReproductionMechanism::FastNonDominatedSort(Population &population, std::vector<Position> &agentStartPositions, std::vector<Position> &cities)
 {
     std::vector<ReproductionChromosome> chromosomes;
     for (auto &chromosome : population.getPopulationList())
@@ -397,7 +397,7 @@ void NSGAIIReproductionMechanism::distributeCities(std::vector<int> &vec, int nu
     }
 }
 
-NSGAIIReproductionMechanism::ReproductionChromosome::ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities)
+NSGAIIReproductionMechanism::ReproductionChromosome::ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities)
 {
     chromosome_ = chromosome;
     fitnessValues_ = fitnessCalculator->calculateFitness(chromosome, cities);

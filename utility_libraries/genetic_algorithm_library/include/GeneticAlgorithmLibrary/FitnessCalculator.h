@@ -20,6 +20,10 @@ public:
     std::map<Fitness, double> calculateFitness(
         Chromosome &chromosome,
         std::vector<Position> &cities);
+    double calculateSubvectorFitness(
+        std::vector<int> &subChromosome,
+        int robotNumber,
+        std::vector<Position> &cities);
 
 private:
     std::shared_ptr<FitnessFunction> fitnessFunction_;

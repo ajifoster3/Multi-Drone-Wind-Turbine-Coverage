@@ -11,3 +11,8 @@ std::map<Fitness, double> FitnessCalculator::calculateFitness(
 {
     return fitnessFunction_->calulateChromosomeFitness(chromosome, cities);
 }
+
+double FitnessCalculator::calculateSubvectorFitness(std::vector<int> &subChromosome, int robotNumber, std::vector<Position> &cities)
+{
+    return fitnessFunction_->calculateSubChromosomeFitness(subChromosome, robotNumber, cities);
+}

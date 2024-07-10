@@ -20,6 +20,8 @@ public:
         Chromosome &,
         std::vector<Position> &cities);
 
+    double calculateSubChromosomeFitness(std::vector<int> &subChromosome, int robotId, std::vector<Position> cities){return 0.0;};
+
     std::vector<std::vector<int>> getPaths(Chromosome &chromosome);
 
     void calculateCostMap(std::vector<Position> &cities, std::vector<Position> &initialPositions);

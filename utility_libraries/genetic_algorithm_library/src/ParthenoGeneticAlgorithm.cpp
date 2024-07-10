@@ -58,6 +58,15 @@ ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfi
                                          sampleSize_);
         reproducer_ = Reproducer(reproductionMechanism_);
     }
+    else if (config.reproductionMechanism == ReproductionMechanisms::IPGA_HORIZONTAL_REPRODUCTION_MECHANISM)
+    {
+        reproductionMechanism_ = std::make_shared<IPGAHorizontalReproductionMechanism>(
+                                         fitnessCalculatorPtr_,
+                                         citiesPerSalesmanMutationProbability_,
+                                         routeMutationProbability_,
+                                         sampleSize_);
+        reproducer_ = Reproducer(reproductionMechanism_);
+    }
     else if (config.reproductionMechanism == ReproductionMechanisms::NSGAII_REPRODUCTION_MECHANISM)
     {
         reproductionMechanism_ = std::make_shared<NSGAIIReproductionMechanism>(
@@ -143,13 +152,15 @@ std::vector<int> ParthenoGeneticAlgorithm::run(std::vector<Position> &cities, in
     fitnessCalculator_.populateCostMap(cities, agentStartPositions);
     ProblemLogUtility::logData("log.txt", cities, agents, agentStartPositions);
 
+    int i = 0;
     while (!terminator_.isTerminationCriteriaMet(populationFitnesses))
     {
         Population pop = reproducer_.Reproduce(currentPopulation, agentStartPositions, cities);
         double fitness = pop.getPopulationFitness(fitnessCalculator_, agentStartPositions, cities, fitnessChoice);
         populationFitnesses.push_back(fitness);
-        std::cout << fitness << "\n";
+        std::cout << "Iteration:" << i << " " << fitness << "\n";
         currentPopulation = pop;
+        i++;
     }
 
     std::vector<int> fittestGenes = currentPopulation.getFittestChromosomeGenes(fitnessCalculator_, agentStartPositions, cities, Fitness::MAXPATHTOTALPATHWEIGHTEDSUM);

@@ -33,6 +33,7 @@
 #include "Fitnesses.h"
 #include "NSGAIIReproductionMechanism.h"
 #include "ProblemLogUtility.h"
+#include "IPGAHorizontalReproductionMechanism.h"
 
 class ParthenoGeneticAlgorithm
 {

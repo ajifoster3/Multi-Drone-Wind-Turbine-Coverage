@@ -28,7 +28,7 @@ public:
 private:
     struct ReproductionChromosome
     {
-        ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities);
+        ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities);
 
         bool dominates(const ReproductionChromosome &other) const;
         double getFitness(Fitness index) const;
@@ -44,7 +44,7 @@ private:
     void AssignCrowdingDistance(std::vector<ReproductionChromosome> &front);
     NSGAIIReproductionMechanism::ReproductionChromosome TournamentSelection(const std::vector<ReproductionChromosome> &population);
     void Mutate(ReproductionChromosome &chromosome, std::vector<Position> &cities);
-    std::vector<std::vector<ReproductionChromosome>> FastNonDominatedSort(Population &population, std::vector<Position> agentStartPositions, std::vector<Position> &cities);
+    std::vector<std::vector<ReproductionChromosome>> FastNonDominatedSort(Population &population, std::vector<Position> &agentStartPositions, std::vector<Position> &cities);
 
     void shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness);
     void flipInsert(std::vector<int> &vec, int numberOfCities);

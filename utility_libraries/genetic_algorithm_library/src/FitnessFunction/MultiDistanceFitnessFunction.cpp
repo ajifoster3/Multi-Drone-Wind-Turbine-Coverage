@@ -72,7 +72,12 @@ std::map<Fitness, double> MultiDistanceFitnessFunction::calulateChromosomeFitnes
 {
     auto longestPathFitness = calulateChromosomeLongestPathFitness(chromosome, cities) ;
     auto TotalPathFitness = calulateChromosomeTotalPathFitness(chromosome, cities) ;
-    return std::map<Fitness, double>{{Fitness::MAXPATHTOTALPATHWEIGHTEDSUM, (longestPathFitness) + (TotalPathFitness)}, {Fitness::MAXPATHLENGTH, longestPathFitness}, {Fitness::TOTALPATHDISTANCE, TotalPathFitness}};
+    return std::map<Fitness, double>{{Fitness::MAXPATHTOTALPATHWEIGHTEDSUM, (longestPathFitness*0.75) + (TotalPathFitness*0.25)}, {Fitness::MAXPATHLENGTH, longestPathFitness}, {Fitness::TOTALPATHDISTANCE, TotalPathFitness}};
+}
+
+double MultiDistanceFitnessFunction::calculateSubChromosomeFitness(std::vector<int> &subChromosome, int robotId, std::vector<Position> cities)
+{
+    return getPathLength(subChromosome, robotId, cities);
 }
 
 double MultiDistanceFitnessFunction::calulateChromosomeLongestPathFitness(Chromosome &chromosome, std::vector<Position> &cities)

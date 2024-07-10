@@ -19,6 +19,8 @@ public:
         Chromosome &,
         std::vector<Position> &cities);
 
+    double calculateSubChromosomeFitness(std::vector<int> &subChromosome, int robotId, std::vector<Position> cities);
+
     double calulateChromosomeLongestPathFitness(
         Chromosome &,
         std::vector<Position> &cities);
