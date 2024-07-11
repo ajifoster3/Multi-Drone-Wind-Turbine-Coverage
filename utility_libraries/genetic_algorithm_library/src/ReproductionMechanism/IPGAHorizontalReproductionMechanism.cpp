@@ -267,7 +267,11 @@ void IPGAHorizontalReproductionMechanism::randomlyInsertSubvector(std::vector<in
     vec.insert(vec.begin() + newPosition, tempBlock.begin(), tempBlock.end());
 }
 
-void IPGAHorizontalReproductionMechanism::horizontalGeneTransfer(std::vector<int> &chromosome, std::vector<std::pair<std::vector<int>, double>> &library, int numberOfCities, std::vector<Position> &cities)
+void IPGAHorizontalReproductionMechanism::horizontalGeneTransfer(
+    std::vector<int> &chromosome,
+    std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> &library,
+    int numberOfCities,
+    std::vector<Position> &cities)
 {
     auto subChromosomes = extractSubChromosomes(chromosome, numberOfCities);
 
@@ -281,30 +285,14 @@ void IPGAHorizontalReproductionMechanism::horizontalGeneTransfer(std::vector<int
     newChromosomeWhole.insert(newChromosomeWhole.end(), longestPathSubChromosome.begin(), longestPathSubChromosome.end());
 
     // Calculate fitness values for the library subchromosomes
-    std::vector<double> fitnessValues = getSubChromosomeLibraryFitnesses(library, cities);
-
-    // Calculate the mean fitness
-    double totalFitness = std::accumulate(fitnessValues.begin(), fitnessValues.end(), 0.0);
-    double meanFitness = totalFitness / fitnessValues.size();
-
-    // Assign weights based on deviation from the mean
-    std::vector<double> weights(library.size());
-    for (size_t i = 0; i < library.size(); ++i)
-    {
-        weights[i] = 1.0 / (std::abs(fitnessValues[i] - meanFitness) + 1.0); // Inverse proportional weight
-    }
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::discrete_distribution<> dist(weights.begin(), weights.end());
 
     for (int i = 1; i < teamSize_; i++)
     {
         bool isInitialized = false;
-        for (size_t attempts = 0; attempts < library.size(); attempts++)
+        for (size_t attempts = 0; attempts < library.first.size(); attempts++)
         {
-            int index = dist(gen);
-            auto selectedSubChromosome = library[index].first;
+            int index = library.second(gen_);
+            auto selectedSubChromosome = library.first[index];
             if (hasNoCommonElements(newChromosomeWhole, selectedSubChromosome))
             {
                 newChromosome.emplace_back(selectedSubChromosome);
@@ -397,7 +385,8 @@ std::vector<int> IPGAHorizontalReproductionMechanism::getLongestSubChromosomePat
             longestPathIndex = i;
         }
     }
-    return subChromosomes[longestPathIndex];;
+    return subChromosomes[longestPathIndex];
+    ;
 }
 
 std::vector<std::vector<int>> IPGAHorizontalReproductionMechanism::extractSubChromosomes(std::vector<int> &chromosome, int numberOfCities)
@@ -417,7 +406,7 @@ std::vector<std::vector<int>> IPGAHorizontalReproductionMechanism::extractSubChr
     return subChromosomes;
 }
 
-std::vector<std::pair<std::vector<int>, double>> IPGAHorizontalReproductionMechanism::getHighValueSubChromosomeLibrary(Population &population, std::vector<Position> &cities)
+std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> IPGAHorizontalReproductionMechanism::getHighValueSubChromosomeLibrary(Population &population, std::vector<Position> &cities)
 {
     auto chromosomes = population.getPopulationList();
     std::vector<double> chromosomeFitnesses;
@@ -444,20 +433,36 @@ std::vector<std::pair<std::vector<int>, double>> IPGAHorizontalReproductionMecha
         sortedChromosomes.push_back(chromosomeFitnessPairs[i].first);
     }
 
-    std::vector<std::pair<std::vector<int>, double>> subChromosomes;
+    std::vector<std::vector<int>> subChromosomes;
     subChromosomes.reserve(population.getPopulationList().size() * 0.2 * teamSize_);
+    std::vector<double> fitnessValues;
+    fitnessValues.reserve(population.getPopulationList().size() * 0.2 * teamSize_);
     for (auto chromosome : sortedChromosomes)
     {
         int progressIndex = 0;
         for (int i = 0; i < teamSize_; i++)
         {
             auto subChromosome = chromosome.getGenesBetweenIndices(progressIndex, progressIndex + chromosome.getGenesAtIndex(chromosome.getNumberOfCities() + i));
-            subChromosomes.emplace_back(std::pair<std::vector<int>, double>(subChromosome, fitnessCalculator_->calculateSubvectorFitness(subChromosome, i, cities)));
+            subChromosomes.emplace_back(std::vector<int>(subChromosome));
+            fitnessValues.emplace_back(fitnessCalculator_->calculateSubvectorFitness(subChromosome, i, cities));
             progressIndex = progressIndex + chromosome.getGenesAtIndex(chromosome.getNumberOfCities() + i);
         }
     }
 
-    return subChromosomes;
+    // Calculate the mean fitness
+    double totalFitness = std::accumulate(fitnessValues.begin(), fitnessValues.end(), 0.0);
+    double meanFitness = totalFitness / fitnessValues.size();
+
+    // Assign weights based on deviation from the mean
+    std::vector<double> weights(subChromosomes.size());
+    for (size_t i = 0; i < subChromosomes.size(); ++i)
+    {
+        weights[i] = 1.0 / (std::abs(fitnessValues[i] - meanFitness) + 1.0); // Inverse proportional weight
+    }
+
+    std::discrete_distribution<> dist(weights.begin(), weights.end());
+
+    return std::pair(subChromosomes, dist);
 }
 
 bool IPGAHorizontalReproductionMechanism::hasNoCommonElements(const std::vector<int> &vec1, const std::vector<int> &vec2)

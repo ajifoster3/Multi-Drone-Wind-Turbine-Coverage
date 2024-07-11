@@ -63,11 +63,11 @@ private:
     void lSlideInsert(std::vector<int> &vec, int numberOfCities);
     void rSlideInsert(std::vector<int> &vec, int numberOfCities);
     void randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities);
-    void horizontalGeneTransfer(std::vector<int> &vec, std::vector<std::pair<std::vector<int>, double>> &library, int numberOfCities, std::vector<Position> &cities);
+    void horizontalGeneTransfer(std::vector<int> &chromosome, std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> &library, int numberOfCities, std::vector<Position> &cities);
     std::vector<double> getSubChromosomeLibraryFitnesses(std::vector<std::pair<std::vector<int>, double>> &library, std::vector<Position> &cities);
     std::vector<int> getLongestSubChromosomePath(std::vector<std::vector<int>> &subChromosomes, std::vector<Position> &cities);
     std::vector<std::vector<int>> extractSubChromosomes(std::vector<int> &chromosome, int numberOfCities);
-    std::vector<std::pair<std::vector<int>, double>> getHighValueSubChromosomeLibrary(Population &, std::vector<Position> &cities);
+    std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> getHighValueSubChromosomeLibrary(Population &, std::vector<Position> &cities);
     bool hasNoCommonElements(const std::vector<int> &vec1, const std::vector<int> &vec2);
     void distributeCities(std::vector<int> &vec, int numberOfCities, int numberOfAgents);
 };
