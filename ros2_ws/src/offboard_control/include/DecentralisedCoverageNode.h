@@ -27,8 +27,9 @@ private:
     offboard_control_interfaces::msg::DroneAllocation droneAllocation_;
     offboard_control_interfaces::msg::DroneEnvironmentalRepresentation droneEnvironmentalRepresentation_;
     std::vector<CoverageViewpoint> coverageViewpoints_;
-    bool isGPSSet = false;
     geographic_msgs::msg::GeoPoseStamped currentGps_;
+    bool isGPSSet_ = false;
+    geographic_msgs::msg::GeoPoseStamped initialGps_;
     GeographicLib::Geoid geoid_;
     geographic_msgs::msg::GeoPoseStamped geoposeGoalGps_{};
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr decentralisedCoverageSub_;
@@ -73,3 +74,5 @@ private:
     void coveragePoseToGeoPose(geographic_msgs::msg::GeoPoseStamped &geopose, Pose &pose);
 };
 #endif
+
+
