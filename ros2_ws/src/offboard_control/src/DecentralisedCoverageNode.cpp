@@ -35,7 +35,14 @@ void DecentralisedCoverageNode::droneAllocationCb(const offboard_control_interfa
     }
     if (droneAllocation_.allocations[viewpointAssigned_] != uasNumber_)
     {
-        allocateUnassignedViewpoint();
+        if(std::find(droneAllocation_.allocations.begin(), droneAllocation_.allocations.end(), -1) != droneAllocation_.allocations.end())
+        {
+            allocateUnassignedViewpoint();
+        }
+        else
+        {
+            centralGoalPosPub_->publish(initialGps_);
+        }
     }
 }
 
@@ -56,9 +63,11 @@ void DecentralisedCoverageNode::dronePingCb(const offboard_control_interfaces::m
 
 void DecentralisedCoverageNode::globalPositionCb(const geographic_msgs::msg::GeoPoseStamped msg)
 {
-    if (!isGPSSet)
+    if (!isGPSSet_)
     {
-        isGPSSet = true;
+        isGPSSet_ = true;
+        initialGps_ = msg;
+        initialGps_.pose.position.altitude = initialGps_.pose.position.altitude - geoid_(initialGps_.pose.position.latitude, initialGps_.pose.position.longitude);
     }
     currentGps_ = msg;
 }
@@ -92,7 +101,7 @@ void DecentralisedCoverageNode::initializePublishers()
 void DecentralisedCoverageNode::decentralisedCoverageTimerCallback()
 {
     RCLCPP_INFO(this->get_logger(), "Drone %d decentralisedCoverageTimerCallback", uasNumber_);
-    if (isGPSSet)
+    if (isGPSSet_)
     {
         if (viewpointAssigned_ == -1)
         {
