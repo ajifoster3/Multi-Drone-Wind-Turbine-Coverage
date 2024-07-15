@@ -57,7 +57,27 @@ namespace trackingNode
         droneEnvironmentalRepresentation_.push_back(std::pair<rosgraph_msgs::msg::Clock, offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>(currentTime, droneEnvironmentalRepresentation));
         if (std::find(droneEnvironmentalRepresentation.is_covered.begin(), droneEnvironmentalRepresentation.is_covered.end(), false) == droneEnvironmentalRepresentation.is_covered.end())
         {
-            logCoverage();
+            bool all_drones_at_initial_position = true;
+            for (int i = 0; i < teamsize_; ++i)
+            {
+                if (dronePositions_[i].empty())
+                {
+                    all_drones_at_initial_position = false;
+                    break;
+                }
+                const auto &initial_position = dronePositions_[i].front().second.position;
+                const auto &current_position = dronePositions_[i].back().second.position;
+                if (HaversineDistance::calculateDistance(initial_position.latitude, initial_position.longitude, initial_position.altitude, 
+                                                         current_position.latitude, current_position.longitude, current_position.altitude) > 0.5)
+                {
+                    all_drones_at_initial_position = false;
+                    break;
+                }
+            }
+            if (all_drones_at_initial_position)
+            {
+                logCoverage();
+            }
         }
     }
 
