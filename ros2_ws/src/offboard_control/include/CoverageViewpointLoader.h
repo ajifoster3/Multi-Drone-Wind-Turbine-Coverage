@@ -11,8 +11,8 @@
 namespace CoverageViewpointLoader
 {
     using json = nlohmann::json;
-    
-    std::vector<CoverageViewpoint> load(const std::string& filePath);
+
+    std::vector<CoverageViewpoint> load(const std::string &filePath);
 } // namespace CoverageViewpointLoader
 
 #endif

@@ -12,7 +12,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    auto uasNumber = std::stoi(argv[1]); // Convert uasNumber to an integer
+    auto uasNumber = std::stoi(argv[1]);
     auto mode = std::string(argv[2]);
     std::shared_ptr<OffboardNode> offboardNode;
     if (mode == "centralised")

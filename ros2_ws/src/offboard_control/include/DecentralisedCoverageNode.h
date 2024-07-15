@@ -74,5 +74,3 @@ private:
     void coveragePoseToGeoPose(geographic_msgs::msg::GeoPoseStamped &geopose, Pose &pose);
 };
 #endif
-
-

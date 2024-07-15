@@ -36,7 +36,7 @@ void DecentralisedCoverageNode::droneAllocationCb(const offboard_control_interfa
     }
     if (droneAllocation_.allocations[viewpointAssigned_] != uasNumber_)
     {
-        if(std::find(droneAllocation_.allocations.begin(), droneAllocation_.allocations.end(), -1) != droneAllocation_.allocations.end())
+        if (std::find(droneAllocation_.allocations.begin(), droneAllocation_.allocations.end(), -1) != droneAllocation_.allocations.end())
         {
             allocateUnassignedViewpoint();
         }
@@ -225,4 +225,3 @@ void DecentralisedCoverageNode::coveragePoseToGeoPose(geographic_msgs::msg::GeoP
     geopose.pose.orientation.z = pose.orientation.z;
     geopose.pose.orientation.w = pose.orientation.w;
 }
-
