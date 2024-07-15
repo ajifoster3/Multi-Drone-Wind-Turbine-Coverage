@@ -6,10 +6,11 @@
 #include <geographic_msgs/msg/geo_pose_stamped.hpp>
 #include <std_msgs/msg/bool.hpp>
 #include <rosgraph_msgs/msg/clock.hpp>
-#include "offboard_control_interfaces/msg/drone_environmental_representation.hpp"
-#include "offboard_control_interfaces/msg/drone_allocation.hpp"
 #include <fstream>
 #include <filesystem>
+#include "HaversineDistance.h"
+#include "offboard_control_interfaces/msg/drone_environmental_representation.hpp"
+#include "offboard_control_interfaces/msg/drone_allocation.hpp"
 
 namespace trackingNode
 {
