@@ -61,7 +61,7 @@
    source install/local_setup.bash
    ```
 5. **Modify mavros multi_uas.launch**
-   - Modify the contents of /opt/ros/$your_distribution$/share/mavros/launch/multi_uas.launch to the following:
+   - Modify the contents of /opt/ros/your_distribution/share/mavros/launch/multi_uas.launch to the following:
    ```launch
    <launch>
     <!-- px4_0 -->
