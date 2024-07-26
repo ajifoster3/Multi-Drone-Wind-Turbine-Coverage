@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-- **Operating System:** Ubuntu 18.04/20.04 or Windows 10
+- **Operating System:** Ubuntu 18.04/20.04
 - **GPU:** NVIDIA GPU with CUDA support
 
 ### Step 1: Install IsaacSim
