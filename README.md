@@ -29,12 +29,12 @@
 1. **Clone the Pegasus Simulator repository:**
     - [Pegasus Simulator Install](https://pegasussimulator.github.io/PegasusSimulator/source/setup/installation.html)
     - Modify the global_coordinates config at PegasusSimulator/extensions/pegasus.simulator/config/configs.yaml to:
-    ```bash
-    global_coordinates:
-    altitude: 230
-    latitude: 55.70972
-    longitude: -4.33519
-    ```
+        ```bash
+        global_coordinates:
+        altitude: 230
+        latitude: 55.70972
+        longitude: -4.33519
+        ```
     
 ### Step 4: Set up Multi-Drone-Wind-Turbine-Coverage
 
