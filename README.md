@@ -6,7 +6,6 @@
 
 - **Operating System:** Ubuntu 18.04/20.04 or Windows 10
 - **GPU:** NVIDIA GPU with CUDA support
-- **Software Dependencies:** Docker, NVIDIA Docker, Python 3.7+
 
 ### Step 1: Install IsaacSim
 
