@@ -50,3 +50,101 @@
    - Use the Nvidia Omniverse interface to create a a local Nucleus Server throught the Nucleus tab
    - Create a directory under your user directory called assets localhost/Users/username/Assets
    - Move the contents of the Multi-Drone-Wind-Turbine-Coverage/Assets directory to localhost/Users/username/Assets
+
+4. **Build the ros2_ws packages**
+   ```bash
+   source /opt/ros/.../install/setup.bash
+   cd ros2_ws
+   colcon build --packages-select offboard_control_interfaces
+   source install/local_setup.bash
+   colcon build
+   source install/local_setup.bash
+   ```
+5. **Modify mavros multi_uas.launch**
+   - Modify the contents of /opt/ros/$your_distribution$/share/mavros/launch/multi_uas.launch to the following:
+   ```bash
+   <launch>
+    <!-- px4_0 -->
+    <group>
+        <arg name="id" default="0" />
+        <arg name="fcu_url" default="udp://:14540@127.0.0.1:14580" />
+        <include file="$(find-pkg-share mavros)/launch/px4.launch">
+            <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+            <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+        </include>
+    </group>
+    <!-- px4_1 -->
+    <group>
+        <arg name="id" default="1" />
+        <arg name="fcu_url" default="udp://:14541@127.0.0.1:14581" />
+        <include file="$(find-pkg-share mavros)/launch/px4.launch">
+            <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+            <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+        </include>
+    </group>
+    <!-- px4_2 -->
+    <group>
+        <arg name="id" default="2" />
+        <arg name="fcu_url" default="udp://:14542@127.0.0.1:14582" />
+        <include file="$(find-pkg-share mavros)/launch/px4.launch">
+            <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+            <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+        </include>
+    </group>
+    <!-- px4_3 -->
+    <group>
+        <arg name="id" default="3" />
+        <arg name="fcu_url" default="udp://:14543@127.0.0.1:14583" />
+        <include file="$(find-pkg-share mavros)/launch/px4.launch">
+            <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+            <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+        </include>
+    </group>
+    <!-- px4_4 -->
+    <group>
+        <arg name="id" default="4" />
+        <arg name="fcu_url" default="udp://:14544@127.0.0.1:14584" />
+        <include file="$(find-pkg-share mavros)/launch/px4.launch">
+            <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+            <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+        </include>
+    </group>
+    </launch>
+   ```  
+   
+7. **Launch UAV system**
+   ```bash
+   ./UAVSystemLaunch.sh
+   ```
+   1. An IsaacSim and Q-groundcontrol window will launch
+   2. Switch tmux window with ctrl+b -> up arrow
+   3. When the top right window displays the following enter the prepolutated command in the top left window
+     ```bash
+     INFO  [commander] Ready for takeoff!
+     INFO  [commander] Ready for takeoff!
+     INFO  [commander] Ready for takeoff!
+     INFO  [commander] Ready for takeoff!
+     INFO  [commander] Ready for takeoff!
+     ```
+   4. Switch tmux window with ctrl+b -> down arrow
+   5. When the top right window displays the following enter the prepolutated command in the bottom left window
+    ```bash
+    INFO  [mavlink] partner IP: 127.0.0.1
+    INFO  [mavlink] partner IP: 127.0.0.1
+    INFO  [mavlink] partner IP: 127.0.0.1
+    INFO  [mavlink] partner IP: 127.0.0.1
+    INFO  [mavlink] partner IP: 127.0.0.1
+    ```
+   6. You should now see (If not please repeat the previous steps)
+   ```bash
+   INFO  [commander] Takeoff detected
+   INFO  [commander] Takeoff detected
+   INFO  [commander] Takeoff detected
+   INFO  [commander] Takeoff detected
+   INFO  [commander] Takeoff detected
+   ```
+   7. Observe the IsaacSim window, once the drones have reached their target altitude, run:
+   ```bash
+   ./CentralPlanner.sh
+   ```
+   
