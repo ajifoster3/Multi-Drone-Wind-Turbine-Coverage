@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-- **Operating System:** 22.04
+- **Operating System:** Ubuntu 22.04
 - **GPU:** NVIDIA GPU with CUDA support
 
 ### Step 1: Install IsaacSim
