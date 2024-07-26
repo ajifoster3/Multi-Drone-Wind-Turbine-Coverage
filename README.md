@@ -118,7 +118,7 @@
    ```
    1. An IsaacSim and Q-groundcontrol window will launch
    2. Switch tmux window with ctrl+b -> up arrow
-   3. When the top right window displays the following enter the prepolutated command in the top left window
+   3. When the top right window displays the following, enter the prepolutated command in the top left window
      ```bash
      INFO  [commander] Ready for takeoff!
      INFO  [commander] Ready for takeoff!
@@ -127,7 +127,7 @@
      INFO  [commander] Ready for takeoff!
      ```
    4. Switch tmux window with ctrl+b -> down arrow
-   5. When the top right window displays the following enter the prepolutated command in the bottom left window
+   5. When the top right window displays the following, enter the prepolutated command in the bottom left window
     ```bash
     INFO  [mavlink] partner IP: 127.0.0.1
     INFO  [mavlink] partner IP: 127.0.0.1
