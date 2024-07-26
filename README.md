@@ -19,7 +19,7 @@
 2. **Download and Install IsaacSim:**
    - [IsaacSim](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_workstation.html)
 
-### Step 3: Install PX4 and mavros
+### Step 2: Install PX4 and mavros
 
 - Install [PX4 Autopilot](https://github.com/PX4/PX4-Autopilot)
 - Install [mavros](https://github.com/mavlink/mavros/blob/ros2/mavros/README.md)
@@ -112,7 +112,7 @@
     </launch>
    ```  
    
-7. **Launch UAV system**
+6. **Launch UAV system**
    ```bash
    ./UAVSystemLaunch.sh
    ```
