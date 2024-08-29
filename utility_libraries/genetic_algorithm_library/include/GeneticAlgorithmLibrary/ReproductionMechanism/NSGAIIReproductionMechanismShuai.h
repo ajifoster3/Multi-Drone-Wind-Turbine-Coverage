@@ -1,5 +1,5 @@
-#ifndef NSGAIIREPRODUCTIONMECHANISM_H
-#define NSGAIIREPRODUCTIONMECHANISM_H
+#ifndef NSGAIIPMXREPRODUCTIONMECHANISMSHUAI_H
+#define NSGAIIPMXREPRODUCTIONMECHANISMSHUAI_H
 
 #include "ReproductionMechanism.h"
 #include "Population.h"
@@ -10,11 +10,15 @@
 #include <vector>
 #include <random>
 #include <map>
+#include <iostream>
+#include <algorithm>
+#include <limits>
+#include <unordered_set>
 
-class NSGAIIReproductionMechanism : public ReproductionMechanism
+class NSGAIIReproductionMechanismShuai : public ReproductionMechanism
 {
 public:
-    NSGAIIReproductionMechanism(
+    NSGAIIReproductionMechanismShuai(
         std::shared_ptr<FitnessCalculator>,
         double citiesPerSalesmanMutationProbability,
         double routeMutationProbability,
@@ -35,7 +39,7 @@ private:
         double getFitness(Fitness index) const;
         double getObjectiveFitness(Fitness index) const;
         Chromosome &getChromosome();
-        bool operator<(const ReproductionChromosome& other) const;
+        bool operator<(const ReproductionChromosome &other) const;
         Chromosome chromosome_;
         std::map<Fitness, double> fitnessValues_;
         double crowdingDistance = 0.0;
@@ -43,9 +47,18 @@ private:
     };
 
     void AssignCrowdingDistance(std::vector<ReproductionChromosome> &front);
-    NSGAIIReproductionMechanism::ReproductionChromosome TournamentSelection(const std::vector<ReproductionChromosome> &population);
+    std::vector<NSGAIIReproductionMechanismShuai::ReproductionChromosome> ElitismSelection(const std::vector<ReproductionChromosome> &population);
+    void ProximityBasedCrossover(
+        ReproductionChromosome &parent1,
+        ReproductionChromosome &parent2,
+        ReproductionChromosome &offspring,
+        std::vector<Position> &initialAgentPoses,
+        std::vector<Position> &cities,
+        bool forward);
     void Mutate(ReproductionChromosome &chromosome, std::vector<Position> &cities);
     std::vector<std::vector<ReproductionChromosome>> FastNonDominatedSort(Population &population, std::vector<Position> &agentStartPositions, std::vector<Position> &cities);
+
+    ReproductionChromosome TournamentSelection(const std::vector<ReproductionChromosome> &population);
 
     void shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness);
     void flipInsert(std::vector<int> &vec, int numberOfCities);

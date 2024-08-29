@@ -1,5 +1,5 @@
-#ifndef NSGAIIREPRODUCTIONMECHANISM_H
-#define NSGAIIREPRODUCTIONMECHANISM_H
+#ifndef NSGAIIPMXREPRODUCTIONMECHANISM_H
+#define NSGAIIPMXREPRODUCTIONMECHANISM_H
 
 #include "ReproductionMechanism.h"
 #include "Population.h"
@@ -10,11 +10,15 @@
 #include <vector>
 #include <random>
 #include <map>
+#include <iostream>
+#include <algorithm>
+#include <limits>
+#include <unordered_set>
 
-class NSGAIIReproductionMechanism : public ReproductionMechanism
+class NSGAIIPMXReproductionMechanism : public ReproductionMechanism
 {
 public:
-    NSGAIIReproductionMechanism(
+    NSGAIIPMXReproductionMechanism(
         std::shared_ptr<FitnessCalculator>,
         double citiesPerSalesmanMutationProbability,
         double routeMutationProbability,
@@ -25,6 +29,7 @@ public:
         std::vector<Position> &initialAgentPoses,
         std::vector<Position> &cities,
     int iterationNumber);
+
 
 private:
     struct ReproductionChromosome
@@ -43,9 +48,12 @@ private:
     };
 
     void AssignCrowdingDistance(std::vector<ReproductionChromosome> &front);
-    NSGAIIReproductionMechanism::ReproductionChromosome TournamentSelection(const std::vector<ReproductionChromosome> &population);
+    std::vector<NSGAIIPMXReproductionMechanism::ReproductionChromosome> ElitismSelection(const std::vector<ReproductionChromosome> &population);
+    void PMXCrossover(ReproductionChromosome& parent1, ReproductionChromosome& parent2, ReproductionChromosome& offspring1, ReproductionChromosome& offspring2, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities);
     void Mutate(ReproductionChromosome &chromosome, std::vector<Position> &cities);
     std::vector<std::vector<ReproductionChromosome>> FastNonDominatedSort(Population &population, std::vector<Position> &agentStartPositions, std::vector<Position> &cities);
+
+    ReproductionChromosome TournamentSelection(const std::vector<ReproductionChromosome> &population);
 
     void shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness);
     void flipInsert(std::vector<int> &vec, int numberOfCities);

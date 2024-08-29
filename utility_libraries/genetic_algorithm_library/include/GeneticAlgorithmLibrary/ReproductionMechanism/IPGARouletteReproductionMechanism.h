@@ -9,12 +9,12 @@
 #include "ReproductionMechanism.h"
 #include "Population.h"
 
-class IPGAElitismReproductionMechanism : public ReproductionMechanism
+class IPGARouletteReproductionMechanism : public ReproductionMechanism
 {
 public:
     class ReproductionChromosome;
 
-    IPGAElitismReproductionMechanism(
+    IPGARouletteReproductionMechanism(
         std::shared_ptr<FitnessCalculator>,
         double citiesPerSalesmanMutationProbability,
         double routeMutationProbability,
@@ -23,9 +23,10 @@ public:
     Population Reproduce(
         Population &oldPopulation,
         std::vector<Position> &initialAgentPoses,
-        std::vector<Position> &cities);
+        std::vector<Position> &cities,
+    int iterationNumber);
         
-    void shuffleReproductionChromosomeList(std::vector<IPGAElitismReproductionMechanism::ReproductionChromosome> &chromosomeFitness);
+    void shuffleReproductionChromosomeList(std::vector<IPGARouletteReproductionMechanism::ReproductionChromosome> &chromosomeFitness);
 
     class ReproductionChromosome
     {

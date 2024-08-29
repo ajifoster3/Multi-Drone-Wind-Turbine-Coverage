@@ -13,6 +13,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+find_package(GeographicLib REQUIRED)
+
 # Include the directory where the header files are located
 include_directories(
   include/GeneticAlgorithmLibrary 
@@ -30,6 +32,11 @@ list(FILTER SOURCES EXCLUDE REGEX "main\\.cpp$")
 add_library(GeneticAlgorithm STATIC ${SOURCES})
 
 add_executable(GeneticAlgorithmExecutable src/main.cpp src/ProblemLogUtility.cpp ${SOURCES})
+
+# Attempt to find the GeographicLib library manually
+find_library(GEOGRAPHICLIB_LIB NAMES GeographicLib libGeographicLib)
+target_link_libraries(GeneticAlgorithmExecutable PRIVATE stdc++fs)
+target_link_libraries(GeneticAlgorithmExecutable PRIVATE ${GEOGRAPHICLIB_LIB})
 
 ## Create google test
 #enable_testing()

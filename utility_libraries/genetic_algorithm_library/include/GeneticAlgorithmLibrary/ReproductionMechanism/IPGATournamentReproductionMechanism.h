@@ -1,5 +1,5 @@
-#ifndef IPGAREPRODUCTIONMECHANISM_H
-#define IPGAREPRODUCTIONMECHANISM_H
+#ifndef IPGAROULETTEREPRODUCTIONMECHANISM_H
+#define IPGAROULETTEREPRODUCTIONMECHANISM_H
 
 #include <algorithm>
 #include <cmath>
@@ -9,12 +9,12 @@
 #include "ReproductionMechanism.h"
 #include "Population.h"
 
-class IPGAReproductionMechanism : public ReproductionMechanism
+class IPGATournamentReproductionMechanism : public ReproductionMechanism
 {
 public:
     class ReproductionChromosome;
 
-    IPGAReproductionMechanism(
+    IPGATournamentReproductionMechanism(
         std::shared_ptr<FitnessCalculator>,
         double citiesPerSalesmanMutationProbability,
         double routeMutationProbability,
@@ -25,8 +25,8 @@ public:
         std::vector<Position> &initialAgentPoses,
         std::vector<Position> &cities,
     int iterationNumber);
-
-    void shuffleReproductionChromosomeList(std::vector<IPGAReproductionMechanism::ReproductionChromosome> &chromosomeFitness);
+        
+    void shuffleReproductionChromosomeList(std::vector<IPGATournamentReproductionMechanism::ReproductionChromosome> &chromosomeFitness);
 
     class ReproductionChromosome
     {
@@ -51,6 +51,7 @@ public:
         double minFitness;
     };
 
+
 private:
     const int sampleSize_;
     const double citiesPerSalesmanMutationProbability_;
@@ -64,5 +65,4 @@ private:
     void randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities);
     void distributeCities(std::vector<int> &vec, int numberOfCities, int numberOfAgents);
 };
-
 #endif

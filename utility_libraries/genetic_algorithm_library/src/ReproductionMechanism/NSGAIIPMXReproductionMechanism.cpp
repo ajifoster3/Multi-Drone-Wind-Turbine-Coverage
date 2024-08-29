@@ -1,9 +1,9 @@
-#include "NSGAIIReproductionMechanism.h"
+#include "NSGAIIPMXReproductionMechanism.h"
 #include <iostream>
 #include <algorithm>
 #include <limits>
 
-NSGAIIReproductionMechanism::NSGAIIReproductionMechanism(
+NSGAIIPMXReproductionMechanism::NSGAIIPMXReproductionMechanism(
     std::shared_ptr<FitnessCalculator> fitnessCalculator,
     double citiesPerSalesmanMutationProbability,
     double routeMutationProbability,
@@ -18,7 +18,7 @@ NSGAIIReproductionMechanism::NSGAIIReproductionMechanism(
     gen_ = std::mt19937(rd());
 }
 
-Population NSGAIIReproductionMechanism::Reproduce(
+Population NSGAIIPMXReproductionMechanism::Reproduce(
     Population &oldPopulation,
     std::vector<Position> &initialAgentPoses,
     std::vector<Position> &cities,
@@ -35,7 +35,7 @@ Population NSGAIIReproductionMechanism::Reproduce(
     newGeneration.reserve(oldPopulation.getPopulationList().size());
     std::vector<ReproductionChromosome> tempNewGeneration;
     tempNewGeneration.reserve(oldPopulation.getPopulationList().size());
-    
+
     for (auto &front : fronts)
     {
         std::sort(front.begin(), front.end(), [](const ReproductionChromosome &a, const ReproductionChromosome &b)
@@ -53,21 +53,39 @@ Population NSGAIIReproductionMechanism::Reproduce(
         }
     }
 
+
+    // Elitism selection
+    auto parents = ElitismSelection(tempNewGeneration);
+
+    newGeneration.insert(newGeneration.end(), parents.begin(), parents.end());
+
     // Reproduction to create the new population
     while (newGeneration.size() < oldPopulation.getPopulationList().size())
     {
-        // Tournament selection
-        ReproductionChromosome parent = TournamentSelection(tempNewGeneration);
+        // Tournament selection to select parents
+        ReproductionChromosome parent1 = TournamentSelection(parents);
+        ReproductionChromosome parent2 = TournamentSelection(parents);
+
+        // PMX crossover
+        ReproductionChromosome offspring1(parent1.getChromosome(), fitnessCalculator_, initialAgentPoses, cities);
+        ReproductionChromosome offspring2(parent2.getChromosome(), fitnessCalculator_, initialAgentPoses, cities);
+        PMXCrossover(parent1, parent2, offspring1, offspring2, initialAgentPoses, cities);
 
         // Mutation
-        ReproductionChromosome offspring = parent;
-        Mutate(offspring, cities);
+        Mutate(offspring1, cities);
+        Mutate(offspring2, cities);
 
-        // Ensure offspring is unique before adding to new generation
+        // Ensure offspring are unique before adding to new generation
         if (std::find_if(newGeneration.begin(), newGeneration.end(), [&](ReproductionChromosome &chr)
-                         { return chr.getChromosome() == offspring.getChromosome(); }) == newGeneration.end())
+                         { return chr.getChromosome() == offspring1.getChromosome(); }) == newGeneration.end())
         {
-            newGeneration.push_back(offspring);
+            newGeneration.push_back(offspring1);
+        }
+
+        if (std::find_if(newGeneration.begin(), newGeneration.end(), [&](ReproductionChromosome &chr)
+                         { return chr.getChromosome() == offspring2.getChromosome(); }) == newGeneration.end())
+        {
+            newGeneration.push_back(offspring2);
         }
     }
 
@@ -80,7 +98,7 @@ Population NSGAIIReproductionMechanism::Reproduce(
     return Population(finalGeneration);
 }
 
-void NSGAIIReproductionMechanism::AssignCrowdingDistance(std::vector<ReproductionChromosome> &front)
+void NSGAIIPMXReproductionMechanism::AssignCrowdingDistance(std::vector<ReproductionChromosome> &front)
 {
     int numObjectives = 2; // Number of objectives: TOTALPATHDISTANCE, MAXPATHLENGTH
     int numChromosomes = front.size();
@@ -115,7 +133,37 @@ void NSGAIIReproductionMechanism::AssignCrowdingDistance(std::vector<Reproductio
     }
 }
 
-NSGAIIReproductionMechanism::ReproductionChromosome NSGAIIReproductionMechanism::TournamentSelection(const std::vector<ReproductionChromosome> &population)
+std::vector<NSGAIIPMXReproductionMechanism::ReproductionChromosome> NSGAIIPMXReproductionMechanism::ElitismSelection(const std::vector<ReproductionChromosome>& population) {
+    std::vector<ReproductionChromosome> selected;
+    int halfPopulationSize = population.size() / 2;
+
+    // Group individuals by rank
+    std::map<int, std::vector<ReproductionChromosome>> rankGroups;
+    for (const auto& individual : population) {
+        rankGroups[individual.rank].push_back(individual);
+    }
+
+    // Select individuals by rank
+    for (auto& rankGroup : rankGroups) {
+        if (selected.size() + rankGroup.second.size() <= halfPopulationSize) {
+            // Add all individuals in this rank
+            selected.insert(selected.end(), rankGroup.second.begin(), rankGroup.second.end());
+        } else {
+            // Sort by crowding distance if needed
+            std::sort(rankGroup.second.begin(), rankGroup.second.end(), [](const ReproductionChromosome& a, const ReproductionChromosome& b) {
+                return a.crowdingDistance > b.crowdingDistance;
+            });
+
+            // Add only the required number of individuals
+            selected.insert(selected.end(), rankGroup.second.begin(), rankGroup.second.begin() + (halfPopulationSize - selected.size()));
+            break;
+        }
+    }
+
+    return selected;
+}
+
+NSGAIIPMXReproductionMechanism::ReproductionChromosome NSGAIIPMXReproductionMechanism::TournamentSelection(const std::vector<ReproductionChromosome> &population)
 {
     std::uniform_int_distribution<> dis(0, population.size() - 1);
 
@@ -131,7 +179,88 @@ NSGAIIReproductionMechanism::ReproductionChromosome NSGAIIReproductionMechanism:
     return best;
 }
 
-void NSGAIIReproductionMechanism::Mutate(ReproductionChromosome &chromosome, std::vector<Position> &cities)
+void NSGAIIPMXReproductionMechanism::PMXCrossover(
+    ReproductionChromosome &parent1,
+    ReproductionChromosome &parent2,
+    ReproductionChromosome &offspring1,
+    ReproductionChromosome &offspring2,
+    std::vector<Position> &initialAgentPoses,
+    std::vector<Position> &cities)
+{
+    auto parent1Genes = parent1.getChromosome().getGenes();
+    auto parent2Genes = parent2.getChromosome().getGenes();
+    auto numberOfGenes = parent1Genes.size();
+    auto fixedElementsStart = numberOfGenes - initialAgentPoses.size();
+
+    std::uniform_int_distribution<> dist(0, fixedElementsStart - 1);
+    int crossoverPoint1 = dist(gen_);
+    int crossoverPoint2 = dist(gen_);
+
+    while (crossoverPoint1 == crossoverPoint2)
+    {
+        crossoverPoint2 = dist(gen_);
+    }
+
+    if (crossoverPoint1 > crossoverPoint2)
+    {
+        std::swap(crossoverPoint1, crossoverPoint2);
+    }
+
+    auto offspring1Genes = parent1Genes;
+    auto offspring2Genes = parent2Genes;
+
+    // PMX Crossover between crossoverPoint1 and crossoverPoint2
+    std::unordered_map<int, int> mapping1;
+    std::unordered_map<int, int> mapping2;
+
+    for (int i = crossoverPoint1; i <= crossoverPoint2; ++i)
+    {
+        offspring1Genes[i] = parent2Genes[i];
+        offspring2Genes[i] = parent1Genes[i];
+        mapping1[parent2Genes[i]] = parent1Genes[i];
+        mapping2[parent1Genes[i]] = parent2Genes[i];
+    }
+
+    auto resolveConflicts = [&](std::vector<int>& offspringGenes, const std::unordered_map<int, int>& mapping, int crossoverPoint1, int crossoverPoint2)
+    {
+        auto resolveGene = [&](int gene) {
+            while (mapping.find(gene) != mapping.end()) {
+                gene = mapping.at(gene);
+            }
+            return gene;
+        };
+
+        for (int i = 0; i < crossoverPoint1; ++i)
+        {
+            offspringGenes[i] = resolveGene(offspringGenes[i]);
+        }
+
+        for (int i = crossoverPoint2 + 1; i < fixedElementsStart; ++i)
+        {
+            offspringGenes[i] = resolveGene(offspringGenes[i]);
+        }
+    };
+
+    resolveConflicts(offspring1Genes, mapping1, crossoverPoint1, crossoverPoint2);
+    resolveConflicts(offspring2Genes, mapping2, crossoverPoint1, crossoverPoint2);
+
+    // Ensure the last initialAgentPoses.size() elements are not modified
+    for (size_t i = fixedElementsStart; i < numberOfGenes; ++i)
+    {
+        offspring1Genes[i] = parent1Genes[i];
+        offspring2Genes[i] = parent2Genes[i];
+    }
+
+    Chromosome newOffspring1(offspring1Genes, parent1.getChromosome().getNumberOfCities());
+    Chromosome newOffspring2(offspring2Genes, parent1.getChromosome().getNumberOfCities());
+
+    offspring1 = ReproductionChromosome(newOffspring1, fitnessCalculator_, initialAgentPoses, cities);
+    offspring2 = ReproductionChromosome(newOffspring2, fitnessCalculator_, initialAgentPoses, cities);
+}
+
+
+
+void NSGAIIPMXReproductionMechanism::Mutate(ReproductionChromosome &chromosome, std::vector<Position> &cities)
 {
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
     auto genes = chromosome.getChromosome().getGenes();
@@ -169,7 +298,7 @@ void NSGAIIReproductionMechanism::Mutate(ReproductionChromosome &chromosome, std
     chromosome.fitnessValues_ = fitnessCalculator_->calculateFitness(newChromosome, cities);
 }
 
-std::vector<std::vector<NSGAIIReproductionMechanism::ReproductionChromosome>> NSGAIIReproductionMechanism::FastNonDominatedSort(Population &population, std::vector<Position> &agentStartPositions, std::vector<Position> &cities)
+std::vector<std::vector<NSGAIIPMXReproductionMechanism::ReproductionChromosome>> NSGAIIPMXReproductionMechanism::FastNonDominatedSort(Population &population, std::vector<Position> &agentStartPositions, std::vector<Position> &cities)
 {
     std::vector<ReproductionChromosome> chromosomes;
     for (auto &chromosome : population.getPopulationList())
@@ -209,7 +338,7 @@ std::vector<std::vector<NSGAIIReproductionMechanism::ReproductionChromosome>> NS
         std::vector<ReproductionChromosome> nextFront;
         for (auto chromosome : fronts[i])
         {
-            for (size_t q = 0; q < dominatedChromosomes.size(); ++q)//auto q : dominatedChromosomes
+            for (size_t q = 0; q < dominatedChromosomes.size(); ++q) // auto q : dominatedChromosomes
             {
                 dominationCount[q]--;
                 if (dominationCount[q] == 0)
@@ -227,13 +356,12 @@ std::vector<std::vector<NSGAIIReproductionMechanism::ReproductionChromosome>> NS
     return fronts;
 }
 
-
-void NSGAIIReproductionMechanism::shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness)
+void NSGAIIPMXReproductionMechanism::shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness)
 {
     std::shuffle(chromosomeFitness.begin(), chromosomeFitness.end(), gen_);
 }
 
-void NSGAIIReproductionMechanism::flipInsert(std::vector<int> &vec, int numberOfCities)
+void NSGAIIPMXReproductionMechanism::flipInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -257,7 +385,7 @@ void NSGAIIReproductionMechanism::flipInsert(std::vector<int> &vec, int numberOf
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void NSGAIIReproductionMechanism::swapInsert(std::vector<int> &vec, int numberOfCities)
+void NSGAIIPMXReproductionMechanism::swapInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -283,7 +411,7 @@ void NSGAIIReproductionMechanism::swapInsert(std::vector<int> &vec, int numberOf
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void NSGAIIReproductionMechanism::lSlideInsert(std::vector<int> &vec, int numberOfCities)
+void NSGAIIPMXReproductionMechanism::lSlideInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -308,7 +436,7 @@ void NSGAIIReproductionMechanism::lSlideInsert(std::vector<int> &vec, int number
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void NSGAIIReproductionMechanism::rSlideInsert(std::vector<int> &vec, int numberOfCities)
+void NSGAIIPMXReproductionMechanism::rSlideInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -333,7 +461,7 @@ void NSGAIIReproductionMechanism::rSlideInsert(std::vector<int> &vec, int number
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void NSGAIIReproductionMechanism::randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities)
+void NSGAIIPMXReproductionMechanism::randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities)
 {
     int range1 = index1;
     int range2 = numberOfCities - (index2 + 1);
@@ -376,7 +504,7 @@ void NSGAIIReproductionMechanism::randomlyInsertSubvector(std::vector<int> &vec,
     vec.insert(vec.begin() + newPosition, tempBlock.begin(), tempBlock.end());
 }
 
-void NSGAIIReproductionMechanism::distributeCities(std::vector<int> &vec, int numberOfCities, int numberOfAgents)
+void NSGAIIPMXReproductionMechanism::distributeCities(std::vector<int> &vec, int numberOfCities, int numberOfAgents)
 {
     std::vector<int> partitionPoints(numberOfAgents - 1);
 
@@ -398,37 +526,39 @@ void NSGAIIReproductionMechanism::distributeCities(std::vector<int> &vec, int nu
     }
 }
 
-NSGAIIReproductionMechanism::ReproductionChromosome::ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities)
+NSGAIIPMXReproductionMechanism::ReproductionChromosome::ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities)
 {
     chromosome_ = chromosome;
     fitnessValues_ = fitnessCalculator->calculateFitness(chromosome, cities);
 }
 
-bool NSGAIIReproductionMechanism::ReproductionChromosome::dominates(const ReproductionChromosome &other) const
+bool NSGAIIPMXReproductionMechanism::ReproductionChromosome::dominates(const ReproductionChromosome &other) const
 {
     return (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) < other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) <= other.fitnessValues_.at(Fitness::MAXPATHLENGTH)) ||
            (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) <= other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) < other.fitnessValues_.at(Fitness::MAXPATHLENGTH));
 }
 
-double NSGAIIReproductionMechanism::ReproductionChromosome::getFitness(Fitness index) const
+double NSGAIIPMXReproductionMechanism::ReproductionChromosome::getFitness(Fitness index) const
 {
     return fitnessValues_.at(index);
 }
 
-double NSGAIIReproductionMechanism::ReproductionChromosome::getObjectiveFitness(Fitness index) const
+double NSGAIIPMXReproductionMechanism::ReproductionChromosome::getObjectiveFitness(Fitness index) const
 {
     return fitnessValues_.at(index);
 }
 
-Chromosome &NSGAIIReproductionMechanism::ReproductionChromosome::getChromosome()
+Chromosome &NSGAIIPMXReproductionMechanism::ReproductionChromosome::getChromosome()
 {
     return chromosome_;
 }
 
-bool NSGAIIReproductionMechanism::ReproductionChromosome::operator<(const ReproductionChromosome& other) const {
+bool NSGAIIPMXReproductionMechanism::ReproductionChromosome::operator<(const ReproductionChromosome &other) const
+{
     auto primary_fitness = getFitness(Fitness::MAXPATHLENGTH); // Replace with actual fitness enum or identifier
     auto other_primary_fitness = other.getFitness(Fitness::TOTALPATHDISTANCE);
-    if (primary_fitness != other_primary_fitness) {
+    if (primary_fitness != other_primary_fitness)
+    {
         return primary_fitness < other_primary_fitness;
     }
     return getFitness(Fitness::TOTALPATHDISTANCE) < other.getFitness(Fitness::TOTALPATHDISTANCE); // Replace with actual fitness enum or identifier

@@ -18,7 +18,8 @@ IPGAHorizontalReproductionMechanism::IPGAHorizontalReproductionMechanism(std::sh
 Population IPGAHorizontalReproductionMechanism::Reproduce(
     Population &oldPopulation,
     std::vector<Position> &initialAgentPoses,
-    std::vector<Position> &cities)
+    std::vector<Position> &cities,
+    int iterationNumber)
 {
     teamSize_ = initialAgentPoses.size();
     auto libary = getHighValueSubChromosomeLibrary(oldPopulation, cities);

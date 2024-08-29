@@ -30,8 +30,8 @@ public:
     int sampleSize;
     int populationSize;
     int numberOfIterations;
-
-
+    double alphaObjective;
+    double alphaFitness;
 
 private:
     std::shared_ptr<EncodingMechanism> chromosomeBuilder_;

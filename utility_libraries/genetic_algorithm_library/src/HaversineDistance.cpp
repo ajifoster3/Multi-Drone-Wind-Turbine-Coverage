@@ -1,39 +1,22 @@
 #include "HaversineDistance.h"
+#include <GeographicLib/Geodesic.hpp>
 #include <cmath>
 
 namespace HaversineDistance
 {
-    // Function to convert degrees to radians
-    double degToRad(double degrees)
-    {
-        return degrees * M_PI / 180.0;
-    }
+    using namespace GeographicLib;
 
-    // Haversine formula to calculate distance between two points on the Earth in meters
+    // Function to calculate distance between two points on the Earth in meters
     double calculateDistance(double lat1, double lon1, double lat2, double lon2)
     {
-        // Earth's radius in kilometers
-        const double R = 6371.0;
+        // Create a Geodesic object for WGS84 (the most common Earth model)
+        const Geodesic& geod = Geodesic::WGS84();
+        double distance;
 
-        // Convert latitude and longitude from degrees to radians
-        lat1 = degToRad(lat1);
-        lon1 = degToRad(lon1);
-        lat2 = degToRad(lat2);
-        lon2 = degToRad(lon2);
+        // Calculate the distance using GeographicLib
+        geod.Inverse(lat1, lon1, lat2, lon2, distance);
 
-        // Differences in coordinates
-        double deltaLat = lat2 - lat1;
-        double deltaLon = lon2 - lon1;
-
-        // Haversine formula
-        double a = sin(deltaLat / 2) * sin(deltaLat / 2) +
-                   cos(lat1) * cos(lat2) *
-                       sin(deltaLon / 2) * sin(deltaLon / 2);
-        double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-        double distance = R * c;
-
-        // Convert distance to meters
-        return distance * 1000;
+        return distance; // Distance in meters
     }
 
     // Calculate distance between two points on the Earth including altitude difference in meters
@@ -41,17 +24,12 @@ namespace HaversineDistance
     {
         double surfaceDistance = calculateDistance(lat1, lon1, lat2, lon2);
 
-        // Difference in altitude remains in meters
+        // Difference in altitude in meters
         double deltaAlt = alt2 - alt1;
 
         // Calculate total distance considering altitude difference
-        // Using Pythagorean theorem: a^2 + b^2 = c^2, where
-        // a = surface distance in meters (converted by multiplying by 1000),
-        // b = altitude difference in meters,
-        // c = total distance in meters.
         double totalDistance = sqrt(pow(surfaceDistance, 2) + pow(deltaAlt, 2));
 
-        // The total distance is already in meters, so we return it directly
-        return totalDistance;
+        return totalDistance; // Total distance in meters
     }
 }

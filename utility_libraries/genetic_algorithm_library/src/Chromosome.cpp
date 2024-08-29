@@ -1,9 +1,17 @@
 #include "Chromosome.h"
+#include <FitnessCalculator.h>
 
 Chromosome::Chromosome(std::vector<int> &genes, int numberOfCites)
 {
     genes_ = genes;
     numberOfCites_ = numberOfCites;
+    for (int i = numberOfCites_; i < genes_.size() - numberOfCites_; ++i)
+    {
+        if (genes_[i] == 0)
+        {
+            throw std::runtime_error("The final numberOfCites elements cannot be 0.");
+        }
+    }
 }
 
 int Chromosome::getGenesAtIndex(int i)
@@ -34,7 +42,12 @@ int Chromosome::getNumberOfAgents()
     return genes_.size() - numberOfCites_;
 }
 
-bool Chromosome::operator==(const Chromosome& other) const
+void Chromosome::setGenes(const std::vector<int> &genes)
+{
+    genes_ = genes;
+}
+
+bool Chromosome::operator==(const Chromosome &other) const
 {
     return (genes_ == other.genes_) && (numberOfCites_ == other.numberOfCites_);
 }

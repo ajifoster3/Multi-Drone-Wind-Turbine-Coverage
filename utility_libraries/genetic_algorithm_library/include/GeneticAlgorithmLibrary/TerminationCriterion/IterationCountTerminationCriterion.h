@@ -16,7 +16,7 @@ private:
 
 public:
     IterationCountTerminationCriterion(int numberOfIterations);
-    bool isTerminationCriterionMet(std::vector<double>& populationFitnesses);
+    bool isTerminationCriterionMet(std::vector<std::map<Fitness, double>>& populationFitnesses);
 };
 
 #endif

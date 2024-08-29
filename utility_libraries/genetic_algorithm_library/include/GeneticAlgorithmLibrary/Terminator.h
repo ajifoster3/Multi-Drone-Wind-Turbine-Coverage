@@ -14,7 +14,7 @@ public:
     Terminator(){};
     Terminator(std::shared_ptr<TerminationCriterion> terminationCriteria)
         : terminationCriteria_(std::move(terminationCriteria)){};
-    bool isTerminationCriteriaMet(std::vector<double>& populationFitnesses);
+    bool isTerminationCriteriaMet(std::vector<std::map<Fitness, double>>& populationFitnesses);
 
 private:
     std::shared_ptr<TerminationCriterion> terminationCriteria_;

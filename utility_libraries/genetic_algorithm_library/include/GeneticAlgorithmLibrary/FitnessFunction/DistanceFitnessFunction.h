@@ -50,6 +50,7 @@ private:
         std::vector<int> &path,
         int agentID,
         std::vector<Position> &cities);
+    double calculateDroneDistance(double vertical_distance, double horizontal_distance, double ascending_speed = 3.0, double descending_speed = 1.5, double horizontal_speed = 11.0);
 };
 
 #endif

@@ -1,11 +1,10 @@
-#include "IPGAReproductionMechanism.h"
+#include "IPGATournamentReproductionMechanism.h"
 #include <iostream>
 
-IPGAReproductionMechanism::IPGAReproductionMechanism(
-    std::shared_ptr<FitnessCalculator> fitnessCalculator,
-    double citiesPerSalesmanMutationProbability,
-    double routeMutationProbability,
-    int sampleSize)
+IPGATournamentReproductionMechanism::IPGATournamentReproductionMechanism(std::shared_ptr<FitnessCalculator> fitnessCalculator,
+                                                                   double citiesPerSalesmanMutationProbability,
+                                                                   double routeMutationProbability,
+                                                                   int sampleSize)
     : ReproductionMechanism(std::move(fitnessCalculator)),
       citiesPerSalesmanMutationProbability_(citiesPerSalesmanMutationProbability),
       routeMutationProbability_(routeMutationProbability),
@@ -14,8 +13,7 @@ IPGAReproductionMechanism::IPGAReproductionMechanism(
     std::random_device rd;
     gen_ = std::mt19937(rd());
 };
-
-Population IPGAReproductionMechanism::Reproduce(
+Population IPGATournamentReproductionMechanism::Reproduce(
     Population &oldPopulation,
     std::vector<Position> &initialAgentPoses,
     std::vector<Position> &cities,
@@ -25,71 +23,87 @@ Population IPGAReproductionMechanism::Reproduce(
     reproductionChromosomes.reserve(oldPopulation.getPopulationList().size());
     for (auto chromosome : oldPopulation.getPopulationList())
     {
-        reproductionChromosomes.emplace_back(ReproductionChromosome{chromosome, fitnessCalculator_, initialAgentPoses, cities});
+        reproductionChromosomes.push_back(ReproductionChromosome{chromosome, fitnessCalculator_, initialAgentPoses, cities});
     }
 
     shuffleReproductionChromosomeList(reproductionChromosomes);
 
     std::vector<Chromosome> newGeneration{};
-    newGeneration.reserve(oldPopulation.getPopulationList().size());
+    newGeneration.reserve(reproductionChromosomes.size());
 
     while (!reproductionChromosomes.empty())
     {
         size_t safeSampleSize = std::min(sampleSize_, (int)reproductionChromosomes.size());
         auto firstSample = std::vector<ReproductionChromosome>(reproductionChromosomes.begin(), reproductionChromosomes.begin() + safeSampleSize);
-        auto selectedChromosome = std::max_element(firstSample.begin(), firstSample.end(), [](const auto &a, const auto &b)
-                                                   { return a.getFitness() < b.getFitness(); });
+        auto selectedChromosome = std::min_element(firstSample.begin(), firstSample.end(), [](const auto &a, const auto &b)
+                                                   { return a.getFitness()[Fitness::MAXPATHTOTALPATHWEIGHTEDSUM] < b.getFitness()[Fitness::MAXPATHTOTALPATHWEIGHTEDSUM]; });
 
         ReproductionChromosome selected = *selectedChromosome;
 
         std::vector<ReproductionChromosome> cloneChromosomes(safeSampleSize, selected);
 
-        std::uniform_real_distribution<double> distribution(0.0, 1.0);
-
         for (size_t i = 0; i < safeSampleSize; i++)
         {
             auto genes = cloneChromosomes[i].getChromosome().getGenes();
 
-            if (distribution(gen_) < routeMutationProbability_)
+            // Perform specific mutations based on the index
+            switch (i % 10)
             {
-                auto roulette = distribution(gen_);
-                if (roulette < 0.25)
-                {
-                    flipInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
-                }
-                else if (roulette < 0.5)
-                {
-                    swapInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
-                }
-                else if (roulette < 0.75)
-                {
-                    lSlideInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
-                }
-                else
-                {
-                    rSlideInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
-                }
-            }
-            if (distribution(gen_) < citiesPerSalesmanMutationProbability_)
-            {
+            case 0:
+                // Do nothing
+                break;
+            case 1:
+                flipInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
+                break;
+            case 2:
+                swapInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
+                break;
+            case 3:
+                lSlideInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
+                break;
+            case 4:
+                rSlideInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
+                break;
+            case 5:
                 distributeCities(genes, cloneChromosomes[i].getChromosome().getNumberOfCities(), cloneChromosomes[i].getChromosome().getNumberOfAgents());
+                break;
+            case 6:
+                flipInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
+                distributeCities(genes, cloneChromosomes[i].getChromosome().getNumberOfCities(), cloneChromosomes[i].getChromosome().getNumberOfAgents());
+                break;
+            case 7:
+                swapInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
+                distributeCities(genes, cloneChromosomes[i].getChromosome().getNumberOfCities(), cloneChromosomes[i].getChromosome().getNumberOfAgents());
+                break;
+            case 8:
+                lSlideInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
+                distributeCities(genes, cloneChromosomes[i].getChromosome().getNumberOfCities(), cloneChromosomes[i].getChromosome().getNumberOfAgents());
+                break;
+            case 9:
+                rSlideInsert(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
+                distributeCities(genes, cloneChromosomes[i].getChromosome().getNumberOfCities(), cloneChromosomes[i].getChromosome().getNumberOfAgents());
+                break;
             }
-            newGeneration.emplace_back(Chromosome(genes, cloneChromosomes[i].getChromosome().getNumberOfCities()));
-        }
 
+            Chromosome tempChromosome(genes, cloneChromosomes[i].getChromosome().getNumberOfCities());
+            if (std::find(newGeneration.begin(), newGeneration.end(), tempChromosome) == newGeneration.end())
+            {
+                newGeneration.emplace_back(tempChromosome);
+            }
+        }
         reproductionChromosomes.erase(reproductionChromosomes.begin(), reproductionChromosomes.begin() + safeSampleSize);
     }
-
     return Population(newGeneration);
 }
 
-void IPGAReproductionMechanism::shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness)
+
+void IPGATournamentReproductionMechanism::shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness)
 {
 
     std::shuffle(chromosomeFitness.begin(), chromosomeFitness.end(), gen_);
 }
 
-void IPGAReproductionMechanism::flipInsert(std::vector<int> &vec, int numberOfCities)
+void IPGATournamentReproductionMechanism::flipInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -114,7 +128,7 @@ void IPGAReproductionMechanism::flipInsert(std::vector<int> &vec, int numberOfCi
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void IPGAReproductionMechanism::swapInsert(std::vector<int> &vec, int numberOfCities)
+void IPGATournamentReproductionMechanism::swapInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -143,7 +157,7 @@ void IPGAReproductionMechanism::swapInsert(std::vector<int> &vec, int numberOfCi
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void IPGAReproductionMechanism::lSlideInsert(std::vector<int> &vec, int numberOfCities)
+void IPGATournamentReproductionMechanism::lSlideInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -173,7 +187,7 @@ void IPGAReproductionMechanism::lSlideInsert(std::vector<int> &vec, int numberOf
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void IPGAReproductionMechanism::rSlideInsert(std::vector<int> &vec, int numberOfCities)
+void IPGATournamentReproductionMechanism::rSlideInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -203,7 +217,7 @@ void IPGAReproductionMechanism::rSlideInsert(std::vector<int> &vec, int numberOf
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void IPGAReproductionMechanism::randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities)
+void IPGATournamentReproductionMechanism::randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities)
 {
     int range1 = index1;
     int range2 = numberOfCities - (index2 + 1);
@@ -246,7 +260,7 @@ void IPGAReproductionMechanism::randomlyInsertSubvector(std::vector<int> &vec, i
     vec.insert(vec.begin() + newPosition, tempBlock.begin(), tempBlock.end());
 }
 
-void IPGAReproductionMechanism::distributeCities(std::vector<int> &vec, int numberOfCities, int numberOfAgents)
+void IPGATournamentReproductionMechanism::distributeCities(std::vector<int> &vec, int numberOfCities, int numberOfAgents)
 {
 
     std::vector<int> partitionPoints(numberOfAgents - 1);
@@ -269,20 +283,20 @@ void IPGAReproductionMechanism::distributeCities(std::vector<int> &vec, int numb
     }
 }
 
-IPGAReproductionMechanism::ReproductionPopulation::ReproductionPopulation(Population population)
+IPGATournamentReproductionMechanism::ReproductionPopulation::ReproductionPopulation(Population population)
 {
     population_;
 }
 
-IPGAReproductionMechanism::ReproductionChromosome::ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities)
+IPGATournamentReproductionMechanism::ReproductionChromosome::ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities)
 {
     chromosome_ = chromosome;
     fitness_ = fitnessCalculator->calculateFitness(chromosome, cities);
 }
 
-std::map<Fitness, double> IPGAReproductionMechanism::ReproductionChromosome::getFitness() const { return fitness_; };
+std::map<Fitness, double> IPGATournamentReproductionMechanism::ReproductionChromosome::getFitness() const { return fitness_; };
 
-Chromosome &IPGAReproductionMechanism::ReproductionChromosome::getChromosome()
+Chromosome &IPGATournamentReproductionMechanism::ReproductionChromosome::getChromosome()
 {
     return chromosome_;
 }

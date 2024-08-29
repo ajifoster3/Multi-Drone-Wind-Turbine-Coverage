@@ -15,6 +15,10 @@ class MultiDistanceFitnessFunction : public FitnessFunction
 {
 
 public:
+    MultiDistanceFitnessFunction(
+        double alphaObjective,
+        double alphaFitness);
+
     std::map<Fitness, double> calulateChromosomeFitness(
         Chromosome &,
         std::vector<Position> &cities);
@@ -48,6 +52,12 @@ private:
 
     std::unordered_map<std::pair<int, int>, double, pair_hash> initialPoseCostMap_;
     std::unordered_map<std::pair<int, int>, double, pair_hash> cityCostMap_;
+    std::unordered_map<std::pair<int, int>, double, pair_hash> initialPoseVerticalCostMap_;
+    std::unordered_map<std::pair<int, int>, double, pair_hash> cityVerticalCostMap_;
+    double alphaObjective;
+    double alphaFitness;
+
+    double calculateDroneDistance(double vertical_distance, double horizontal_distance, double ascending_speed = 3.0, double descending_speed = 1.5, double horizontal_speed = 11.0);
 
     const std::vector<double> getPathLengths(
         std::vector<std::vector<int>> &paths,

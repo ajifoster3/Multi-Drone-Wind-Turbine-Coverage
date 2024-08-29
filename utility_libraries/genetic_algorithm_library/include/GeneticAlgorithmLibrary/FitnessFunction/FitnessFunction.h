@@ -23,6 +23,7 @@ public:
         std::vector<Position> &cities) = 0;
     virtual double calculateSubChromosomeFitness(std::vector<int> &subChromosome, int robotId, std::vector<Position> cities) = 0;
     virtual void calculateCostMap(std::vector<Position> &cities, std::vector<Position> &initialPositions) = 0;
+    virtual double calculateDroneDistance(double vertical_distance, double horizontal_distance, double ascending_speed, double descending_speed, double horizontal_speed) = 0;
 };
 
 #endif
