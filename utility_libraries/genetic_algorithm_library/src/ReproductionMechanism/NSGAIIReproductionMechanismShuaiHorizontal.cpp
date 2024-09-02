@@ -901,23 +901,48 @@ void NSGAIIReproductionMechanismShuaiHorizontal::distributeCitiesStep(std::vecto
 {
     std::vector<int> citiesPerAgent;
 
+    int largestPath = 0;
     for (size_t i = numberOfCities; i < numberOfCities+numberOfAgents; i++)
     {
+        if(outVec[i] > largestPath)
+        {
+            largestPath = outVec[i];
+        }
         citiesPerAgent.emplace_back(outVec[i]);
     }
 
-    std::uniform_int_distribution<> distr(numberOfCities-1, numberOfCities+numberOfAgents-1);
+    std::uniform_int_distribution<> distr(numberOfCities, numberOfCities+numberOfAgents-1);
+    
+    double factor = 5.0;
+    double k = 2.0;
+
+    double p = 1.0 - exp(-k * (numberOfAgents * factor) / numberOfCities);
+    
+    std::geometric_distribution<> geodis(p);
+    
+    int donation {geodis(gen_)+1};
+    
+    float alpha = 0.6;
+    while(donation >= largestPath)
+    {
+        std::cout << "FailPing" << std::endl;
+        donation = geodis(gen_)+1;
+    }
+    
+    std::cout << "donation: " << donation << std::endl;
     
     int donor = distr(gen_);
-    while(outVec[donor] <= 1){
+    while(outVec[donor] <= donation){
         donor = distr(gen_);
     }
     int donee = distr(gen_);
     while(donee == donor){
         donee = distr(gen_);
     }
-    outVec[donor] -=1;
-    outVec[donee] +=1;
+    
+    
+    outVec[donor] -=donation;
+    outVec[donee] +=donation;
 
 }
 
