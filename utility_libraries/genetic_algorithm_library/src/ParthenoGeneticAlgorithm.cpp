@@ -130,6 +130,15 @@ ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfi
             sampleSize_);
         reproducer_ = Reproducer(reproductionMechanism_);
     }
+    else if (config.reproductionMechanism == ReproductionMechanisms::NSGAII_REPRODUCTION_MECHANISM_SHUAI_HORIZONTAL_FOCUSED)
+    {
+        reproductionMechanism_ = std::make_shared<NSGAIIReproductionMechanismShuaiHorizontalFocused>(
+            std::make_shared<FitnessCalculator>(fitnessCalculator_),
+            citiesPerSalesmanMutationProbability_,
+            routeMutationProbability_,
+            sampleSize_);
+        reproducer_ = Reproducer(reproductionMechanism_);
+    }
     if (config.terminationCriteria == TerminationCriteria::ITERATION_COUNT_TERMINATION_CRITERION)
     {
         terminator_ = Terminator{terminationCriterion_ = std::shared_ptr<TerminationCriterion>(new IterationCountTerminationCriterion(numberOfIterations_))};

@@ -1,5 +1,5 @@
-#ifndef NSGAIIPMXREPRODUCTIONMECHANISMSHUAIHORIZONTAL_H
-#define NSGAIIPMXREPRODUCTIONMECHANISMSHUAIHORIZONTAL_H
+#ifndef NSGAIIPMXREPRODUCTIONMECHANISMSHUAIHORIZONTALFOCUSED_H
+#define NSGAIIPMXREPRODUCTIONMECHANISMSHUAIHORIZONTALFOCUSED_H
 
 #include "ReproductionMechanism.h"
 #include "Population.h"
@@ -15,16 +15,18 @@
 #include <limits>
 #include <unordered_set>
 
-class NSGAIIReproductionMechanismShuaiHorizontal : public ReproductionMechanism
+class NSGAIIReproductionMechanismShuaiHorizontalFocused : public ReproductionMechanism
 {
 public:
-    NSGAIIReproductionMechanismShuaiHorizontal(
+    NSGAIIReproductionMechanismShuaiHorizontalFocused(
         std::shared_ptr<FitnessCalculator>,
         double citiesPerSalesmanMutationProbability,
         double routeMutationProbability,
         int sampleSize);
 
     Population Reproduce(Population &oldPopulation, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities, int iterationNumber);
+
+    
 
 private:
     int teamSize_;
@@ -44,8 +46,9 @@ private:
         int rank = 0;
     };
 
+
     void AssignCrowdingDistance(std::vector<ReproductionChromosome> &front);
-    std::vector<NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome> ElitismSelection(const std::vector<ReproductionChromosome> &population);
+    std::vector<NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome> ElitismSelection(const std::vector<ReproductionChromosome> &population);
     void ProximityBasedCrossover(
         ReproductionChromosome &parent1,
         ReproductionChromosome &parent2,
@@ -53,12 +56,23 @@ private:
         std::vector<Position> &initialAgentPoses,
         std::vector<Position> &cities,
         bool forward);
+
+    void MutationProximityBasedCrossover(ReproductionChromosome &parent1, ReproductionChromosome &parent2, ReproductionChromosome &offspring, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities, bool forward);
+
+    void ProximityBasedCrossoverFixed(
+    ReproductionChromosome & parent1,
+    ReproductionChromosome & parent2,
+    ReproductionChromosome & offspring,
+    std:: vector<Position> & initialAgentPoses,
+    std:: vector<Position> & cities,
+    bool forward);
+    
     void Mutate(ReproductionChromosome &chromosome, std::vector<Position> &cities, std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> library);
     std::vector<std::vector<ReproductionChromosome>> FastNonDominatedSort(Population &population, std::vector<Position> &agentStartPositions, std::vector<Position> &cities);
 
     ReproductionChromosome TournamentSelection(const std::vector<ReproductionChromosome> &population);
 
-    NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome HighMinMaxTournamentSelection(const std::vector<ReproductionChromosome> &population);
+    NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome HighMinMaxTournamentSelection(const std::vector<ReproductionChromosome> &population);
 
     void shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness);
     void flipInsert(std::vector<int> &vec, int numberOfCities);
@@ -67,11 +81,6 @@ private:
     void rSlideInsert(std::vector<int> &vec, int numberOfCities);
     void randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities);
     void distributeCities(std::vector<int> &vec, int numberOfCities, int numberOfAgents);
-    void distributeCitiesMinSum(std::vector<int> &outVec, int numberOfCities, int numberOfAgents);
-
-    void distributeCitiesStep(std::vector<int> &outVec, int numberOfCities, int numberOfAgents);
-
-    void distributeCitiesBalanced(std::vector<int> &outVec, int numberOfCities, int numberOfAgents);
 
     std::vector<int> horizontalGeneTransfer(std::vector<int> &chromosome, std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> &library, int numberOfCities, std::vector<Position> &cities);
 

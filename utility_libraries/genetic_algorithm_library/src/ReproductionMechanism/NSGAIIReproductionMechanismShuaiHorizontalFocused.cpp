@@ -1,10 +1,10 @@
-#include "NSGAIIReproductionMechanismShuaiHorizontal.h"
+#include "NSGAIIReproductionMechanismShuaiHorizontalFocused.h"
 #include <iostream>
 #include <algorithm>
 #include <limits>
 #include <set>
 
-NSGAIIReproductionMechanismShuaiHorizontal::NSGAIIReproductionMechanismShuaiHorizontal(
+NSGAIIReproductionMechanismShuaiHorizontalFocused::NSGAIIReproductionMechanismShuaiHorizontalFocused(
     std::shared_ptr<FitnessCalculator> fitnessCalculator,
     double citiesPerSalesmanMutationProbability,
     double routeMutationProbability,
@@ -19,7 +19,7 @@ NSGAIIReproductionMechanismShuaiHorizontal::NSGAIIReproductionMechanismShuaiHori
     gen_ = std::mt19937(rd());
 }
 
-Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
+Population NSGAIIReproductionMechanismShuaiHorizontalFocused::Reproduce(
     Population &oldPopulation,
     std::vector<Position> &initialAgentPoses,
     std::vector<Position> &cities,
@@ -58,14 +58,15 @@ Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
         }
     }
 
+    // Elitism selection
     auto parents = ElitismSelection(tempNewGeneration);
 
     newGeneration.insert(newGeneration.end(), parents.begin(), parents.end());
 
-    size_t targetPopulationSize = oldPopulation.getPopulationList().size();
-
-    while (newGeneration.size() < targetPopulationSize)
+    // Reproduction to create the new population
+    while (newGeneration.size() < oldPopulation.getPopulationList().size())
     {
+        // Tournament selection to select parents
         ReproductionChromosome parent1 = TournamentSelection(parents);
         while (isParentMalformed(parent1, initialAgentPoses.size()))
         {
@@ -81,8 +82,8 @@ Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
         ReproductionChromosome offspring2(parent2.getChromosome(), fitnessCalculator_, initialAgentPoses, cities);
 
         std::uniform_real_distribution<double> distribution(0.0, 1.0);
-        auto roulette = distribution(gen_);
-        if (roulette < 0.5)
+
+        if (distribution(gen_) < 0.95)
         {
             // PMX crossover
             ProximityBasedCrossover(parent1, parent2, offspring1, initialAgentPoses, cities, true);
@@ -92,7 +93,7 @@ Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
             Mutate(offspring1, cities, libary);
             Mutate(offspring2, cities, libary);
         }
-        else if (roulette < 0.75)
+        else
         {
             ReproductionChromosome parent1 = HighMinMaxTournamentSelection(parents);
             while (isParentMalformed(parent1, initialAgentPoses.size()))
@@ -104,60 +105,26 @@ Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
             {
                 parent2 = HighMinMaxTournamentSelection(parents);
             }
-            std::vector<int> offspringGenes1;
-            offspringGenes1 = parent1.getChromosome().getGenes();
-            std::vector<int> offspringGenes2;
-            offspringGenes2 = parent2.getChromosome().getGenes();
-            offspring1.chromosome_.setGenes(horizontalGeneTransfer(offspringGenes1, libary, parent1.getChromosome().getNumberOfCities(), cities));
-            offspring2.chromosome_.setGenes(horizontalGeneTransfer(offspringGenes1, libary, parent2.getChromosome().getNumberOfCities(), cities));
-        }
-        else
-        {
-            Mutate(offspring1, cities, libary);
-            Mutate(offspring2, cities, libary);
-        }
-
-        // Check uniqueness and ensure we don't exceed targetPopulationSize
-        auto it1 = std::find_if(newGeneration.begin(), newGeneration.end(),
-                                [&offspring1](ReproductionChromosome &existing)
-                                {
-                                    return existing.getChromosome().getGenes() == offspring1.getChromosome().getGenes();
-                                });
-
-        if (it1 == newGeneration.end())
-        {
-            newGeneration.push_back(offspring1);
-
-            // Check if the population size has reached the limit
-            if (newGeneration.size() >= targetPopulationSize)
+            if (distribution(gen_) < 0.5)
             {
-                break;
+                std::vector<int> offspringGenes1;
+                offspringGenes1 = parent1.getChromosome().getGenes();
+                std::vector<int> offspringGenes2;
+                offspringGenes2 = parent2.getChromosome().getGenes();
+                offspring1.chromosome_.setGenes(horizontalGeneTransfer(offspringGenes1, libary, parent1.getChromosome().getNumberOfCities(), cities));
+                offspring2.chromosome_.setGenes(horizontalGeneTransfer(offspringGenes1, libary, parent2.getChromosome().getNumberOfCities(), cities));
+            }
+            else
+            {
+                // PMX crossover
+                ProximityBasedCrossoverFixed(parent1, parent2, offspring1, initialAgentPoses, cities, true);
+                ProximityBasedCrossoverFixed(parent1, parent2, offspring2, initialAgentPoses, cities, false);
             }
         }
-        else
-        {
-            auto a = 1;
-        }
 
-        auto it2 = std::find_if(newGeneration.begin(), newGeneration.end(),
-                                [&offspring2](ReproductionChromosome &existing)
-                                {
-                                    return existing.getChromosome().getGenes() == offspring2.getChromosome().getGenes();
-                                });
+        newGeneration.push_back(offspring1);
 
-        if (it2 == newGeneration.end())
-        {
-            newGeneration.push_back(offspring2);
-
-            // Check if the population size has reached the limit
-            if (newGeneration.size() >= targetPopulationSize)
-            {
-                break;
-            }
-        }else
-        {
-            auto a = 1;
-        }
+        newGeneration.push_back(offspring2);
     }
 
     std::vector<Chromosome> finalGeneration;
@@ -169,7 +136,7 @@ Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
     return Population(finalGeneration);
 }
 
-bool NSGAIIReproductionMechanismShuaiHorizontal::isParentMalformed(ReproductionChromosome chromosome, int teamSize)
+bool NSGAIIReproductionMechanismShuaiHorizontalFocused::isParentMalformed(ReproductionChromosome chromosome, int teamSize)
 {
     const std::vector<int> &genes = chromosome.getChromosome().getGenes();
     int numberOfCities = chromosome.getChromosome().getNumberOfCities();
@@ -211,7 +178,7 @@ bool NSGAIIReproductionMechanismShuaiHorizontal::isParentMalformed(ReproductionC
     return false;
 }
 
-bool NSGAIIReproductionMechanismShuaiHorizontal::isParentMalformed(Chromosome chromosome, int teamSize)
+bool NSGAIIReproductionMechanismShuaiHorizontalFocused::isParentMalformed(Chromosome chromosome, int teamSize)
 {
     const std::vector<int> &genes = chromosome.getGenes();
     int numberOfCities = chromosome.getNumberOfCities();
@@ -253,7 +220,7 @@ bool NSGAIIReproductionMechanismShuaiHorizontal::isParentMalformed(Chromosome ch
     return false;
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::AssignCrowdingDistance(std::vector<ReproductionChromosome> &front)
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::AssignCrowdingDistance(std::vector<ReproductionChromosome> &front)
 {
     int numObjectives = 2; // Number of objectives: TOTALPATHDISTANCE, MAXPATHLENGTH
     int numChromosomes = front.size();
@@ -288,7 +255,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::AssignCrowdingDistance(std::vec
     }
 }
 
-std::vector<NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome> NSGAIIReproductionMechanismShuaiHorizontal::ElitismSelection(const std::vector<ReproductionChromosome> &population)
+std::vector<NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome> NSGAIIReproductionMechanismShuaiHorizontalFocused::ElitismSelection(const std::vector<ReproductionChromosome> &population)
 {
     std::vector<ReproductionChromosome> selected;
     int halfPopulationSize = population.size() / 2;
@@ -323,7 +290,7 @@ std::vector<NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome> 
     return selected;
 }
 
-NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome NSGAIIReproductionMechanismShuaiHorizontal::TournamentSelection(const std::vector<ReproductionChromosome> &population)
+NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome NSGAIIReproductionMechanismShuaiHorizontalFocused::TournamentSelection(const std::vector<ReproductionChromosome> &population)
 {
     std::uniform_int_distribution<> dis(0, population.size() - 1);
 
@@ -339,7 +306,7 @@ NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome NSGAIIReprodu
     return best;
 }
 
-NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome NSGAIIReproductionMechanismShuaiHorizontal::HighMinMaxTournamentSelection(const std::vector<ReproductionChromosome> &population)
+NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome NSGAIIReproductionMechanismShuaiHorizontalFocused::HighMinMaxTournamentSelection(const std::vector<ReproductionChromosome> &population)
 {
     std::uniform_int_distribution<> dis(0, population.size() - 1);
 
@@ -355,7 +322,7 @@ NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome NSGAIIReprodu
     return best;
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::ProximityBasedCrossover(
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::ProximityBasedCrossover(
     ReproductionChromosome &parent1,
     ReproductionChromosome &parent2,
     ReproductionChromosome &offspring,
@@ -400,7 +367,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::ProximityBasedCrossover(
         if (nextIndexParent1 >= 0 && nextIndexParent1 < parent1Genes.size())
         {
             int candidateCity = parent1Genes[nextIndexParent1];
-            double distance = HaversineDistance::calculateDistance(
+            double distance = HaversineDistance::calculateDroneHaversineDistance(
                 cities[currentCity].latitude, cities[currentCity].longitude, cities[currentCity].altitude,
                 cities[candidateCity].latitude, cities[candidateCity].longitude, cities[candidateCity].altitude);
 
@@ -415,7 +382,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::ProximityBasedCrossover(
         if (nextIndexParent2 >= 0 && nextIndexParent2 < parent2Genes.size())
         {
             int candidateCity = parent2Genes[nextIndexParent2];
-            double distance = HaversineDistance::calculateDistance(
+            double distance = HaversineDistance::calculateDroneHaversineDistance(
                 cities[currentCity].latitude, cities[currentCity].longitude, cities[currentCity].altitude,
                 cities[candidateCity].latitude, cities[candidateCity].longitude, cities[candidateCity].altitude);
 
@@ -468,7 +435,286 @@ void NSGAIIReproductionMechanismShuaiHorizontal::ProximityBasedCrossover(
     offspring = ReproductionChromosome(newOffspring, fitnessCalculator_, initialAgentPoses, cities);
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::Mutate(ReproductionChromosome &chromosome, std::vector<Position> &cities, std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> library)
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::MutationProximityBasedCrossover(
+    ReproductionChromosome &parent1,
+    ReproductionChromosome &parent2,
+    ReproductionChromosome &offspring,
+    std::vector<Position> &initialAgentPoses,
+    std::vector<Position> &cities,
+    bool forward)
+{
+    int initialSize = parent1.chromosome_.getGenes().size();
+    auto parent1Genes = parent1.getChromosome().getGenes();
+    auto parent2Genes = parent2.getChromosome().getGenes();
+    auto numberOfGenes = parent1Genes.size();
+    auto fixedElementsStart = numberOfGenes - initialAgentPoses.size();
+
+    std::vector<int> offspringGenes;
+    offspringGenes.reserve(numberOfGenes);
+
+    parent1Genes.resize(parent1Genes.size() - initialAgentPoses.size());
+    parent2Genes.resize(parent2Genes.size() - initialAgentPoses.size());
+
+    // Select a random city to start with
+    std::uniform_int_distribution<> dist(0, numberOfGenes - 1);
+    int selectedIndexParent1 = dist(gen_);
+    int selectedIndexParent2 = std::distance(parent2Genes.begin(), std::find(parent2Genes.begin(), parent2Genes.end(), parent1Genes[selectedIndexParent1]));
+    int currentCity = parent1Genes[selectedIndexParent1];
+    offspringGenes.push_back(currentCity);
+
+    // Remove the selected city from both parent chromosomes
+    parent1Genes.erase(std::remove(parent1Genes.begin(), parent1Genes.end(), currentCity), parent1Genes.end());
+    parent2Genes.erase(std::remove(parent2Genes.begin(), parent2Genes.end(), currentCity), parent2Genes.end());
+
+    // Direction of iteration: forward or backward
+    int direction = forward ? 0 : -1;
+
+    std::uniform_int_distribution<> chanceDist(1, 50);
+
+    while (offspringGenes.size() < numberOfGenes - initialAgentPoses.size())
+    {
+        // Find the next city based on proximity
+        int nextCity = -1;
+        double minDistance = std::numeric_limits<double>::max();
+        double maxDistance = std::numeric_limits<double>::lowest();
+
+        int candidateCityMin = -1;
+        int candidateCityMax = -1;
+
+        // Check the next or previous city in parent1's chromosome
+        int nextIndexParent1 = (selectedIndexParent1 + direction + parent1Genes.size()) % parent1Genes.size();
+        if (nextIndexParent1 >= 0 && nextIndexParent1 < parent1Genes.size())
+        {
+            int candidateCity = parent1Genes[nextIndexParent1];
+            double distance = HaversineDistance::calculateDroneHaversineDistance(
+                cities[currentCity].latitude, cities[currentCity].longitude, cities[currentCity].altitude,
+                cities[candidateCity].latitude, cities[candidateCity].longitude, cities[candidateCity].altitude);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                candidateCityMin = candidateCity;
+            }
+            if (distance > maxDistance)
+            {
+                maxDistance = distance;
+                candidateCityMax = candidateCity;
+            }
+        }
+
+        int nextIndexParent2 = (selectedIndexParent2 + direction + parent2Genes.size()) % parent2Genes.size();
+        if (nextIndexParent2 >= 0 && nextIndexParent2 < parent2Genes.size())
+        {
+            int candidateCity = parent2Genes[nextIndexParent2];
+            double distance = HaversineDistance::calculateDroneHaversineDistance(
+                cities[currentCity].latitude, cities[currentCity].longitude, cities[currentCity].altitude,
+                cities[candidateCity].latitude, cities[candidateCity].longitude, cities[candidateCity].altitude);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                candidateCityMin = candidateCity;
+            }
+            if (distance > maxDistance)
+            {
+                maxDistance = distance;
+                candidateCityMax = candidateCity;
+            }
+        }
+
+        if (chanceDist(gen_) == 1)
+        {
+            // 1/20 chance to choose the less close city
+            nextCity = candidateCityMax;
+        }
+        else
+        {
+            // Otherwise, choose the closest city
+            nextCity = candidateCityMin;
+        }
+
+        if (nextCity != -1)
+        {
+            offspringGenes.push_back(nextCity);
+            currentCity = nextCity;
+
+            auto itParent1 = std::find(parent1Genes.begin(), parent1Genes.end(), nextCity);
+            selectedIndexParent1 = std::distance(parent1Genes.begin(), itParent1);
+            auto itParent2 = std::find(parent2Genes.begin(), parent2Genes.end(), nextCity);
+            selectedIndexParent2 = std::distance(parent2Genes.begin(), itParent2);
+
+            // Remove the selected city from both parent chromosomes
+            if (itParent1 != parent1Genes.end())
+            {
+                parent1Genes.erase(itParent1);
+            }
+
+            if (itParent2 != parent2Genes.end())
+            {
+                parent2Genes.erase(itParent2);
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    for (int i = 0; i < initialAgentPoses.size(); ++i)
+    {
+        offspringGenes.emplace_back(parent1.getChromosome().getGenes()[fixedElementsStart + i]);
+    }
+
+    Chromosome newOffspring(offspringGenes, parent1.getChromosome().getNumberOfCities());
+
+    if (offspring.chromosome_.getGenes().size() > initialSize)
+    {
+        throw std::runtime_error("Population is empty, cannot perform tournament selection.");
+    }
+
+    offspring = ReproductionChromosome(newOffspring, fitnessCalculator_, initialAgentPoses, cities);
+}
+
+
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::ProximityBasedCrossoverFixed(
+    ReproductionChromosome &parent1,
+    ReproductionChromosome &parent2,
+    ReproductionChromosome &offspring,
+    std::vector<Position> &initialAgentPoses,
+    std::vector<Position> &cities,
+    bool forward)
+{
+    int initialSize = parent1.chromosome_.getGenes().size();
+    auto parent1Genes = parent1.getChromosome().getGenes();
+    auto parent2Genes = parent2.getChromosome().getGenes();
+    auto numberOfGenes = parent1Genes.size();
+    auto fixedElementsStart = numberOfGenes - initialAgentPoses.size();
+
+    // Step 0: Remove fixed elements (initial agent poses) from parent1 and parent2 genes
+    parent1Genes.resize(parent1Genes.size() - initialAgentPoses.size());
+    parent2Genes.resize(parent2Genes.size() - initialAgentPoses.size());
+
+    // Step 1: Extract sub-chromosomes and find the longest path sub-chromosome
+    auto subChromosomes = extractSubChromosomes(parent1Genes, cities.size());
+    auto longestPathSubChromosome = getLongestSubChromosomePath(subChromosomes, cities);
+    int insertionIndex = std::distance(parent1Genes.begin(),
+
+                                       std::find(parent1Genes.begin(),
+                                                 parent1Genes.end(),
+                                                 longestPathSubChromosome[0]));
+
+    // Step 2: Remove the longest path sub-chromosome from parent1
+    for (auto gene : longestPathSubChromosome)
+    {
+        parent1Genes.erase(std::remove(parent1Genes.begin(), parent1Genes.end(), gene), parent1Genes.end());
+    }
+
+    // Step 3: Remove the same genes from parent2
+    for (auto gene : longestPathSubChromosome)
+    {
+        parent2Genes.erase(std::remove(parent2Genes.begin(), parent2Genes.end(), gene), parent2Genes.end());
+    }
+
+    // Step 4: Perform proximity-based crossover on the remaining genes
+    std::vector<int> offspringGenes;
+    offspringGenes.reserve(numberOfGenes);
+
+    // Select a random city to start with
+    std::uniform_int_distribution<> dist(0, parent1Genes.size() - 1);
+    int selectedIndexParent1 = dist(gen_);
+    int selectedIndexParent2 = std::distance(parent2Genes.begin(), std::find(parent2Genes.begin(), parent2Genes.end(), parent1Genes[selectedIndexParent1]));
+    int currentCity = parent1Genes[selectedIndexParent1];
+    offspringGenes.push_back(currentCity);
+
+    // Remove the selected city from both parent chromosomes
+    parent1Genes.erase(std::remove(parent1Genes.begin(), parent1Genes.end(), currentCity), parent1Genes.end());
+    parent2Genes.erase(std::remove(parent2Genes.begin(), parent2Genes.end(), currentCity), parent2Genes.end());
+
+    int direction = forward ? 0 : -1;
+
+    while (offspringGenes.size() < numberOfGenes - initialAgentPoses.size()-longestPathSubChromosome.size())
+    {
+        int nextCity = -1;
+        double minDistance = std::numeric_limits<double>::max();
+
+        // Check the next or previous city in parent1's chromosome
+        int nextIndexParent1 = (selectedIndexParent1 + direction + parent1Genes.size()) % parent1Genes.size();
+        if (nextIndexParent1 >= 0 && nextIndexParent1 < parent1Genes.size())
+        {
+            int candidateCity = parent1Genes[nextIndexParent1];
+            double distance = HaversineDistance::calculateDroneHaversineDistance(
+                cities[currentCity].latitude, cities[currentCity].longitude, cities[currentCity].altitude,
+                cities[candidateCity].latitude, cities[candidateCity].longitude, cities[candidateCity].altitude);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nextCity = candidateCity;
+            }
+        }
+
+        int nextIndexParent2 = (selectedIndexParent2 + direction + parent2Genes.size()) % parent2Genes.size();
+        if (nextIndexParent2 >= 0 && nextIndexParent2 < parent2Genes.size())
+        {
+            int candidateCity = parent2Genes[nextIndexParent2];
+            double distance = HaversineDistance::calculateDroneHaversineDistance(
+                cities[currentCity].latitude, cities[currentCity].longitude, cities[currentCity].altitude,
+                cities[candidateCity].latitude, cities[candidateCity].longitude, cities[candidateCity].altitude);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nextCity = candidateCity;
+            }
+        }
+
+        if (nextCity != -1)
+        {
+            offspringGenes.push_back(nextCity);
+            currentCity = nextCity;
+
+            auto itParent1 = std::find(parent1Genes.begin(), parent1Genes.end(), nextCity);
+            selectedIndexParent1 = std::distance(parent1Genes.begin(), itParent1);
+            auto itParent2 = std::find(parent2Genes.begin(), parent2Genes.end(), nextCity);
+            selectedIndexParent2 = std::distance(parent2Genes.begin(), itParent2);
+
+            if (itParent1 != parent1Genes.end())
+            {
+                parent1Genes.erase(itParent1);
+            }
+
+            if (itParent2 != parent2Genes.end())
+            {
+                parent2Genes.erase(itParent2);
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    offspringGenes.insert(offspringGenes.begin() + insertionIndex,
+                          longestPathSubChromosome.begin(),
+                          longestPathSubChromosome.end());
+
+    // Insert initial agent poses at the end
+    for (int i = 0; i < initialAgentPoses.size(); ++i)
+    {
+        offspringGenes.emplace_back(parent1.getChromosome().getGenes()[fixedElementsStart + i]);
+    }
+
+    Chromosome newOffspring(offspringGenes, parent1.getChromosome().getNumberOfCities());
+
+    if (offspring.chromosome_.getGenes().size() > initialSize)
+    {
+        throw std::runtime_error("Population is empty, cannot perform tournament selection.");
+    }
+
+    offspring = ReproductionChromosome(newOffspring, fitnessCalculator_, initialAgentPoses, cities);
+}
+
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::Mutate(ReproductionChromosome &chromosome, std::vector<Position> &cities, std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> library)
 {
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
     auto genes = chromosome.getChromosome().getGenes();
@@ -498,15 +744,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::Mutate(ReproductionChromosome &
     }
     if (distribution(gen_) < citiesPerSalesmanMutationProbability_)
     {
-        auto roulette = distribution(gen_);
-        if (roulette < 0.5)
-        {
-            distributeCities(genes, chromosome.getChromosome().getNumberOfCities(), chromosome.getChromosome().getNumberOfAgents());
-        }
-        else
-        {
-            distributeCitiesStep(genes, chromosome.getChromosome().getNumberOfCities(), chromosome.getChromosome().getNumberOfAgents());
-        }
+        distributeCities(genes, chromosome.getChromosome().getNumberOfCities(), chromosome.getChromosome().getNumberOfAgents());
     }
 
     Chromosome newChromosome(genes, chromosome.getChromosome().getNumberOfCities());
@@ -514,7 +752,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::Mutate(ReproductionChromosome &
     chromosome.fitnessValues_ = fitnessCalculator_->calculateFitness(newChromosome, cities);
 }
 
-std::vector<std::vector<NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome>> NSGAIIReproductionMechanismShuaiHorizontal::FastNonDominatedSort(Population &population, std::vector<Position> &agentStartPositions, std::vector<Position> &cities)
+std::vector<std::vector<NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome>> NSGAIIReproductionMechanismShuaiHorizontalFocused::FastNonDominatedSort(Population &population, std::vector<Position> &agentStartPositions, std::vector<Position> &cities)
 {
     std::vector<ReproductionChromosome> chromosomes;
     for (auto &chromosome : population.getPopulationList())
@@ -572,12 +810,12 @@ std::vector<std::vector<NSGAIIReproductionMechanismShuaiHorizontal::Reproduction
     return fronts;
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness)
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness)
 {
     std::shuffle(chromosomeFitness.begin(), chromosomeFitness.end(), gen_);
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::flipInsert(std::vector<int> &vec, int numberOfCities)
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::flipInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -605,7 +843,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::flipInsert(std::vector<int> &ve
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::swapInsert(std::vector<int> &vec, int numberOfCities)
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::swapInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -634,7 +872,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::swapInsert(std::vector<int> &ve
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::lSlideInsert(std::vector<int> &vec, int numberOfCities)
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::lSlideInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -662,7 +900,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::lSlideInsert(std::vector<int> &
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::rSlideInsert(std::vector<int> &vec, int numberOfCities)
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::rSlideInsert(std::vector<int> &vec, int numberOfCities)
 {
     if (vec.size() < 2)
     {
@@ -690,7 +928,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::rSlideInsert(std::vector<int> &
     randomlyInsertSubvector(vec, index1, index2, numberOfCities);
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities)
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::randomlyInsertSubvector(std::vector<int> &vec, int index1, int index2, int numberOfCities)
 {
     int range1 = index1;
     int range2 = numberOfCities - (index2 + 1);
@@ -740,7 +978,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::randomlyInsertSubvector(std::ve
     vec.insert(vec.begin() + newPosition, tempBlock.begin(), tempBlock.end());
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::distributeCities(std::vector<int> &outVec, int numberOfCities, int numberOfAgents)
+void NSGAIIReproductionMechanismShuaiHorizontalFocused::distributeCities(std::vector<int> &outVec, int numberOfCities, int numberOfAgents)
 {
     if (numberOfAgents == 0)
     {
@@ -790,236 +1028,7 @@ void NSGAIIReproductionMechanismShuaiHorizontal::distributeCities(std::vector<in
     }
 }
 
-void NSGAIIReproductionMechanismShuaiHorizontal::distributeCitiesMinSum(std::vector<int> &outVec, int numberOfCities, int numberOfAgents)
-{
-    if (numberOfAgents == 0)
-    {
-        throw std::runtime_error("Number of agents cannot be zero.");
-    }
-
-    if (numberOfCities < numberOfAgents)
-    {
-        throw std::runtime_error("Number of cities must be at least as large as the number of agents.");
-    }
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
-    // Choose the number of large paths and their indices
-    std::set<int> largePathIndices;
-    int numLargePaths = std::uniform_int_distribution<>(1, numberOfAgents / 3)(gen);
-
-    while (largePathIndices.size() < numLargePaths)
-    {
-        int index = std::uniform_int_distribution<>(0, numberOfAgents - 1)(gen);
-        largePathIndices.insert(index);
-    }
-
-    // Calculate maximum size for small paths
-    int maxSmallPathSize = numberOfCities / numberOfAgents;
-
-    // Determine the size for each path
-    std::vector<int> pathSizes(numberOfAgents, 0);
-    int remainingCities = numberOfCities;
-
-    for (int i = 0; i < numberOfAgents; ++i)
-    {
-        if (largePathIndices.find(i) == largePathIndices.end())
-        {
-            // Small path
-            int randomValue = std::uniform_int_distribution<>(0, 2 * maxSmallPathSize)(gen) - maxSmallPathSize;
-            int smallPathSize = std::max(1, randomValue);                                        // Ensure at least 1 city
-            smallPathSize = std::min(smallPathSize, remainingCities - (numberOfAgents - i - 1)); // Ensure enough cities left for others
-
-            pathSizes[i] = smallPathSize;
-            remainingCities -= smallPathSize;
-        }
-    }
-
-    // Distribute remaining cities to large paths
-    for (int i : largePathIndices)
-    {
-        if (remainingCities > 0)
-        {
-            int largePathSize = std::uniform_int_distribution<>(1, remainingCities)(gen);
-            pathSizes[i] = largePathSize;
-            remainingCities -= largePathSize;
-        }
-    }
-
-    // If there's any remaining city, add them to the last large path
-    if (remainingCities > 0)
-    {
-        int lastLargePathIndex = *largePathIndices.rbegin();
-        pathSizes[lastLargePathIndex] += remainingCities;
-    }
-
-    // Ensure no path has zero length
-    for (size_t i = 0; i < numberOfAgents; ++i)
-    {
-        if (pathSizes[i] == 0)
-        {
-            // Find a non-zero path to take from
-            std::vector<int> candidates;
-            for (size_t j = 0; j < numberOfAgents; ++j)
-            {
-                if (j != i && pathSizes[j] > 1) // Ensure the source path remains non-zero after giving away a city
-                {
-                    candidates.push_back(j);
-                }
-            }
-
-            if (!candidates.empty())
-            {
-                int donorIndex = candidates[std::uniform_int_distribution<>(0, candidates.size() - 1)(gen)];
-                pathSizes[donorIndex] -= 1;
-                pathSizes[i] += 1;
-            }
-            else
-            {
-                throw std::runtime_error("Failed to adjust paths to avoid zero-length paths.");
-            }
-        }
-    }
-
-    if (outVec.size() < numberOfAgents)
-    {
-        throw std::runtime_error("Output vector size is smaller than the number of agents.");
-    }
-
-    for (size_t i = 0; i < numberOfAgents; ++i)
-    {
-        if (pathSizes[i] == 0)
-        {
-            throw std::runtime_error("PathSize is equal to zero.");
-        }
-        outVec[numberOfCities + i] = pathSizes[i];
-    }
-}
-
-void NSGAIIReproductionMechanismShuaiHorizontal::distributeCitiesStep(std::vector<int> &outVec, int numberOfCities, int numberOfAgents)
-{
-    std::vector<int> citiesPerAgent;
-
-    for (size_t i = numberOfCities; i < numberOfCities+numberOfAgents; i++)
-    {
-        citiesPerAgent.emplace_back(outVec[i]);
-    }
-
-    std::uniform_int_distribution<> distr(numberOfCities-1, numberOfCities+numberOfAgents-1);
-    
-    int donor = distr(gen_);
-    while(outVec[donor] <= 1){
-        donor = distr(gen_);
-    }
-    int donee = distr(gen_);
-    while(donee == donor){
-        donee = distr(gen_);
-    }
-    outVec[donor] -=1;
-    outVec[donee] +=1;
-
-}
-
-void NSGAIIReproductionMechanismShuaiHorizontal::distributeCitiesBalanced(std::vector<int> &outVec, int numberOfCities, int numberOfAgents)
-{
-    if (numberOfAgents == 0)
-    {
-        throw std::runtime_error("Number of agents cannot be zero.");
-    }
-
-    if (numberOfCities < numberOfAgents)
-    {
-        throw std::runtime_error("Number of cities must be at least as large as the number of agents.");
-    }
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
-    // Calculate the mean path size
-    int meanPathSize = numberOfCities / numberOfAgents;
-
-    // Use a smaller standard deviation for the normal distribution
-    double standardDeviation = meanPathSize / 10.0; // Smaller standard deviation for reduced variability
-
-    // Determine the size for each path
-    std::vector<int> pathSizes(numberOfAgents, 0);
-    int remainingCities = numberOfCities;
-
-    for (int i = 0; i < numberOfAgents; ++i)
-    {
-        // Centered around the meanPathSize, use a normal distribution
-        std::normal_distribution<> d(meanPathSize, standardDeviation);
-
-        int pathSize = std::round(d(gen));                                         // Generate random size from the distribution
-        pathSize = std::max(1, pathSize);                                          // Ensure at least 1 city
-        pathSize = std::min(pathSize, remainingCities - (numberOfAgents - i - 1)); // Ensure enough cities left for others
-
-        pathSizes[i] = pathSize;
-        remainingCities -= pathSize;
-    }
-
-    // If there's any remaining city, distribute them randomly to agents
-    while (remainingCities > 0)
-    {
-        int randomAgent = std::uniform_int_distribution<>(0, numberOfAgents - 1)(gen);
-        pathSizes[randomAgent]++;
-        remainingCities--;
-    }
-
-    // Ensure no path has zero length
-    for (size_t i = 0; i < numberOfAgents; ++i)
-    {
-        if (pathSizes[i] == 0)
-        {
-            // Find a non-zero path to take from
-            std::vector<int> candidates;
-            for (size_t j = 0; j < numberOfAgents; ++j)
-            {
-                if (j != i && pathSizes[j] > 1) // Ensure the source path remains non-zero after giving away a city
-                {
-                    candidates.push_back(j);
-                }
-            }
-
-            if (!candidates.empty())
-            {
-                int donorIndex = candidates[std::uniform_int_distribution<>(0, candidates.size() - 1)(gen)];
-                pathSizes[donorIndex] -= 1;
-                pathSizes[i] += 1;
-            }
-            else
-            {
-                throw std::runtime_error("Failed to adjust paths to avoid zero-length paths.");
-            }
-        }
-    }
-
-    // Ensure no path has zero length
-    for (size_t i = 0; i < numberOfAgents; ++i)
-    {
-        if (pathSizes[i] == 0)
-        {
-            throw std::runtime_error("Still have zero path lengths.");
-        }
-    }
-
-    if (outVec.size() < numberOfAgents)
-    {
-        throw std::runtime_error("Output vector size is smaller than the number of agents.");
-    }
-
-    for (size_t i = 0; i < numberOfAgents; ++i)
-    {
-        if (pathSizes[i] == 0)
-        {
-            throw std::runtime_error("PathSize is equal to zero.");
-        }
-        outVec[numberOfCities + i] = pathSizes[i];
-    }
-}
-
-std::vector<int> NSGAIIReproductionMechanismShuaiHorizontal::horizontalGeneTransfer(
+std::vector<int> NSGAIIReproductionMechanismShuaiHorizontalFocused::horizontalGeneTransfer(
     std::vector<int> &chromosome,
     std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> &library,
     int numberOfCities,
@@ -1028,8 +1037,6 @@ std::vector<int> NSGAIIReproductionMechanismShuaiHorizontal::horizontalGeneTrans
     int initialSize = chromosome.size();
 
     auto subChromosomes = extractSubChromosomes(chromosome, numberOfCities);
-
-    std::vector<int> cityChromosomes(chromosome.begin(), chromosome.begin() + numberOfCities);
 
     auto longestPathSubChromosome = getLongestSubChromosomePath(subChromosomes, cities);
 
@@ -1077,203 +1084,75 @@ std::vector<int> NSGAIIReproductionMechanismShuaiHorizontal::horizontalGeneTrans
 
     if (!missingCityIndexes.empty())
     {
-        std::unordered_map<int, std::vector<int>> cityNeighbors;
-        for (size_t i = 0; i < cityChromosomes.size(); i++)
+        int emptyChromosomeCount = std::count_if(newChromosome.begin(), newChromosome.end(), [](const auto &chr)
+                                                 { return chr.empty(); });
+
+        if (emptyChromosomeCount > 0)
         {
-            int city = cityChromosomes[i];
-            if (std::find(missingCityIndexes.begin(), missingCityIndexes.end(), city) != missingCityIndexes.end())
+            int index = 0;
+            for (auto &chr : newChromosome)
             {
-                // Find neighbors
-                std::vector<int> neighbors;
-                if (i > 0)
-                    neighbors.push_back(cityChromosomes[i - 1]);
-                if (i < chromosome.size() - 1)
-                    neighbors.push_back(cityChromosomes[i + 1]);
-                cityNeighbors[city] = neighbors;
+                if (chr.empty())
+                {
+                    chr.push_back(missingCityIndexes[index]);
+                    newChromosomeWhole.push_back(missingCityIndexes[index]);
+                    index++;
+                    if (index >= missingCityIndexes.size())
+                        break;
+                }
+            }
+
+            if (index < missingCityIndexes.size())
+            {
+                newChromosome.back().insert(newChromosome.back().end(),
+                                            missingCityIndexes.begin() + index, missingCityIndexes.end());
+                newChromosomeWhole.insert(newChromosomeWhole.end(), missingCityIndexes.begin() + index, missingCityIndexes.end());
             }
         }
-
-        std::vector<int> remainingMissingCities = missingCityIndexes;
-
-        while (!remainingMissingCities.empty())
+        else
         {
-            std::vector<int> citiesToReprocess;
-            for (auto missingCity : remainingMissingCities)
-            {
-                bool placed = false;
-                if (cityNeighbors.find(missingCity) != cityNeighbors.end())
-                {
-                    std::vector<int> neighbors = cityNeighbors[missingCity];
-
-                    std::shuffle(neighbors.begin(), neighbors.end(), gen_);
-
-                    for (auto neighbor : neighbors)
-                    {
-                        // Check if neighbor exists in the new chromosome
-                        auto it = std::find(newChromosomeWhole.begin(), newChromosomeWhole.end(), neighbor);
-                        if (it != newChromosomeWhole.end())
-                        {
-                            int index = std::distance(newChromosomeWhole.begin(), it);
-
-                            // Insert into the newChromosomeWhole
-                            newChromosomeWhole.insert(newChromosomeWhole.begin() + index + 1, missingCity);
-
-                            // Insert into the corresponding subchromosome using index
-                            bool inserted = false;
-                            for (auto &subChr : newChromosome)
-                            {
-                                auto subIt = std::find(subChr.begin(), subChr.end(), neighbor);
-                                if (subIt != subChr.end())
-                                {
-                                    int subIndex = std::distance(subChr.begin(), subIt);
-                                    subChr.insert(subChr.begin() + subIndex + 1, missingCity);
-
-                                    // Verify insertion using index
-                                    if (subChr[subIndex + 1] == missingCity)
-                                    {
-                                        inserted = true;
-                                    }
-                                    else
-                                    {
-                                        throw std::runtime_error("Verification failed: missing city was not inserted correctly into the subchromosome.");
-                                    }
-
-                                    break;
-                                }
-                            }
-
-                            // If insertion into newChromosome fails, throw an error
-                            if (!inserted)
-                            {
-                                throw std::runtime_error("Failed to insert the missing city into the subchromosome.");
-                            }
-
-                            placed = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!placed)
-                {
-                    citiesToReprocess.push_back(missingCity);
-                }
-            }
-
-            remainingMissingCities = citiesToReprocess;
+            newChromosome.back().insert(newChromosome.back().end(),
+                                        missingCityIndexes.begin(), missingCityIndexes.end());
+            newChromosomeWhole.insert(newChromosomeWhole.end(), missingCityIndexes.begin(), missingCityIndexes.end());
         }
     }
 
-    for (size_t i = 0; i < newChromosome.size(); ++i)
+    for (auto &chr : newChromosome)
     {
-        if (newChromosome[i].empty())
+        if (chr.empty())
         {
-            bool elementMoved = false;
-
-            for (size_t j = 0; j < newChromosome.size(); ++j)
+            // Find a non-empty sub-chromosome
+            for (auto &donorChromosome : newChromosome)
             {
-                if (newChromosome[j].size() > 1)
+                if (!donorChromosome.empty())
                 {
-                    int donorElement = newChromosome[j].front();
+                    // Move the first element from the donorChromosome to the empty chromosome
+                    int donorElement = donorChromosome.front();
+                    chr.push_back(donorElement);
+                    newChromosomeWhole.push_back(donorElement);
 
-                    // Remove the element from newChromosomeWhole
-                    auto it = std::find(newChromosomeWhole.begin(), newChromosomeWhole.end(), donorElement);
-                    if (it != newChromosomeWhole.end())
-                    {
-                        newChromosomeWhole.erase(it);
-                    }
-                    else
-                    {
-                        throw std::runtime_error("Element not found in newChromosomeWhole.");
-                    }
-
-                    // Donate the element to the empty sub-chromosome
-                    newChromosome[i].push_back(donorElement);
-
-                    // Remove the element from the donor sub-chromosome
-                    newChromosome[j].erase(newChromosome[j].begin());
-
-                    if (i == 0)
-                    {
-                        // If i == 0, append donorElement to the start of newChromosomeWhole
-                        newChromosomeWhole.insert(newChromosomeWhole.begin(), donorElement);
-                    }
-                    else
-                    {
-                        // Find the iterator to the position where you want to insert donorElement
-                        auto pos = std::find(newChromosomeWhole.begin(), newChromosomeWhole.end(), newChromosome[i - 1].back());
-
-                        if (pos != newChromosomeWhole.end())
-                        {
-                            // Insert donorElement after the found position
-                            newChromosomeWhole.insert(pos + 1, donorElement);
-                        }
-                        else
-                        {
-                            throw std::runtime_error("Element not found in newChromosomeWhole.");
-                        }
-                    }
-
-                    elementMoved = true;
+                    // Remove the element from the donor chromosome
+                    donorChromosome.erase(donorChromosome.begin());
                     break;
                 }
             }
-
-            if (!elementMoved)
-            {
-                throw std::runtime_error("No elements found to move to the empty sub-chromosome.");
-            }
         }
     }
 
-    // Ensure the size of newChromosome and newChromosomeWhole match
-    if (newChromosomeWhole.size() != std::accumulate(newChromosome.begin(), newChromosome.end(), 0,
-                                                     [](int sum, const std::vector<int> &chr)
-                                                     { return sum + chr.size(); }))
+    for (int i = 0; i < teamSize_; i++)
     {
-        throw std::runtime_error("Size discrepancy between newChromosome and newChromosomeWhole detected.");
+        newChromosomeWhole.emplace_back(newChromosome[i].size());
     }
-
-    // Ensure the sum of cities in newChromosome equals numberOfCities
-    int totalCities = std::accumulate(newChromosome.begin(), newChromosome.end(), 0,
-                                      [](int sum, const std::vector<int> &chr)
-                                      { return sum + chr.size(); });
-    if (totalCities != numberOfCities)
-    {
-        throw std::runtime_error("The sum of cities in newChromosome does not equal the number of cities.");
-    }
-
-    // Check for duplicates in newChromosomeWhole
-    std::set<int> uniqueCities(newChromosomeWhole.begin(), newChromosomeWhole.end());
-    if (uniqueCities.size() != newChromosomeWhole.size())
-    {
-        throw std::runtime_error("Duplicate cities found in newChromosomeWhole.");
-    }
-
-    // Check that no path lengths are 0 after all operations
-    for (const auto &path : newChromosome)
-    {
-        if (path.size() == 0)
-        {
-            throw std::runtime_error("A sub-chromosome has a path length of 0 after operations.");
-        }
-    }
-
     int size = chromosome.size();
     if (size > initialSize)
     {
         throw std::runtime_error("Population is empty, cannot perform tournament selection.");
     }
 
-    for (size_t i = 0; i < newChromosome.size(); i++)
-    {
-        newChromosomeWhole.emplace_back(newChromosome[i].size());
-    }
-
     return newChromosomeWhole;
 }
 
-std::vector<double> NSGAIIReproductionMechanismShuaiHorizontal::getSubChromosomeLibraryFitnesses(std::vector<std::pair<std::vector<int>, double>> &library, std::vector<Position> &cities)
+std::vector<double> NSGAIIReproductionMechanismShuaiHorizontalFocused::getSubChromosomeLibraryFitnesses(std::vector<std::pair<std::vector<int>, double>> &library, std::vector<Position> &cities)
 {
     std::vector<double> fitnessValues(library.size());
     for (size_t i = 0; i < library.size(); ++i)
@@ -1283,7 +1162,7 @@ std::vector<double> NSGAIIReproductionMechanismShuaiHorizontal::getSubChromosome
     return fitnessValues;
 }
 
-std::vector<int> NSGAIIReproductionMechanismShuaiHorizontal::getLongestSubChromosomePath(std::vector<std::vector<int>> &subChromosomes, std::vector<Position> &cities)
+std::vector<int> NSGAIIReproductionMechanismShuaiHorizontalFocused::getLongestSubChromosomePath(std::vector<std::vector<int>> &subChromosomes, std::vector<Position> &cities)
 {
     int longestPathIndex;
     double highestValue = 0;
@@ -1299,7 +1178,7 @@ std::vector<int> NSGAIIReproductionMechanismShuaiHorizontal::getLongestSubChromo
     return subChromosomes[longestPathIndex];
 }
 
-std::vector<std::vector<int>> NSGAIIReproductionMechanismShuaiHorizontal::extractSubChromosomes(std::vector<int> &chromosome, int numberOfCities)
+std::vector<std::vector<int>> NSGAIIReproductionMechanismShuaiHorizontalFocused::extractSubChromosomes(std::vector<int> &chromosome, int numberOfCities)
 {
     std::vector<std::vector<int>> subChromosomes;
     subChromosomes.reserve(teamSize_);
@@ -1316,7 +1195,7 @@ std::vector<std::vector<int>> NSGAIIReproductionMechanismShuaiHorizontal::extrac
     return subChromosomes;
 }
 
-std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> NSGAIIReproductionMechanismShuaiHorizontal::getHighValueSubChromosomeLibrary(Population &population, std::vector<Position> &cities, int teamsize)
+std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> NSGAIIReproductionMechanismShuaiHorizontalFocused::getHighValueSubChromosomeLibrary(Population &population, std::vector<Position> &cities, int teamsize)
 {
     auto chromosomes = population.getPopulationList();
     std::vector<double> chromosomeFitnesses;
@@ -1382,14 +1261,14 @@ std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> NSGAIIRep
     return std::pair(subChromosomes, dist);
 }
 
-bool NSGAIIReproductionMechanismShuaiHorizontal::hasNoCommonElements(const std::vector<int> &vec1, const std::vector<int> &vec2)
+bool NSGAIIReproductionMechanismShuaiHorizontalFocused::hasNoCommonElements(const std::vector<int> &vec1, const std::vector<int> &vec2)
 {
     return std::none_of(vec1.begin(), vec1.end(), [&](int elem1)
                         { return std::any_of(vec2.begin(), vec2.end(), [&](int elem2)
                                              { return elem1 == elem2; }); });
 }
 
-NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::ReproductionChromosome(Chromosome chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities)
+NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome::ReproductionChromosome(Chromosome chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities)
 {
     chromosome_ = chromosome;
     if (isParentMalformed(chromosome, initialAgentPoses.size()))
@@ -1405,28 +1284,28 @@ NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::Reproduction
     }
 }
 
-bool NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::dominates(const ReproductionChromosome &other) const
+bool NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome::dominates(const ReproductionChromosome &other) const
 {
-    return (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) + 1 < other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) <= other.fitnessValues_.at(Fitness::MAXPATHLENGTH)) ||
-           (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) <= other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) + 1 < other.fitnessValues_.at(Fitness::MAXPATHLENGTH));
+    return (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) < other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) <= other.fitnessValues_.at(Fitness::MAXPATHLENGTH)) ||
+           (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) <= other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) < other.fitnessValues_.at(Fitness::MAXPATHLENGTH));
 }
 
-double NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::getFitness(Fitness index) const
-{
-    return fitnessValues_.at(index);
-}
-
-double NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::getObjectiveFitness(Fitness index) const
+double NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome::getFitness(Fitness index) const
 {
     return fitnessValues_.at(index);
 }
 
-Chromosome NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::getChromosome()
+double NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome::getObjectiveFitness(Fitness index) const
+{
+    return fitnessValues_.at(index);
+}
+
+Chromosome NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome::getChromosome()
 {
     return chromosome_;
 }
 
-bool NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::operator<(const ReproductionChromosome &other) const
+bool NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome::operator<(const ReproductionChromosome &other) const
 {
     auto primary_fitness = getFitness(Fitness::MAXPATHLENGTH); // Replace with actual fitness enum or identifier
     auto other_primary_fitness = other.getFitness(Fitness::TOTALPATHDISTANCE);
@@ -1437,7 +1316,7 @@ bool NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::operato
     return getFitness(Fitness::TOTALPATHDISTANCE) < other.getFitness(Fitness::TOTALPATHDISTANCE); // Replace with actual fitness enum or identifier
 }
 
-bool NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::isParentMalformed(Chromosome chromosome, int teamSize)
+bool NSGAIIReproductionMechanismShuaiHorizontalFocused::ReproductionChromosome::isParentMalformed(Chromosome chromosome, int teamSize)
 {
     const std::vector<int> &genes = chromosome.getGenes();
     int numberOfCities = chromosome.getNumberOfCities();

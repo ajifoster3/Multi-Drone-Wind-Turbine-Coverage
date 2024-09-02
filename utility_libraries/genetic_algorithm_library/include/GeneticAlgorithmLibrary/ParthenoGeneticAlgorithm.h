@@ -39,6 +39,7 @@
 #include "NSGAIIPMXReproductionMechanism.h"
 #include "NSGAIIReproductionMechanismShuai.h"
 #include "NSGAIIReproductionMechanismShuaiHorizontal.h"
+#include "NSGAIIReproductionMechanismShuaiHorizontalFocused.h"
 
 class ParthenoGeneticAlgorithm
 {

@@ -213,6 +213,6 @@ bool Population::isParentMalformed(Chromosome chromosome, int teamSize)
 
 bool Population::dominates(const Chromosome &a, const Chromosome &b)
 {
-    return (a.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) < b.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && a.fitnessValues_.at(Fitness::MAXPATHLENGTH) <= b.fitnessValues_.at(Fitness::MAXPATHLENGTH)) ||
-           (a.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) <= b.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && a.fitnessValues_.at(Fitness::MAXPATHLENGTH) < b.fitnessValues_.at(Fitness::MAXPATHLENGTH));
+    return (a.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) + 1 < b.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && a.fitnessValues_.at(Fitness::MAXPATHLENGTH) <= b.fitnessValues_.at(Fitness::MAXPATHLENGTH)) ||
+           (a.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) <= b.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && a.fitnessValues_.at(Fitness::MAXPATHLENGTH) + 1 < b.fitnessValues_.at(Fitness::MAXPATHLENGTH));
 }
