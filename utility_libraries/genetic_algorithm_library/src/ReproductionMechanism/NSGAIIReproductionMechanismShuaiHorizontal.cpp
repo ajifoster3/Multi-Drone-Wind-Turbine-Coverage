@@ -913,23 +913,19 @@ void NSGAIIReproductionMechanismShuaiHorizontal::distributeCitiesStep(std::vecto
 
     std::uniform_int_distribution<> distr(numberOfCities, numberOfCities+numberOfAgents-1);
     
-    double factor = 5.0;
-    double k = 2.0;
+    double k = 5.0;
 
-    double p = 1.0 - exp(-k * (numberOfAgents * factor) / numberOfCities);
+    double p = 1.0 - exp(-k * (numberOfAgents) / numberOfCities);
     
     std::geometric_distribution<> geodis(p);
     
     int donation {geodis(gen_)+1};
     
-    float alpha = 0.6;
     while(donation >= largestPath)
     {
-        std::cout << "FailPing" << std::endl;
         donation = geodis(gen_)+1;
     }
     
-    std::cout << "donation: " << donation << std::endl;
     
     int donor = distr(gen_);
     while(outVec[donor] <= donation){
@@ -1367,7 +1363,7 @@ std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> NSGAIIRep
     std::sort(chromosomeFitnessPairs.begin(), chromosomeFitnessPairs.end(),
               [](const std::pair<Chromosome, std::map<Fitness, double>> &a, const std::pair<Chromosome, std::map<Fitness, double>> &b)
               {
-                  return a.second.at(Fitness::TOTALPATHDISTANCE) < b.second.at(Fitness::TOTALPATHDISTANCE); // Compare fitness values
+                  return a.second.at(Fitness::MAXPATHLENGTH) < b.second.at(Fitness::MAXPATHLENGTH); // Compare fitness values
               });
 
     // Sample the best 20% of chromosomes (in regards to total path distance)

@@ -10,10 +10,11 @@ int main(int argc, char const *argv[])
     int agents;
     std::vector<Position> agentStartPositions;
 
+
     // *** WindTurbine60-5 *** ========================================================================================================
 
     // Read data from the file
-    /* if (!ProblemLogUtility::readData("/home/ajifoster3/Desktop/problemfiles/WindTurbine60-5.txt", cities, agents, agentStartPositions))
+    if (!ProblemLogUtility::readData("/home/ajifoster3/Desktop/problemfiles/WindTurbine60-5.txt", cities, agents, agentStartPositions))
     {
         std::cerr << "Failed to read data from log.txt" << std::endl;
         return 1;
@@ -41,7 +42,7 @@ int main(int argc, char const *argv[])
         ParthenoGeneticAlgorithm pga(config);
 
         pga.run(cities, agents, agentStartPositions, std::pair<double, double>({10000, 5000}));
-    } */
+    }
 
     // *** WindTurbine60-10 *** ========================================================================================================
 
@@ -83,30 +84,6 @@ int main(int argc, char const *argv[])
     {
         std::cerr << "Failed to read data from log.txt" << std::endl;
         return 1;
-    }
-
-    for (size_t i = 0; i < 1; i++)
-    {
-
-        // Initialize the genetic algorithm configuration
-        ParthenoGeneticAlgorithmConfig config(
-            EncodingMechanisms::SEQUENCE_ENCODING_MECHANISM,
-            ReproductionMechanisms::NSGAII_REPRODUCTION_MECHANISM_SHUAI,
-            FitnessFunctions::MULTI_DISTANCE_FITNESS_FUNCTION,
-            TerminationCriteria::ITERATION_COUNT_TERMINATION_CRITERION);
-
-        config.isManualConfig = true;
-        config.citiesPerSalesmanMutationProbability = 0.8;
-        config.routeMutationProbability = 0.9;
-        config.sampleSize = 10;
-        config.populationSize = 1000;
-        config.numberOfIterations = 1000;
-        config.alphaObjective = 0.75;
-        config.alphaFitness = 0;
-
-        ParthenoGeneticAlgorithm pga(config);
-
-        pga.run(cities, agents, agentStartPositions, std::pair<double, double>({7000, 3000}));
     }
 
     for (size_t i = 0; i < 1; i++)
@@ -273,29 +250,6 @@ int main(int argc, char const *argv[])
         std::cerr << "Failed to read data from log.txt" << std::endl;
         return 1;
     }
-     for (size_t i = 0; i < 1; i++)
-    {
-
-        // Initialize the genetic algorithm configuration
-        ParthenoGeneticAlgorithmConfig config(
-            EncodingMechanisms::SEQUENCE_ENCODING_MECHANISM,
-            ReproductionMechanisms::NSGAII_REPRODUCTION_MECHANISM_SHUAI,
-            FitnessFunctions::MULTI_DISTANCE_FITNESS_FUNCTION,
-            TerminationCriteria::ITERATION_COUNT_TERMINATION_CRITERION);
-
-        config.isManualConfig = true;
-        config.citiesPerSalesmanMutationProbability = 0.8;
-        config.routeMutationProbability = 0.9;
-        config.sampleSize = 10;
-        config.populationSize = 1000;
-        config.numberOfIterations = 1000;
-        config.alphaObjective = 0.75;
-        config.alphaFitness = 0;
-
-        ParthenoGeneticAlgorithm pga(config);
-
-        pga.run(cities, agents, agentStartPositions, std::pair<double, double>({120000, 40000}));
-    }
 
     for (size_t i = 0; i < 1; i++)
     {
@@ -328,30 +282,6 @@ int main(int argc, char const *argv[])
     {
         std::cerr << "Failed to read data from log.txt" << std::endl;
         return 1;
-    }
-
-    for (size_t i = 0; i < 1; i++)
-    {
-
-        // Initialize the genetic algorithm configuration
-        ParthenoGeneticAlgorithmConfig config(
-            EncodingMechanisms::SEQUENCE_ENCODING_MECHANISM,
-            ReproductionMechanisms::NSGAII_REPRODUCTION_MECHANISM_SHUAI,
-            FitnessFunctions::MULTI_DISTANCE_FITNESS_FUNCTION,
-            TerminationCriteria::ITERATION_COUNT_TERMINATION_CRITERION);
-
-        config.isManualConfig = true;
-        config.citiesPerSalesmanMutationProbability = 0.8;
-        config.routeMutationProbability = 0.9;
-        config.sampleSize = 10;
-        config.populationSize = 1000;
-        config.numberOfIterations = 1000;
-        config.alphaObjective = 0.75;
-        config.alphaFitness = 0;
-
-        ParthenoGeneticAlgorithm pga(config);
-
-        pga.run(cities, agents, agentStartPositions, std::pair<double, double>({120000, 20000}));
     }
 
     for (size_t i = 0; i < 1; i++)
