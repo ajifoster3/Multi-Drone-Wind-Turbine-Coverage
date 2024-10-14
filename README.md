@@ -74,7 +74,7 @@ sudo apt install ros-humble-mavros
 
 ros2 run mavros install_geographiclib_datasets.sh  
 
-## Alternative:  
+###### Alternative:  
 
 Wget https://raw.githubusercontent.com/mavlink/mavros/ros2/mavros/scripts/install_geographiclib_datasets.sh ./install_geographiclib_datasets.sh  
 
