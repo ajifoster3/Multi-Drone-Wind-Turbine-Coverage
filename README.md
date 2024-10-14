@@ -26,9 +26,9 @@ echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 
 Please verify the environment as below. 
 
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/environmentsetup.jpeg?raw=true)
- 
+![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/environmentsetup.jpg?raw=true)
 
+https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/IsaacSim.jpg
 ### Step 2:  Nvidia OMINIVERSE AND ISAACSIM Setup 
 
 Follow the instructions in the following video. 
@@ -59,7 +59,7 @@ Please do not forget to reboot afterwards!
 
  
 
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/IsaacSim.jpeg?raw=true)
+![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/IsaacSim.jpg?raw=true)
  
 
 ### Step 3: MAVROS Setup 
@@ -89,7 +89,7 @@ https://docs.qgroundcontrol.com/master/en/qgc-user guide/getting_started/downloa
 These instructions are as follows: 
 
  
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/QGC.jpeg?raw=true)
+![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/QGC.jpg?raw=true)
 
 chmod +x ./QGroundControl.AppImage 
 
@@ -251,7 +251,7 @@ If you get an error like the picture below during installation.
 
  
 
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/ros2wserror.jpeg?raw=true)
+![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/ros2wserror.jpg?raw=true)
  
 
 Solution:  
