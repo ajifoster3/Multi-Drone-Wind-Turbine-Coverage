@@ -26,7 +26,7 @@ echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 
 Please verify the environment as below. 
 
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/environmentsetup.jpg?raw=true)
+![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/environmentsetup.jpeg?raw=true)
  
 
 ### Step 2:  Nvidia OMINIVERSE AND ISAACSIM Setup 
@@ -59,7 +59,7 @@ Please do not forget to reboot afterwards!
 
  
 
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/IsaacSim.jpg?raw=true)
+![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/IsaacSim.jpeg?raw=true)
  
 
 ### Step 3: MAVROS Setup 
@@ -89,7 +89,7 @@ https://docs.qgroundcontrol.com/master/en/qgc-user guide/getting_started/downloa
 These instructions are as follows: 
 
  
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/QGC.jpg?raw=true)
+![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/QGC.jpeg?raw=true)
 
 chmod +x ./QGroundControl.AppImage 
 
@@ -185,7 +185,39 @@ cd Multi-Drone-Wind-Turbine-Coverage
 Modify the paths in UAVSystemLaunch.sh.
 
 
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/UAVSystem.jpg?raw=true)
+``` UAVSystemLaunch.sh
+#!/bin/bash
+# Name of the tmux session
+SESSION="DevSession"
+cleanup() {
+  tmux kill-session -t $SESSION
+}
+# Trap EXIT signal to cleanup tmux session
+trap cleanup EXIT
+# Start a new tmux session and detach from it
+tmux new-session -d -s $SESSION
+# Split the window into four panes
+tmux split-window -h
+tmux split-window -v
+tmux select-pane -t 0
+tmux split-window -v
+
+# Pane 1: source ROS setup script and type ros2 launch mavros multi_uas.launch without running
+tmux send-keys -t $SESSION:0.0 'source /opt/ros/humble/setup.bash' C-m
+tmux send-keys -t $SESSION:0.0 'ros2 launch mavros multi_uas.launch' C-m
+
+# Pane 2: cd to ~/Documents/Code, source ROS setup scripts, and type ./multi_launch_drones.sh without running
+tmux send-keys -t $SESSION:0.1 'cd ~/Home' C-m
+tmux send-keys -t $SESSION:0.1 'ros2 launch mavros multi_uas.launch' C-m
+#tmux send-keys -t $SESSION:0.1 'source ~/Documents/GitHub/Multi-Drone-Wind-Turbine-Coverage/ros2_ws/install/local_setup.bash' C-m
+tmux send-keys -t $SESSION:0.1 'source /home/oguz/ros2_ws/install/local_setup.bash' C-m
+tmux send-keys -t $SESSION:0.1 'cd ~/Multi-Drone-Wind-Turbine-Coverage' C-m
+tmux send-keys -t $SESSION:0.1 './multi_launch_drones.sh' C-m
+
+# Pane 3: cd to ~/Applications/PegasusSimulator/examples and run ISAACSIM_PYTHON 2_px4_multi_vehicles.py
+tmux send-keys -t $SESSION:0.2 'cd' C-m
+tmux send-keys -t $SESSION:0.2 'ISAACSIM_PYTHON /home/oguz/PegasusSimulator/examples/2_px4_multi_vehicle.py' C-m
+```
 
 ### Step 9: Move assets to the local Nucleus server 
 
@@ -219,7 +251,7 @@ If you get an error like the picture below during installation.
 
  
 
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/ros2wserror.jpg?raw=true)
+![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/ros2wserror.jpeg?raw=true)
  
 
 Solution:  
@@ -233,7 +265,55 @@ sudo ln -s /usr/share/cmake/geographiclib/FindGeographicLib.cmake /usr/share/cma
 ### Step 11: Modify mavros multi_uas.launch 
 
  
-![alt text](https://github.com/ajifoster3/Multi-Drone-Wind-Turbine-Coverage/blob/main/readme-resources/multi_uav.jpg?raw=true)
+```multi_uas.launch
+<launch>
+ <!-- px4_0 -->
+ <group>
+     <arg name="id" default="0" />
+     <arg name="fcu_url" default="udp://:14540@127.0.0.1:14580" />
+     <include file="$(find-pkg-share mavros)/launch/px4.launch">
+         <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+         <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+     </include>
+ </group>
+ <!-- px4_1 -->
+ <group>
+     <arg name="id" default="1" />
+     <arg name="fcu_url" default="udp://:14541@127.0.0.1:14581" />
+     <include file="$(find-pkg-share mavros)/launch/px4.launch">
+         <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+         <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+     </include>
+ </group>
+ <!-- px4_2 -->
+ <group>
+     <arg name="id" default="2" />
+     <arg name="fcu_url" default="udp://:14542@127.0.0.1:14582" />
+     <include file="$(find-pkg-share mavros)/launch/px4.launch">
+         <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+         <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+     </include>
+ </group>
+ <!-- px4_3 -->
+ <group>
+     <arg name="id" default="3" />
+     <arg name="fcu_url" default="udp://:14543@127.0.0.1:14583" />
+     <include file="$(find-pkg-share mavros)/launch/px4.launch">
+         <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+         <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+     </include>
+ </group>
+ <!-- px4_4 -->
+ <group>
+     <arg name="id" default="4" />
+     <arg name="fcu_url" default="udp://:14544@127.0.0.1:14584" />
+     <include file="$(find-pkg-share mavros)/launch/px4.launch">
+         <arg name="tgt_system" value="$(eval '1 + int(\'$(var id)\') ')" />
+         <arg name="namespace" value="$(eval ' \'mavros/uas_\' + \'$(var tgt_system)\' ')" />
+     </include>
+ </group>
+ </launch>
+```
 
 Modify the contents of /opt/ros/your_distribution/share/mavros/launch/multi_uas.launch to the following: 
  
