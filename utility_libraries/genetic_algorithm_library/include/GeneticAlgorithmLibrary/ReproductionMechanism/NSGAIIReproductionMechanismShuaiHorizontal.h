@@ -77,11 +77,11 @@ private:
 
     std::vector<double> getSubChromosomeLibraryFitnesses(std::vector<std::pair<std::vector<int>, double>> &library, std::vector<Position> &cities);
 
-    std::vector<int> getLongestSubChromosomePath(std::vector<std::vector<int>> &subChromosomes, std::vector<Position> &cities);
+    std::pair<std::vector<int>, int> getLongestSubChromosomePath(std::vector<std::vector<int>> &subChromosomes, std::vector<Position> &cities);
 
     std::vector<std::vector<int>> extractSubChromosomes(std::vector<int> &chromosome, int numberOfCities);
 
-    std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> getHighValueSubChromosomeLibrary(Population &population, std::vector<Position> &cities, int teamsize);
+    std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> getHighValueSubChromosomeLibrary(std::vector<ReproductionChromosome> const &population, std::vector<Position> &cities, int teamsize);
 
     bool hasNoCommonElements(const std::vector<int> &vec1, const std::vector<int> &vec2);
 

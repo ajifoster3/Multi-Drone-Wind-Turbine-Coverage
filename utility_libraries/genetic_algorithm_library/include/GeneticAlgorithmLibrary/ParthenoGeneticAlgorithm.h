@@ -40,6 +40,7 @@
 #include "NSGAIIReproductionMechanismShuai.h"
 #include "NSGAIIReproductionMechanismShuaiHorizontal.h"
 #include "NSGAIIReproductionMechanismShuaiHorizontalFocused.h"
+#include <iomanip>
 
 class ParthenoGeneticAlgorithm
 {
@@ -50,6 +51,7 @@ public:
     std::vector<int> run(std::vector<Position> &cities, int agents, std::vector<Position> &agentStartPositions, std::pair<double, double> nadir);
 
     void logIterations(Population population, std::vector<std::map<Fitness, double>> populationFitnesses, std::vector<Position> &cities, std::vector<Position> &agentStartPositions);
+    std::vector<Chromosome> getUniqueParetoFront(const std::vector<Chromosome> &paretoFront);
     void logParetoFront(Population population, std::vector<Position> &cities, std::vector<Position> &agentStartPositions);
 
 private:

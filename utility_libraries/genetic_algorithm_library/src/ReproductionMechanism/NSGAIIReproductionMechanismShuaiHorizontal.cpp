@@ -27,7 +27,6 @@ Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
 {
 
     teamSize_ = initialAgentPoses.size();
-    auto libary = getHighValueSubChromosomeLibrary(oldPopulation, cities, initialAgentPoses.size());
 
     auto fronts = FastNonDominatedSort(oldPopulation, initialAgentPoses, cities);
 
@@ -58,6 +57,8 @@ Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
         }
     }
 
+    auto libary = getHighValueSubChromosomeLibrary(tempNewGeneration, cities, initialAgentPoses.size());
+
     auto parents = ElitismSelection(tempNewGeneration);
 
     newGeneration.insert(newGeneration.end(), parents.begin(), parents.end());
@@ -87,10 +88,6 @@ Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
             // PMX crossover
             ProximityBasedCrossover(parent1, parent2, offspring1, initialAgentPoses, cities, true);
             ProximityBasedCrossover(parent1, parent2, offspring2, initialAgentPoses, cities, false);
-
-            // Mutation
-            Mutate(offspring1, cities, libary);
-            Mutate(offspring2, cities, libary);
         }
         else if (roulette < 0.75)
         {
@@ -154,7 +151,8 @@ Population NSGAIIReproductionMechanismShuaiHorizontal::Reproduce(
             {
                 break;
             }
-        }else
+        }
+        else
         {
             auto a = 1;
         }
@@ -902,44 +900,43 @@ void NSGAIIReproductionMechanismShuaiHorizontal::distributeCitiesStep(std::vecto
     std::vector<int> citiesPerAgent;
 
     int largestPath = 0;
-    for (size_t i = numberOfCities; i < numberOfCities+numberOfAgents; i++)
+    for (size_t i = numberOfCities; i < numberOfCities + numberOfAgents; i++)
     {
-        if(outVec[i] > largestPath)
+        if (outVec[i] > largestPath)
         {
             largestPath = outVec[i];
         }
         citiesPerAgent.emplace_back(outVec[i]);
     }
 
-    std::uniform_int_distribution<> distr(numberOfCities, numberOfCities+numberOfAgents-1);
-    
+    std::uniform_int_distribution<> distr(numberOfCities, numberOfCities + numberOfAgents - 1);
+
     double k = 5.0;
 
     double p = 1.0 - exp(-k * (numberOfAgents) / numberOfCities);
-    
+
     std::geometric_distribution<> geodis(p);
-    
-    int donation {geodis(gen_)+1};
-    
-    while(donation >= largestPath)
+
+    int donation{geodis(gen_) + 1};
+
+    while (donation >= largestPath)
     {
-        donation = geodis(gen_)+1;
+        donation = geodis(gen_) + 1;
     }
-    
-    
+
     int donor = distr(gen_);
-    while(outVec[donor] <= donation){
+    while (outVec[donor] <= donation)
+    {
         donor = distr(gen_);
     }
     int donee = distr(gen_);
-    while(donee == donor){
+    while (donee == donor)
+    {
         donee = distr(gen_);
     }
-    
-    
-    outVec[donor] -=donation;
-    outVec[donee] +=donation;
 
+    outVec[donor] -= donation;
+    outVec[donee] += donation;
 }
 
 void NSGAIIReproductionMechanismShuaiHorizontal::distributeCitiesBalanced(std::vector<int> &outVec, int numberOfCities, int numberOfAgents)
@@ -1052,36 +1049,64 @@ std::vector<int> NSGAIIReproductionMechanismShuaiHorizontal::horizontalGeneTrans
 
     std::vector<int> cityChromosomes(chromosome.begin(), chromosome.begin() + numberOfCities);
 
-    auto longestPathSubChromosome = getLongestSubChromosomePath(subChromosomes, cities);
-
+    std::pair<std::vector<int>, int> longestPathSubChromosome = getLongestSubChromosomePath(subChromosomes, cities);
+    int longestPathRobotID = longestPathSubChromosome.second;
     // Create new chromosome
-    std::vector<std::vector<int>> newChromosome;
-    newChromosome.emplace_back(longestPathSubChromosome);
+    std::vector<std::vector<int>> newChromosome(teamSize_);
+    // newChromosome.emplace_back(longestPathSubChromosome);
 
     std::vector<int> newChromosomeWhole;
-    newChromosomeWhole.insert(newChromosomeWhole.end(), longestPathSubChromosome.begin(), longestPathSubChromosome.end());
+    // newChromosomeWhole.insert(newChromosomeWhole.end(), longestPathSubChromosome.first.begin(), longestPathSubChromosome.first.end());
 
-    // Calculate fitness values for the library subchromosomes
-
-    for (int i = 1; i < teamSize_; i++)
+    for (int i = 0; i < teamSize_; i++)
     {
         bool isInitialized = false;
         for (size_t attempts = 0; attempts < library.first.size(); attempts++)
         {
+            if (i == longestPathRobotID)
+            {
+                continue;
+            }
             int index = library.second(gen_);
             auto selectedSubChromosome = library.first[index];
-            if (hasNoCommonElements(newChromosomeWhole, selectedSubChromosome))
+            if (hasNoCommonElements(newChromosomeWhole, selectedSubChromosome) && hasNoCommonElements(selectedSubChromosome, longestPathSubChromosome.first))
             {
-                newChromosome.emplace_back(selectedSubChromosome);
+                newChromosome[i] = selectedSubChromosome;
                 newChromosomeWhole.insert(newChromosomeWhole.end(), selectedSubChromosome.begin(), selectedSubChromosome.end());
                 isInitialized = true;
                 break;
             }
         }
-        if (!isInitialized)
+    }
+
+    // Place the longest path subchromosome at the correct index (robotID) last
+    newChromosome[longestPathRobotID] = longestPathSubChromosome.first;
+
+    bool inserted = false;
+    if (longestPathRobotID > 0)
+    {
+        // Check previous subchromosomes for a non-empty one
+        for (int i = longestPathRobotID - 1; i >= 0; --i)
         {
-            newChromosome.emplace_back(std::vector<int>());
+            if (!newChromosome[i].empty())
+            {
+                // Find the insertion position after the last element of the previous subchromosome
+                auto insertionPos = std::find(newChromosomeWhole.begin(), newChromosomeWhole.end(), newChromosome[i].back());
+                if (insertionPos != newChromosomeWhole.end())
+                {
+                    // Insert after the last element of the found subchromosome
+                    newChromosomeWhole.insert(insertionPos + 1, longestPathSubChromosome.first.begin(), longestPathSubChromosome.first.end());
+                    inserted = true;
+                    break;
+                }
+            }
         }
+    }
+
+    // If no valid previous subchromosome was found or the robotID is zero, insert at the start
+    if (!inserted)
+    {
+        newChromosomeWhole.insert(newChromosomeWhole.begin(), longestPathSubChromosome.first.begin(), longestPathSubChromosome.first.end());
     }
 
     std::set<int> allCityIndexes;
@@ -1179,6 +1204,13 @@ std::vector<int> NSGAIIReproductionMechanismShuaiHorizontal::horizontalGeneTrans
                 {
                     citiesToReprocess.push_back(missingCity);
                 }
+            }
+
+            // Explicitly check for missing cities at the end of every iteration
+            std::set<int> stillMissing(allCityIndexes.begin(), allCityIndexes.end());
+            for (const auto &city : newChromosomeWhole)
+            {
+                stillMissing.erase(city);
             }
 
             remainingMissingCities = citiesToReprocess;
@@ -1304,11 +1336,12 @@ std::vector<double> NSGAIIReproductionMechanismShuaiHorizontal::getSubChromosome
     return fitnessValues;
 }
 
-std::vector<int> NSGAIIReproductionMechanismShuaiHorizontal::getLongestSubChromosomePath(std::vector<std::vector<int>> &subChromosomes, std::vector<Position> &cities)
+std::pair<std::vector<int>, int> NSGAIIReproductionMechanismShuaiHorizontal::getLongestSubChromosomePath(std::vector<std::vector<int>> &subChromosomes, std::vector<Position> &cities)
 {
     int longestPathIndex;
     double highestValue = 0;
-    for (size_t i = 0; i < teamSize_; i++)
+    int i = 0;
+    while (i < teamSize_)
     {
         double fitnessValue = fitnessCalculator_->calculateSubvectorFitness(subChromosomes[i], i, cities);
         if (fitnessValue > highestValue)
@@ -1316,8 +1349,9 @@ std::vector<int> NSGAIIReproductionMechanismShuaiHorizontal::getLongestSubChromo
             highestValue = fitnessValue;
             longestPathIndex = i;
         }
+        i++;
     }
-    return subChromosomes[longestPathIndex];
+    return std::pair<std::vector<int>, int>{subChromosomes[longestPathIndex], longestPathIndex};
 }
 
 std::vector<std::vector<int>> NSGAIIReproductionMechanismShuaiHorizontal::extractSubChromosomes(std::vector<int> &chromosome, int numberOfCities)
@@ -1337,9 +1371,9 @@ std::vector<std::vector<int>> NSGAIIReproductionMechanismShuaiHorizontal::extrac
     return subChromosomes;
 }
 
-std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> NSGAIIReproductionMechanismShuaiHorizontal::getHighValueSubChromosomeLibrary(Population &population, std::vector<Position> &cities, int teamsize)
+std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> NSGAIIReproductionMechanismShuaiHorizontal::getHighValueSubChromosomeLibrary(std::vector<ReproductionChromosome> const &population, std::vector<Position> &cities, int teamsize)
 {
-    auto chromosomes = population.getPopulationList();
+    auto chromosomes = population;
     std::vector<double> chromosomeFitnesses;
     std::vector<std::pair<Chromosome, std::map<Fitness, double>>> chromosomeFitnessPairs;
     chromosomeFitnessPairs.reserve(chromosomes.size());
@@ -1350,43 +1384,58 @@ std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> NSGAIIRep
             std::map<Fitness, double> fitness = {
                 {Fitness::MAXPATHLENGTH, std::numeric_limits<double>::max()},
                 {Fitness::TOTALPATHDISTANCE, std::numeric_limits<double>::max()}};
-            chromosomeFitnessPairs.emplace_back(chromosome, fitness);
+            chromosomeFitnessPairs.emplace_back(chromosome.chromosome_, fitness);
         }
         else
         {
-            std::map<Fitness, double> fitness = fitnessCalculator_->calculateFitness(chromosome, cities);
-            chromosomeFitnessPairs.emplace_back(chromosome, fitness);
+            std::map<Fitness, double> fitness = fitnessCalculator_->calculateFitness(chromosome.chromosome_, cities);
+            chromosomeFitnessPairs.emplace_back(chromosome.chromosome_, fitness);
         }
     }
 
-    // Sort chromosomes based on their fitness values (descending order)
-    std::sort(chromosomeFitnessPairs.begin(), chromosomeFitnessPairs.end(),
-              [](const std::pair<Chromosome, std::map<Fitness, double>> &a, const std::pair<Chromosome, std::map<Fitness, double>> &b)
-              {
-                  return a.second.at(Fitness::MAXPATHLENGTH) < b.second.at(Fitness::MAXPATHLENGTH); // Compare fitness values
-              });
+    std::vector<ReproductionChromosome> selected;
+    int halfPopulationSize = population.size() * 0.05;
 
-    // Sample the best 20% of chromosomes (in regards to total path distance)
-    std::vector<Chromosome> sortedChromosomes;
-    sortedChromosomes.reserve(chromosomeFitnessPairs.size());
-    for (size_t i = 0; i < population.getPopulationList().size() * 0.05; i++)
+    // Group individuals by rank
+    std::map<int, std::vector<ReproductionChromosome>> rankGroups;
+    for (const auto &individual : population)
     {
-        sortedChromosomes.push_back(chromosomeFitnessPairs[i].first);
+        rankGroups[individual.rank].push_back(individual);
+    }
+
+    // Select individuals by rank
+    for (auto &rankGroup : rankGroups)
+    {
+        if (selected.size() + rankGroup.second.size() <= halfPopulationSize)
+        {
+            // Add all individuals in this rank
+            selected.insert(selected.end(), rankGroup.second.begin(), rankGroup.second.end());
+        }
+        else
+        {
+            // Sort by crowding distance if needed
+            std::sort(rankGroup.second.begin(), rankGroup.second.end(), [](const ReproductionChromosome &a, const ReproductionChromosome &b)
+                      { return a.crowdingDistance > b.crowdingDistance; });
+
+            // Add only the required number of individuals
+            selected.insert(selected.end(), rankGroup.second.begin(), rankGroup.second.begin() + (halfPopulationSize - selected.size()));
+            break;
+        }
     }
 
     std::vector<std::vector<int>> subChromosomes;
-    subChromosomes.reserve(population.getPopulationList().size() * 0.2 * teamSize_);
+    subChromosomes.reserve(population.size() * 0.2 * teamSize_);
     std::vector<double> weights;
-    weights.reserve(population.getPopulationList().size() * 0.2 * teamSize_);
+    weights.reserve(population.size() * 0.2 * teamSize_);
 
     double expectedSubChromosomeSize = static_cast<double>(cities.size()) / static_cast<double>(teamsize);
 
-    for (auto chromosome : sortedChromosomes)
+    for (auto chromosome : selected)
     {
         int progressIndex = 0;
         for (int i = 0; i < teamSize_; i++)
         {
-            auto subChromosome = chromosome.getGenesBetweenIndices(progressIndex, progressIndex + chromosome.getGenesAtIndex(chromosome.getNumberOfCities() + i));
+            auto subChromosome = chromosome.chromosome_.getGenesBetweenIndices(progressIndex, progressIndex + chromosome.chromosome_.getGenesAtIndex(chromosome.chromosome_.getNumberOfCities() + i));
             subChromosomes.emplace_back(std::vector<int>(subChromosome));
 
             // Calculate weight based on the deviation from the expected subchromosome size
@@ -1394,7 +1443,7 @@ std::pair<std::vector<std::vector<int>>, std::discrete_distribution<>> NSGAIIRep
             double deviation = std::abs(subChromosomeSize - expectedSubChromosomeSize);
             weights.emplace_back(1.0 / (deviation + 1.0)); // Inverse proportional weight
 
-            progressIndex = progressIndex + chromosome.getGenesAtIndex(chromosome.getNumberOfCities() + i);
+            progressIndex = progressIndex + chromosome.chromosome_.getGenesAtIndex(chromosome.chromosome_.getNumberOfCities() + i);
         }
     }
 
@@ -1428,8 +1477,8 @@ NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::Reproduction
 
 bool NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::dominates(const ReproductionChromosome &other) const
 {
-    return (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) + 1 < other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) <= other.fitnessValues_.at(Fitness::MAXPATHLENGTH)) ||
-           (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) <= other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) + 1 < other.fitnessValues_.at(Fitness::MAXPATHLENGTH));
+    return (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) < other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) <= other.fitnessValues_.at(Fitness::MAXPATHLENGTH)) ||
+           (fitnessValues_.at(Fitness::TOTALPATHDISTANCE) <= other.fitnessValues_.at(Fitness::TOTALPATHDISTANCE) && fitnessValues_.at(Fitness::MAXPATHLENGTH) < other.fitnessValues_.at(Fitness::MAXPATHLENGTH));
 }
 
 double NSGAIIReproductionMechanismShuaiHorizontal::ReproductionChromosome::getFitness(Fitness index) const

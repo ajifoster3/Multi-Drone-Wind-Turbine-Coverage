@@ -56,6 +56,8 @@ Population NSGAIIReproductionMechanismHorizontal::Reproduce(
         }
     }
 
+    
+
     // Elitism selection
     auto parents = ElitismSelection(tempNewGeneration);
     

@@ -77,18 +77,9 @@ Population NSGAIIReproductionMechanismShuai::Reproduce(
         Mutate(offspring1, cities);
         Mutate(offspring2, cities);
 
-        // Ensure offspring are unique before adding to new generation
-        if (std::find_if(newGeneration.begin(), newGeneration.end(), [&](ReproductionChromosome &chr)
-                         { return chr.getChromosome() == offspring1.getChromosome(); }) == newGeneration.end())
-        {
-            newGeneration.push_back(offspring1);
-        }
+        newGeneration.push_back(offspring1);
 
-        if (std::find_if(newGeneration.begin(), newGeneration.end(), [&](ReproductionChromosome &chr)
-                         { return chr.getChromosome() == offspring2.getChromosome(); }) == newGeneration.end())
-        {
-            newGeneration.push_back(offspring2);
-        }
+        newGeneration.push_back(offspring2);
     }
 
     std::vector<Chromosome> finalGeneration;
@@ -536,7 +527,6 @@ void NSGAIIReproductionMechanismShuai::randomlyInsertSubvector(std::vector<int> 
 
     vec.insert(vec.begin() + newPosition, tempBlock.begin(), tempBlock.end());
 }
-
 
 void NSGAIIReproductionMechanismShuai::distributeCities(std::vector<int> &outVec, int numberOfCities, int numberOfAgents)
 {

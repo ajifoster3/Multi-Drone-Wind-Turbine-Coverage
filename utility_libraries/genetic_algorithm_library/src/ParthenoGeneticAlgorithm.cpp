@@ -7,7 +7,7 @@ ParthenoGeneticAlgorithmConfig::ParthenoGeneticAlgorithmConfig(
     TerminationCriteria terminationCriterion) : encodingMechanism(encodingMechanism),
                                                 reproductionMechanism(reproductionMechanism),
                                                 fitnessFunction(fitnessFunction),
-                                                terminationCriteria(terminationCriterion){};
+                                                terminationCriteria(terminationCriterion) {};
 
 ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfig config) : config_{config}
 {
@@ -145,7 +145,7 @@ ParthenoGeneticAlgorithm::ParthenoGeneticAlgorithm(ParthenoGeneticAlgorithmConfi
     }
 }
 
-int getNextLogFileNumber(const std::string& directoryPath)
+int getNextLogFileNumber(const std::string &directoryPath)
 {
     int maxNumber = 0;
     std::regex logFilePattern(R"(algorithm_log_(\d+)\.txt)");
@@ -187,7 +187,6 @@ int getNextLogFileNumber(const std::string& directoryPath)
 
     return maxNumber + 1;
 }
-
 
 void ParthenoGeneticAlgorithm::populateGASettings()
 {
@@ -279,9 +278,9 @@ void ParthenoGeneticAlgorithm::logIterations(Population population, std::vector<
     logFile << "Iteration, MAXPATHLENGTH, TOTALPATHDISTANCE, HYPERVOLUME, TIMEELAPSED\n";
     for (size_t i = 0; i < populationFitnesses.size(); ++i)
     {
-        logFile << i << ", " 
-                << populationFitnesses[i][Fitness::MAXPATHLENGTH] << ", " 
-                << populationFitnesses[i][Fitness::TOTALPATHDISTANCE] << ", " 
+        logFile << i << ", "
+                << populationFitnesses[i][Fitness::MAXPATHLENGTH] << ", "
+                << populationFitnesses[i][Fitness::TOTALPATHDISTANCE] << ", "
                 << populationFitnesses[i][Fitness::HYPERVOLUME] << ", "
                 << populationFitnesses[i][Fitness::TIMEELAPSED] << "\n";
     }
@@ -289,7 +288,7 @@ void ParthenoGeneticAlgorithm::logIterations(Population population, std::vector<
     // Get Pareto front
     std::vector<Fitness> fitnessChoices = {Fitness::MAXPATHLENGTH, Fitness::TOTALPATHDISTANCE};
     std::vector<Chromosome> paretoFront = population.getParetoFront(fitnessCalculator_, agentStartPositions, cities);
-
+    paretoFront = getUniqueParetoFront(paretoFront);
     // Log Pareto front fitnesses and chromosome values
     logFile << "\nPareto_Front: \n";
     logFile << "Chromosome_Genes, MAXPATHLENGTH, TOTALPATHDISTANCE \n";
@@ -301,12 +300,55 @@ void ParthenoGeneticAlgorithm::logIterations(Population population, std::vector<
         {
             logFile << gene << " ";
         }
+        logFile << std::setprecision(10)
+            << std::fixed
+            << std::showpoint;
         logFile << ", Fitnesses: " << fitness[Fitness::MAXPATHLENGTH] << ", " << fitness[Fitness::TOTALPATHDISTANCE] << "\n";
     }
 
     logFile.close();
 }
+// A hash function for the chromosome's genes can be defined, depending on the type of genes
+struct ChromosomeHash
+{
+    std::size_t operator()(const Chromosome &chromosome) const
+    {
+        const auto &genes = chromosome.getGenes(); // Assuming this returns std::vector<int>
+        std::size_t seed = genes.size(); // Start with the size of the genes as a basis for the hash
 
+        // Combine the hash of each gene element
+        for (const int &gene : genes)
+        {
+            seed ^= std::hash<int>{}(gene) + 0x9e3779b9 + (seed << 6) + (seed >> 2); // Hash combine
+        }
+
+        return seed;
+    }
+};
+struct ChromosomeEqual
+{
+    bool operator()(const Chromosome &lhs, const Chromosome &rhs) const
+    {
+        return lhs.getGenes() == rhs.getGenes();
+    }
+};
+
+std::vector<Chromosome> ParthenoGeneticAlgorithm::getUniqueParetoFront(const std::vector<Chromosome> &paretoFront)
+{
+    std::unordered_set<Chromosome, ChromosomeHash, ChromosomeEqual> uniqueChromosomes;
+    std::vector<Chromosome> uniqueParetoFront;
+
+    for (const auto &chromosome : paretoFront)
+    {
+        if (uniqueChromosomes.find(chromosome) == uniqueChromosomes.end())
+        {
+            uniqueChromosomes.insert(chromosome);
+            uniqueParetoFront.push_back(chromosome);
+        }
+    }
+
+    return uniqueParetoFront;
+}
 
 void ParthenoGeneticAlgorithm::logParetoFront(Population population, std::vector<Position> &cities, std::vector<Position> &agentStartPositions)
 {
@@ -336,6 +378,10 @@ void ParthenoGeneticAlgorithm::logParetoFront(Population population, std::vector
     // Log Pareto front fitnesses and chromosome values
     logFile << "Pareto_Front: \n";
     logFile << "MAXPATHLENGTH, TOTALPATHDISTANCE \n";
+
+    logFile << std::setprecision(10)
+            << std::fixed
+            << std::showpoint;
     for (auto &chromosome : paretoFront)
     {
         auto fitness = fitnessCalculator_.calculateFitness(chromosome, cities);
