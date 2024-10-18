@@ -31,7 +31,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/include/decentralised_coverage_tracker
 )
 
-add_executable(run src/run.cpp src/TrackingNode.cpp)
+add_executable(run src/run.cpp src/TrackingNode.cpp src/HaversineDistance.cpp)
 
 ament_target_dependencies(run rclcpp geographic_msgs offboard_control_interfaces)
 

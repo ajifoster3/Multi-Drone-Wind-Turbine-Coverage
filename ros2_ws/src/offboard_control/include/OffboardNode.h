@@ -25,7 +25,6 @@ class OffboardNode : public rclcpp::Node
 {
 public:
     OffboardNode(const std::string &name, int uas_number, CoverageMode);
-
     void OffboardNodeSetup();
 
 private:
@@ -67,25 +66,25 @@ private:
 
     void globalGoalPositionCb(const geographic_msgs::msg::GeoPoseStamped::SharedPtr msg);
 
-    //void startDecentralisedCoverageCb(const std_msgs::msg::Bool::SharedPtr msg);
+    // void startDecentralisedCoverageCb(const std_msgs::msg::Bool::SharedPtr msg);
 
-    //void droneAllocationCb(const offboard_control_interfaces::msg::DroneAllocation::SharedPtr msg);
+    // void droneAllocationCb(const offboard_control_interfaces::msg::DroneAllocation::SharedPtr msg);
 
-    //void droneEnvironmentalRepresentationCb(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg);
+    // void droneEnvironmentalRepresentationCb(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg);
 
     void dronePingCb(const offboard_control_interfaces::msg::DronePing::SharedPtr msg);
 
     void initializeSubscribers();
 
-    //void initializeDecentralisedSubscribers();
+    // void initializeDecentralisedSubscribers();
 
     void initializePublishers();
 
-    //void initializeDecentralisedPublishers();
+    // void initializeDecentralisedPublishers();
 
     void positionTimerCallback();
 
-    //void decentralisedCoverageTimerCallback();
+    // void decentralisedCoverageTimerCallback();
 
     void initializeClients();
 
@@ -95,11 +94,11 @@ private:
 
     void publishGeoPose();
 
-    //void publishDroneAllocation();
+    // void publishDroneAllocation();
 
-    //void publishDroneEnvironmentalRepresentation();
+    // void publishDroneEnvironmentalRepresentation();
 
-    //void publishDronePing();
+    // void publishDronePing();
 
     void publishTargetPose();
 
@@ -107,12 +106,12 @@ private:
 
     geographic_msgs::msg::GeoPoseStamped getCurrentGeoPose();
 
-    //int getClosestViewpointIndex();
+    // int getClosestViewpointIndex();
 
-    //void allocateUnassignedViewpoint();
-    
+    // void allocateUnassignedViewpoint();
+
     void checkCoveragePositionReached();
-    
+
     void coveragePoseToGeoPose(geographic_msgs::msg::GeoPoseStamped &geopose, Pose &pose);
 };
 

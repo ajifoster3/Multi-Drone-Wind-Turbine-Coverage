@@ -1,13 +1,16 @@
 #ifndef POSE_H
 #define POSE_H
 
-struct Pose {
+struct Pose
+{
 public:
-    struct Position {
+    struct Position
+    {
         double latitude, longitude, altitude;
     };
 
-    struct Orientation {
+    struct Orientation
+    {
         double x, y, z, w;
     };
 

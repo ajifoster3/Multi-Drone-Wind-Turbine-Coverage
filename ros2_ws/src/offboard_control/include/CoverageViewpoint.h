@@ -4,22 +4,21 @@
 #include "Pose.h"
 #include <chrono>
 
-class CoverageViewpoint {
+class CoverageViewpoint
+{
 public:
+    CoverageViewpoint() {}
+    CoverageViewpoint(const Pose &pose, bool assigned)
+        : pose_(pose), assigned_(assigned) {}
 
-CoverageViewpoint() {}
-CoverageViewpoint(const Pose& pose, bool assigned)
-: pose_(pose), assigned_(assigned) {}
+    const Pose &getPose() const { return pose_; }
+    bool isAssigned() const { return assigned_; }
 
-const Pose& getPose() const { return pose_; }
-bool isAssigned() const { return assigned_; }
-
-void setPose(const Pose& pose) { pose_ = pose; }
-void setAssigned(bool assigned) { assigned_ = assigned; }
-
+    void setPose(const Pose &pose) { pose_ = pose; }
+    void setAssigned(bool assigned) { assigned_ = assigned; }
 
 private:
-    Pose pose_; // Custom Pose
+    Pose pose_;     // Custom Pose
     bool assigned_; // Assigned flag
 };
 
