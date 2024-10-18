@@ -18,15 +18,11 @@ void OffboardNode::OffboardNodeSetup()
 
     RCLCPP_INFO(this->get_logger(), "Setting up offboard mode...");
 
-    // Try to set OFFBOARD mode
-    setOffboardMode();
 
     RCLCPP_INFO(this->get_logger(), "Publishing initial Pose...");
     // Publish target altitude to maintain OFFBOARD mode
     publishTargetPose();
 
-    // Arm the drone
-    armDrone();
 }
 
 void OffboardNode::globalPositionCb(const sensor_msgs::msg::NavSatFix::SharedPtr msg)
@@ -72,7 +68,7 @@ void OffboardNode::initializePublishers()
     centralGlobalPosPub_ = this->create_publisher<geographic_msgs::msg::GeoPoseStamped>(
         "central_control/uas_" + std::to_string(uasNumber_) + "/global_pose", 10);
 
-    pubTimer_ = this->create_wall_timer(50ms, std::bind(&OffboardNode::positionTimerCallback, this));
+    pubTimer_ = this->create_wall_timer(100ms, std::bind(&OffboardNode::positionTimerCallback, this));
 }
 
 void OffboardNode::positionTimerCallback()

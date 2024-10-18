@@ -16,9 +16,11 @@ class DistanceFitnessFunction : public FitnessFunction
 
 public:
 
-    double calulateChromosomeFitness(
+    std::map<Fitness, double> calulateChromosomeFitness(
         Chromosome &,
         std::vector<Position> &cities);
+
+    double calculateSubChromosomeFitness(std::vector<int> &subChromosome, int robotId, std::vector<Position> cities){return 0.0;};
 
     std::vector<std::vector<int>> getPaths(Chromosome &chromosome);
 
@@ -40,14 +42,15 @@ private:
     std::unordered_map<std::pair<int, int>, double, pair_hash> initialPoseCostMap_;
     std::unordered_map<std::pair<int, int>, double, pair_hash> cityCostMap_;
 
-    const std::vector<double> getInversePathLengths(
+    const std::vector<double> getPathLengths(
         std::vector<std::vector<int>> &paths,
         std::vector<Position> &cities);
 
-    double getInversePathLength(
+    double getPathLength(
         std::vector<int> &path,
         int agentID,
         std::vector<Position> &cities);
+    double calculateDroneDistance(double vertical_distance, double horizontal_distance, double ascending_speed = 3.0, double descending_speed = 1.5, double horizontal_speed = 11.0);
 };
 
 #endif

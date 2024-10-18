@@ -1,0 +1,11 @@
+#ifndef FITNESS_H
+#define FITNESS_H
+
+enum Fitness
+{
+    MAXPATHLENGTH,
+    TOTALPATHDISTANCE,
+    MAXPATHTOTALPATHWEIGHTEDSUM
+};
+
+#endif

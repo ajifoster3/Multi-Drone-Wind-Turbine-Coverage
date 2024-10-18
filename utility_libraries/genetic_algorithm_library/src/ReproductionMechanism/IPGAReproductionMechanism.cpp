@@ -1,14 +1,15 @@
 #include "IPGAReproductionMechanism.h"
 #include <iostream>
 
-IPGAReproductionMechanism::IPGAReproductionMechanism(std::shared_ptr<FitnessCalculator> fitnessCalculator, 
-double citiesPerSalesmanMutationProbability,
-double routeMutationProbability,
-int sampleSize)
-    : ReproductionMechanism(std::move(fitnessCalculator)), 
-    citiesPerSalesmanMutationProbability_(citiesPerSalesmanMutationProbability),
-    routeMutationProbability_(routeMutationProbability),
-    sampleSize_(sampleSize)
+IPGAReproductionMechanism::IPGAReproductionMechanism(
+    std::shared_ptr<FitnessCalculator> fitnessCalculator,
+    double citiesPerSalesmanMutationProbability,
+    double routeMutationProbability,
+    int sampleSize)
+    : ReproductionMechanism(std::move(fitnessCalculator)),
+      citiesPerSalesmanMutationProbability_(citiesPerSalesmanMutationProbability),
+      routeMutationProbability_(routeMutationProbability),
+      sampleSize_(sampleSize)
 {
     std::random_device rd;
     gen_ = std::mt19937(rd());
@@ -17,7 +18,8 @@ int sampleSize)
 Population IPGAReproductionMechanism::Reproduce(
     Population &oldPopulation,
     std::vector<Position> &initialAgentPoses,
-    std::vector<Position> &cities)
+    std::vector<Position> &cities,
+    int iterationNumber)
 {
     std::vector<ReproductionChromosome> reproductionChromosomes{};
     reproductionChromosomes.reserve(oldPopulation.getPopulationList().size());
@@ -267,20 +269,20 @@ void IPGAReproductionMechanism::distributeCities(std::vector<int> &vec, int numb
     }
 }
 
-ReproductionPopulation::ReproductionPopulation(Population population)
+IPGAReproductionMechanism::ReproductionPopulation::ReproductionPopulation(Population population)
 {
     population_;
 }
 
-ReproductionChromosome::ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities)
+IPGAReproductionMechanism::ReproductionChromosome::ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities)
 {
     chromosome_ = chromosome;
     fitness_ = fitnessCalculator->calculateFitness(chromosome, cities);
 }
 
-double ReproductionChromosome::getFitness() const { return fitness_; };
+std::map<Fitness, double> IPGAReproductionMechanism::ReproductionChromosome::getFitness() const { return fitness_; };
 
-Chromosome &ReproductionChromosome::getChromosome()
+Chromosome &IPGAReproductionMechanism::ReproductionChromosome::getChromosome()
 {
     return chromosome_;
 }

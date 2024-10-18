@@ -16,7 +16,7 @@ class DistanceFitnessFunction : public FitnessFunction
 
 public:
 
-    double calulateChromosomeFitness(
+    std::map<Fitness, double> calulateChromosomeFitness(
         Chromosome &,
         std::vector<Position> &cities);
 

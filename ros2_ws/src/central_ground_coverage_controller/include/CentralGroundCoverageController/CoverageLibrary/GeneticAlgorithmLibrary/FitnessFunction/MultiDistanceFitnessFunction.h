@@ -15,8 +15,15 @@ class MultiDistanceFitnessFunction : public FitnessFunction
 {
 
 public:
+    std::map<Fitness, double> calulateChromosomeFitness(
+        Chromosome &,
+        std::vector<Position> &cities);
 
-    double calulateChromosomeFitness(
+    double calulateChromosomeLongestPathFitness(
+        Chromosome &,
+        std::vector<Position> &cities);
+
+    double calulateChromosomeTotalPathFitness(
         Chromosome &,
         std::vector<Position> &cities);
 

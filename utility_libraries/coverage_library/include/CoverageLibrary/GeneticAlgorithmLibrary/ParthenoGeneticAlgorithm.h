@@ -25,10 +25,13 @@
 #include "Terminator.h"
 #include "SequenceEncodingMechanism.h"
 #include "IPGAReproductionMechanism.h"
+#include "IPGAElitismReproductionMechanism.h"
 #include "DistanceFitnessFunction.h"
 #include "IterationCountTerminationCriterion.h"
 #include "ParthenoGeneticAlgorithmConfig.h"
 #include "MultiDistanceFitnessFunction.h"
+#include "Fitnesses.h"
+#include "NSGAIIReproductionMechanism.h"
 
 class ParthenoGeneticAlgorithm
 {
@@ -38,7 +41,7 @@ public:
 
     std::vector<int> run(std::vector<Position> &cities, int agents, std::vector<Position> &agentStartPositions);
 
-    void logIterations(std::vector<int> &fittestGenes, std::vector<double> &populationFitnesses);
+    void logIterations(std::vector<int> &fittestGenes, std::vector<std::map<Fitness, double>> &populationFitnesses, Fitness fitnessChoice);
 
 private:
     void logData(const std::string &fileName, const std::vector<Position> &cities, int agents, const std::vector<Position> &agentStartPositions);

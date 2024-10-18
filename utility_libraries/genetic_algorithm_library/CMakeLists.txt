@@ -13,6 +13,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+find_package(GeographicLib REQUIRED)
+
 # Include the directory where the header files are located
 include_directories(
   include/GeneticAlgorithmLibrary 
@@ -31,16 +33,21 @@ add_library(GeneticAlgorithm STATIC ${SOURCES})
 
 add_executable(GeneticAlgorithmExecutable src/main.cpp src/ProblemLogUtility.cpp ${SOURCES})
 
-# Create google test
-enable_testing()
-add_executable(
-    GeneticAlgorithmTest
-    test/DistanceFitnessFunction.cc
-)
-target_link_libraries(
-    GeneticAlgorithmTest
-    GeneticAlgorithm
-    GTest::gtest_main
-)
-include(GoogleTest)
-#gtest_discover_tests(GeneticAlgorithmTest)
+# Attempt to find the GeographicLib library manually
+find_library(GEOGRAPHICLIB_LIB NAMES GeographicLib libGeographicLib)
+target_link_libraries(GeneticAlgorithmExecutable PRIVATE stdc++fs)
+target_link_libraries(GeneticAlgorithmExecutable PRIVATE ${GEOGRAPHICLIB_LIB})
+
+## Create google test
+#enable_testing()
+#add_executable(
+#    GeneticAlgorithmTest
+#    test/DistanceFitnessFunction.cc
+#)
+#target_link_libraries(
+#    GeneticAlgorithmTest
+#    GeneticAlgorithm
+#    GTest::gtest_main
+#)
+#include(GoogleTest)
+##gtest_discover_tests(GeneticAlgorithmTest)

@@ -9,34 +9,11 @@
 #include "ReproductionMechanism.h"
 #include "Population.h"
 
-class ReproductionPopulation
-{
-
-public:
-    ReproductionPopulation(Population);
-
-private:
-    Population population_;
-    double maxFitness;
-    double minFitness;
-};
-
-class ReproductionChromosome
-{
-
-public:
-    ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities);
-    double getFitness() const;
-    Chromosome &getChromosome();
-
-private:
-    Chromosome chromosome_;
-    double fitness_;
-};
-
 class IPGAReproductionMechanism : public ReproductionMechanism
 {
 public:
+    class ReproductionChromosome;
+
     IPGAReproductionMechanism(
         std::shared_ptr<FitnessCalculator>,
         double citiesPerSalesmanMutationProbability,
@@ -46,8 +23,33 @@ public:
     Population Reproduce(
         Population &oldPopulation,
         std::vector<Position> &initialAgentPoses,
-        std::vector<Position> &cities);
-    void shuffleReproductionChromosomeList(std::vector<ReproductionChromosome> &chromosomeFitness);
+        std::vector<Position> &cities,
+    int iterationNumber);
+
+    void shuffleReproductionChromosomeList(std::vector<IPGAReproductionMechanism::ReproductionChromosome> &chromosomeFitness);
+
+    class ReproductionChromosome
+    {
+    public:
+        ReproductionChromosome(Chromosome &chromosome, std::shared_ptr<FitnessCalculator> fitnessCalculator, std::vector<Position> initialAgentPoses, std::vector<Position> cities);
+        std::map<Fitness, double> getFitness() const;
+        Chromosome &getChromosome();
+
+    private:
+        Chromosome chromosome_;
+        std::map<Fitness, double> fitness_;
+    };
+
+    class ReproductionPopulation
+    {
+    public:
+        ReproductionPopulation(Population population);
+
+    private:
+        Population population_;
+        double maxFitness;
+        double minFitness;
+    };
 
 private:
     const int sampleSize_;

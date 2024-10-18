@@ -12,6 +12,10 @@ namespace HaversineDistance
     double calculateDistance(double lat1, double lon1, double lat2, double lon2);
 
     double calculateDistance(double lat1, double lon1, double alt1, double lat2, double lon2, double alt2);
-}
+
+    double calculateDroneHaversineDistance(double lat1, double lon1, double alt1, 
+                                           double lat2, double lon2, double alt2, 
+                                           double ascending_speed = 3, double descending_speed = 1.5, double horizontal_speed = 11);
+};
 
 #endif

@@ -15,10 +15,8 @@ public:
     Reproducer(std::shared_ptr<ReproductionMechanism> reproductionMechanism)
         : reproductionMechanism_(std::move(reproductionMechanism)){};
 
-    Population Reproduce(
-        Population& oldPopulation,
-        std::vector<Position>& initialAgentPoses,
-        std::vector<Position>& cities);
+
+    Population Reproduce(Population &oldPopulation, std::vector<Position> &initialAgentPoses, std::vector<Position> &cities, int iterationNumber);
 
 private:
     std::shared_ptr<ReproductionMechanism> reproductionMechanism_;
