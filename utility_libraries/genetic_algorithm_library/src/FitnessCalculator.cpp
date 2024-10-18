@@ -5,9 +5,14 @@ void FitnessCalculator::populateCostMap(std::vector<Position> &cities, std::vect
     fitnessFunction_->calculateCostMap(cities, initialPositions);
 }
 
-double FitnessCalculator::calculateFitness(
+std::map<Fitness, double> FitnessCalculator::calculateFitness(
     Chromosome &chromosome,
     std::vector<Position> &cities)
 {
     return fitnessFunction_->calulateChromosomeFitness(chromosome, cities);
+}
+
+double FitnessCalculator::calculateSubvectorFitness(std::vector<int> &subChromosome, int robotNumber, std::vector<Position> &cities)
+{
+    return fitnessFunction_->calculateSubChromosomeFitness(subChromosome, robotNumber, cities);
 }

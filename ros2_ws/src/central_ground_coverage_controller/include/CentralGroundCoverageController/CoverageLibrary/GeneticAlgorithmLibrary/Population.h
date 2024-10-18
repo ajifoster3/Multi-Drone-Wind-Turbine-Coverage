@@ -12,8 +12,8 @@ public:
     Population(std::vector<Chromosome> &);
 
     std::vector<Chromosome> getPopulationList();
-    double getPopulationFitness(FitnessCalculator &fitnessCalculator, std::vector<Position> &agentStartPositions, std::vector<Position> &cities);
-    std::vector<int> getFittestChromosomeGenes(FitnessCalculator &fitnessCalculator, std::vector<Position> &agentStartPositions, std::vector<Position> &cities);
+    std::map<Fitness, double> getPopulationFitness(FitnessCalculator &fitnessCalculator, std::vector<Position> &agentStartPositions, std::vector<Position> &cities, Fitness fitnessChoice);
+    std::vector<int> getFittestChromosomeGenes(FitnessCalculator &fitnessCalculator, std::vector<Position> &agentStartPositions, std::vector<Position> &cities, Fitness fitnessChoice);
 
 private:
     std::vector<Chromosome> populationList_;

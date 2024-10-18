@@ -19,8 +19,8 @@ void GeneticAlgorithmCoveragePathPlanner::planCoveragePath()
 {
     ParthenoGeneticAlgorithmConfig config{
         EncodingMechanisms::SEQUENCE_ENCODING_MECHANISM,
-        ReproductionMechanisms::IPGA_REPRODUCTION_MECHANISM,
-        FitnessFunctions::DISTANCE_FITNESS_FUNCTION,
+        ReproductionMechanisms::NSGAII_REPRODUCTION_MECHANISM,
+        FitnessFunctions::MULTI_DISTANCE_FITNESS_FUNCTION,
         TerminationCriteria::ITERATION_COUNT_TERMINATION_CRITERION};
 
     ParthenoGeneticAlgorithm pga{config};
