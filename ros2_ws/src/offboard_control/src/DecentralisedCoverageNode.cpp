@@ -9,6 +9,12 @@ DecentralisedCoverageNode::DecentralisedCoverageNode(const std::string &name, in
     decentralisedCoverageSub_ = this->create_subscription<std_msgs::msg::Bool>(
         "decentralised_control/start_decentralised_coverage", rclcpp::SensorDataQoS(), std::bind(&DecentralisedCoverageNode::startDecentralisedCoverageCb, this, std::placeholders::_1));
     viewpointAssigned_ = -1;
+    lastHeardFrom_ = {};
+    dronePingPub_ = this->create_publisher<offboard_control_interfaces::msg::DronePing>(
+        "decentralised_control/drone_ping", 10);
+    timer_ = this->create_wall_timer(
+           std::chrono::seconds(1),  // Adjust the interval as needed
+           std::bind(&DecentralisedCoverageNode::publishDronePing, this));
 }
 
 void DecentralisedCoverageNode::startDecentralisedCoverageCb(const std_msgs::msg::Bool::SharedPtr msg)
@@ -25,17 +31,68 @@ void DecentralisedCoverageNode::startDecentralisedCoverageCb(const std_msgs::msg
     }
 }
 
+void DecentralisedCoverageNode::removeTimedOutDroneAllocations(int drone_id)
+{
+    for (size_t i = 0; i < droneAllocation_.allocations.size(); ++i)
+    {
+        if (droneAllocation_.allocations[i] == drone_id)
+        {
+            if (!droneEnvironmentalRepresentation_.is_covered[i])
+            {
+                droneAllocation_.allocations[i] = -1; // Unassign task
+                RCLCPP_WARN(this->get_logger(), "Unallocating viewpoint %d from timed-out Drone %d", (int)i, drone_id);
+            }
+        }
+    }
+}
+
 void DecentralisedCoverageNode::droneAllocationCb(const offboard_control_interfaces::msg::DroneAllocation::SharedPtr msg)
 {
     for (size_t i = 0; i < msg->allocations.size(); i++)
     {
-        if (msg->allocations[i] != droneAllocation_.allocations[i])
+        int drone_id = msg->allocations[i];
+
+        // Skip allocation if the drone is in the timeout list
+        if (timedOutDrones_.count(drone_id) > 0)
         {
-            droneAllocation_.allocations[i] = msg->allocations[i] > droneAllocation_.allocations[i] ? msg->allocations[i] : droneAllocation_.allocations[i];
+            RCLCPP_WARN(this->get_logger(), "Ignoring allocation of viewpoint %d to timed-out Drone %d", (int)i, drone_id);
+            // If the current allocation is from a timed-out drone and is not covered, reset it
+            if (droneAllocation_.allocations[i] != -1)
+            {
+                if (!droneEnvironmentalRepresentation_.is_covered[i])
+                {
+                    RCLCPP_WARN(this->get_logger(), "Unallocating viewpoint %d from timed-out Drone %d", (int)i, droneAllocation_.allocations[i]);
+                    droneAllocation_.allocations[i] = -1; // Unassign task
+                }
+            }
+            continue;
+        }
+
+        // Update allocation only if the new assignment is different
+        if (drone_id != droneAllocation_.allocations[i])
+        {
+            droneAllocation_.allocations[i] = std::max(drone_id, droneAllocation_.allocations[i]);
+        }
+
+
+        // If the current allocation is from a timed-out drone and is not covered, reset it
+        if (droneAllocation_.allocations[i] != -1 && timedOutDrones_.count(droneAllocation_.allocations[i]) > 0)
+        {
+            if (!droneEnvironmentalRepresentation_.is_covered[i])
+            {
+                RCLCPP_WARN(this->get_logger(), "Unallocating viewpoint %d from timed-out Drone %d", (int)i, droneAllocation_.allocations[i]);
+                droneAllocation_.allocations[i] = -1; // Unassign task
+            }
         }
     }
-    if (droneAllocation_.allocations[viewpointAssigned_] != uasNumber_)
+
+    // Ensure that any viewpoint assigned to this drone has not been taken by another drone
+    if (viewpointAssigned_ != -1 && droneAllocation_.allocations[viewpointAssigned_] != uasNumber_)
     {
+        RCLCPP_INFO(this->get_logger(), "Drone %d lost assigned viewpoint %d", uasNumber_, viewpointAssigned_);
+        viewpointAssigned_ = -1;
+
+        // Look for unassigned viewpoints
         if (std::find(droneAllocation_.allocations.begin(), droneAllocation_.allocations.end(), -1) != droneAllocation_.allocations.end())
         {
             allocateUnassignedViewpoint();
@@ -45,7 +102,28 @@ void DecentralisedCoverageNode::droneAllocationCb(const offboard_control_interfa
             centralGoalPosPub_->publish(initialGps_);
         }
     }
+    else
+    {
+        // Check if all viewpoints are allocated and covered
+        bool allTasksCovered = true;
+        for (size_t i = 0; i < droneAllocation_.allocations.size(); i++)
+        {
+            if (droneAllocation_.allocations[i] == uasNumber_ && !droneEnvironmentalRepresentation_.is_covered[i])
+            {
+                allTasksCovered = false;
+                break;
+            }
+        }
+
+        if (allTasksCovered)
+        {
+            RCLCPP_INFO(this->get_logger(), "All allocated tasks covered. Drone %d returning to initial position.", uasNumber_);
+            centralGoalPosPub_->publish(initialGps_);
+        }
+    }
 }
+
+
 
 void DecentralisedCoverageNode::droneEnvironmentalRepresentationCb(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg)
 {
@@ -60,7 +138,56 @@ void DecentralisedCoverageNode::droneEnvironmentalRepresentationCb(const offboar
 
 void DecentralisedCoverageNode::dronePingCb(const offboard_control_interfaces::msg::DronePing::SharedPtr msg)
 {
+    auto now = this->now();
+    lastHeardFrom_[msg->drone_id] = now;
 }
+
+void DecentralisedCoverageNode::checkDroneTimeouts()
+{
+    auto now = this->now();
+
+    // Log current timestamp
+    RCLCPP_INFO(this->get_logger(), "Checking drone timeouts at: %f seconds", now.seconds());
+
+    // Log all last heard timestamps
+    for (const auto &entry : lastHeardFrom_)
+    {
+        double last_heard = entry.second.seconds();
+        double time_diff = now.seconds() - last_heard;
+
+        RCLCPP_INFO(this->get_logger(), "Drone %d last heard at: %f seconds ago (Time diff: %f)",
+                    entry.first, last_heard, time_diff);
+
+        // Check for timeout
+        if (time_diff > 10)
+        {
+            RCLCPP_WARN(this->get_logger(), "Where've you gone, Drone %d? Marking as timed out.", entry.first);
+
+            // Log the current timed-out drones before updating
+            std::string timed_out_drones_str;
+            for (int d : timedOutDrones_)
+            {
+                timed_out_drones_str += std::to_string(d) + " ";
+            }
+            RCLCPP_INFO(this->get_logger(), "Currently timed out drones before update: [%s]", timed_out_drones_str.c_str());
+
+            // Add drone to the timed-out set
+            timedOutDrones_.insert(entry.first);
+
+            // Log updated list of timed-out drones
+            timed_out_drones_str.clear();
+            for (int d : timedOutDrones_)
+            {
+                timed_out_drones_str += std::to_string(d) + " ";
+            }
+            RCLCPP_INFO(this->get_logger(), "Updated timed out drones: [%s]", timed_out_drones_str.c_str());
+
+            // Remove allocations for the timed-out drone
+            removeTimedOutDroneAllocations(entry.first);
+        }
+    }
+}
+
 
 void DecentralisedCoverageNode::globalPositionCb(const geographic_msgs::msg::GeoPoseStamped msg)
 {
@@ -83,6 +210,10 @@ void DecentralisedCoverageNode::initializeSubscribers()
         "decentralised_control/drone_ping", rclcpp::SensorDataQoS(), std::bind(&DecentralisedCoverageNode::dronePingCb, this, std::placeholders::_1));
     centralGlobalPosSub_ = this->create_subscription<geographic_msgs::msg::GeoPoseStamped>(
         "central_control/uas_" + std::to_string(uasNumber_) + "/global_pose", rclcpp::SensorDataQoS(), std::bind(&DecentralisedCoverageNode::globalPositionCb, this, std::placeholders::_1));
+
+    shutdownSub_ = this->create_subscription<std_msgs::msg::Bool>(
+        "decentralised_control/uas_" + std::to_string(uasNumber_) + "/shutdown", 10,
+        std::bind(&DecentralisedCoverageNode::shutdownCallback, this, std::placeholders::_1));
 }
 
 void DecentralisedCoverageNode::initializePublishers()
@@ -91,12 +222,22 @@ void DecentralisedCoverageNode::initializePublishers()
         "decentralised_control/drone_allocation", 10);
     droneEnvironmentalRepresentationPub_ = this->create_publisher<offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>(
         "decentralised_control/drone_environmental_representation", 10);
-    dronePingPub_ = this->create_publisher<offboard_control_interfaces::msg::DronePing>(
-        "decentralised_control/drone_ping", 10);
+    // Set up a timer to call publishDronePing() at a fixed interval
+
     centralGoalPosPub_ = this->create_publisher<geographic_msgs::msg::GeoPoseStamped>(
         "central_control/uas_" + std::to_string(uasNumber_) + "/goal_pose", 10);
 
     decentralisedPubTimer_ = this->create_wall_timer(500ms, std::bind(&DecentralisedCoverageNode::decentralisedCoverageTimerCallback, this));
+    checkDroneTimer_ = this->create_wall_timer(500ms, std::bind(&DecentralisedCoverageNode::checkDroneTimeouts, this));
+}
+
+void DecentralisedCoverageNode::shutdownCallback(const std_msgs::msg::Bool::SharedPtr msg)
+{
+    if (msg->data)
+    {
+        RCLCPP_WARN(this->get_logger(), "Shutdown command received. Shutting down node.");
+        rclcpp::shutdown();
+    }
 }
 
 void DecentralisedCoverageNode::decentralisedCoverageTimerCallback()

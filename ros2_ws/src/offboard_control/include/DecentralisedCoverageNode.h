@@ -21,6 +21,7 @@ public:
 
 private:
     int uasNumber_;
+    std::unordered_set<int> timedOutDrones_;
     bool isCoverageStarted_{false};
     int viewpointAssigned_;
     double goalPoseTolerance_ = 0.4;
@@ -32,6 +33,9 @@ private:
     geographic_msgs::msg::GeoPoseStamped initialGps_;
     GeographicLib::Geoid geoid_;
     geographic_msgs::msg::GeoPoseStamped geoposeGoalGps_{};
+    std::unordered_map<int, rclcpp::Time> lastHeardFrom_;
+    rclcpp::TimerBase::SharedPtr timer_;
+
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr decentralisedCoverageSub_;
     rclcpp::Subscription<offboard_control_interfaces::msg::DroneAllocation>::SharedPtr droneAllocationSub_;
     rclcpp::Subscription<offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>::SharedPtr droneEnvironmentalRepresentationSub_;
@@ -42,35 +46,27 @@ private:
     rclcpp::Publisher<offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>::SharedPtr droneEnvironmentalRepresentationPub_;
     rclcpp::Publisher<offboard_control_interfaces::msg::DronePing>::SharedPtr dronePingPub_;
     rclcpp::TimerBase::SharedPtr decentralisedPubTimer_;
+    rclcpp::TimerBase::SharedPtr checkDroneTimer_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr shutdownSub_;
+
 
     void startDecentralisedCoverageCb(const std_msgs::msg::Bool::SharedPtr msg);
-
     void droneAllocationCb(const offboard_control_interfaces::msg::DroneAllocation::SharedPtr msg);
-
     void droneEnvironmentalRepresentationCb(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg);
-
     void dronePingCb(const offboard_control_interfaces::msg::DronePing::SharedPtr msg);
-
     void globalPositionCb(const geographic_msgs::msg::GeoPoseStamped msg);
-
     void initializeSubscribers();
-
     void initializePublishers();
-
     void decentralisedCoverageTimerCallback();
-
     void publishDroneAllocation();
-
     void publishDroneEnvironmentalRepresentation();
-
     void publishDronePing();
-
     int getClosestViewpointIndex();
-
     void allocateUnassignedViewpoint();
-
     void checkCoveragePositionReached();
-
     void coveragePoseToGeoPose(geographic_msgs::msg::GeoPoseStamped &geopose, Pose &pose);
+    void checkDroneTimeouts();
+    void removeTimedOutDroneAllocations(int drone_id);
+    void shutdownCallback(const std_msgs::msg::Bool::SharedPtr msg);
 };
 #endif

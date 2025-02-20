@@ -53,37 +53,14 @@ namespace trackingNode
 
     void TrackingNode::droneEnvironmentalRepresentationSubCB(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg)
     {
-        auto droneEnvironmentalRepresentation = *msg.get();
-        droneEnvironmentalRepresentation_.push_back(std::pair<rosgraph_msgs::msg::Clock, offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>(currentTime, droneEnvironmentalRepresentation));
-        if (std::find(droneEnvironmentalRepresentation.is_covered.begin(), droneEnvironmentalRepresentation.is_covered.end(), false) == droneEnvironmentalRepresentation.is_covered.end())
-        {
-            bool all_drones_at_initial_position = true;
-            for (int i = 0; i < teamsize_; ++i)
-            {
-                if (dronePositions_[i].empty())
-                {
-                    all_drones_at_initial_position = false;
-                    break;
-                }
-                const auto &initial_position = dronePositions_[i].front().second.position;
-                const auto &current_position = dronePositions_[i].back().second.position;
-                if (HaversineDistance::calculateDistance(initial_position.latitude, initial_position.longitude, initial_position.altitude, 
-                                                         current_position.latitude, current_position.longitude, current_position.altitude) > 0.5)
-                {
-                    all_drones_at_initial_position = false;
-                    break;
-                }
-            }
-            if (all_drones_at_initial_position)
-            {
-                logCoverage();
-            }
-        }
+        droneEnvironmentalRepresentation_.push_back(std::pair<rosgraph_msgs::msg::Clock, offboard_control_interfaces::msg::DroneEnvironmentalRepresentation>(currentTime, *msg));
+        logDroneEnvironmentalRepresentation(msg);
     }
 
     void TrackingNode::droneAllocationSubCB(const offboard_control_interfaces::msg::DroneAllocation::SharedPtr msg)
     {
         droneAllocations_.push_back(std::pair<rosgraph_msgs::msg::Clock, offboard_control_interfaces::msg::DroneAllocation>(currentTime, *msg));
+        logDroneAllocation(msg);
     }
 
     void TrackingNode::dronePositionSubCB(const geographic_msgs::msg::GeoPoseStamped::SharedPtr msg, int robotId)
@@ -91,6 +68,7 @@ namespace trackingNode
         if (robotId >= 0 && robotId < teamsize_)
         {
             dronePositions_[robotId].emplace_back(currentTime, msg->pose);
+            logDronePosition(robotId, msg);
         }
         else
         {
@@ -110,7 +88,52 @@ namespace trackingNode
         currentTime = *msg;
     }
 
-    void trackingNode::TrackingNode::logCoverage()
+    void TrackingNode::logDronePosition(int robotId, const geographic_msgs::msg::GeoPoseStamped::SharedPtr msg)
+    {
+        std::ofstream positionFile("runlog/drone_positions.csv", std::ios::app);
+        if (positionFile.is_open())
+        {
+            positionFile << std::setprecision(12) << robotId + 1 << ","
+                         << currentTime.clock.sec << "." << currentTime.clock.nanosec << ","
+                         << msg->pose.position.latitude << ","
+                         << msg->pose.position.longitude << ","
+                         << msg->pose.position.altitude << "\n";
+            positionFile.close();
+        }
+    }
+
+    void TrackingNode::logDroneAllocation(const offboard_control_interfaces::msg::DroneAllocation::SharedPtr msg)
+    {
+        std::ofstream allocationFile("runlog/drone_allocations.csv", std::ios::app);
+        if (allocationFile.is_open())
+        {
+            allocationFile << currentTime.clock.sec << "." << currentTime.clock.nanosec << ",";
+            for (const auto &alloc : msg->allocations)
+            {
+                allocationFile << alloc << " ";
+            }
+            allocationFile << "\n";
+            allocationFile.close();
+        }
+    }
+
+    void TrackingNode::logDroneEnvironmentalRepresentation(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg)
+    {
+        std::ofstream envRepFile("runlog/drone_environmental_representations.csv", std::ios::app);
+        if (envRepFile.is_open())
+        {
+            envRepFile << currentTime.clock.sec << "." << currentTime.clock.nanosec << ",";
+            for (const auto &covered : msg->is_covered)
+            {
+                envRepFile << covered << " ";
+            }
+            envRepFile << "\n";
+            envRepFile.close();
+        }
+    }
+
+
+    void TrackingNode::logCoverage()
     {
         RCLCPP_INFO(this->get_logger(), "Coverage Finished");
 

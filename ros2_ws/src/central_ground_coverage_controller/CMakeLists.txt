@@ -32,6 +32,8 @@ set_property(TARGET GreedyIterativeCoveragePathPlanner PROPERTY IMPORTED_LOCATIO
 add_library(GeneticAlgorithm STATIC IMPORTED)
 set_property(TARGET GeneticAlgorithm PROPERTY IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/lib/libGeneticAlgorithm.a")
 
+
+
 include_directories(
   ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController 
   ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary
@@ -41,8 +43,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary/GeneticAlgorithmLibrary/ReproductionMechanism
   ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary/GeneticAlgorithmLibrary/TerminationCriterion
   ${CMAKE_SOURCE_DIR}/include/CentralGroundCoverageController/CoverageLibrary/nlohmann
-  ${CMAKE_SOURCE_DIR}/include/tomlpp
-  ${GeographicLib_INCLUDE_DIRS})
+  ${CMAKE_SOURCE_DIR}/include/tomlpp)
 
 add_executable(
   CentralCoverageController 
@@ -53,7 +54,7 @@ add_executable(
   src/CoverageLogger.cpp
   src/CoverageLogReader.cpp
   include/CentralGroundCoverageController/CentralCoverageControllerNode.h )
-target_link_libraries(CentralCoverageController GreedyIterativeCoveragePathPlanner GeneticAlgorithm ${GeographicLib_LIBRARIES})
+target_link_libraries(CentralCoverageController GreedyIterativeCoveragePathPlanner GeneticAlgorithm GeographicLib)
 ament_target_dependencies(CentralCoverageController rclcpp geometry_msgs mavros_msgs)
 
 install(TARGETS

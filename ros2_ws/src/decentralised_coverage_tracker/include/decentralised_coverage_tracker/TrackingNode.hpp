@@ -42,6 +42,9 @@ namespace trackingNode
         void startDecentralisedCoverageSubCB(const std_msgs::msg::Bool::SharedPtr msg);
         void clockSubCB(const rosgraph_msgs::msg::Clock::SharedPtr msg);
         void logCoverage();
+        void logDronePosition(int robotId, const geographic_msgs::msg::GeoPoseStamped::SharedPtr msg);
+        void logDroneAllocation(const offboard_control_interfaces::msg::DroneAllocation::SharedPtr msg);
+        void logDroneEnvironmentalRepresentation(const offboard_control_interfaces::msg::DroneEnvironmentalRepresentation::SharedPtr msg);
     };
 } // namespace TrackingNode
 #endif // DecentralisedCoverageTracker__TrackingNode_HPP_
