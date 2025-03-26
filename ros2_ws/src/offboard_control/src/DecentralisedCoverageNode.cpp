@@ -4,16 +4,23 @@
 using namespace std::chrono_literals;
 
 DecentralisedCoverageNode::DecentralisedCoverageNode(const std::string &name, int uas_number)
-    : Node(name), uasNumber_(uas_number), geoid_("egm96-5")
+    : Node(name), uasNumber_(uas_number), geoid_("egm96-5"), isKilled_(false)
 {
     decentralisedCoverageSub_ = this->create_subscription<std_msgs::msg::Bool>(
         "decentralised_control/start_decentralised_coverage", rclcpp::SensorDataQoS(), std::bind(&DecentralisedCoverageNode::startDecentralisedCoverageCb, this, std::placeholders::_1));
+
+    killSub_ = this->create_subscription<std_msgs::msg::Bool>(
+        "central_control/uas_" + std::to_string(uasNumber_) + "/kill_robot", 10, std::bind(&DecentralisedCoverageNode::killCallback, this, std::placeholders::_1));
+
+    reviveSub_ = this->create_subscription<std_msgs::msg::Bool>(
+        "central_control/uas_" + std::to_string(uasNumber_) + "/revive_robot", 10, std::bind(&DecentralisedCoverageNode::reviveCallback, this, std::placeholders::_1));
+
     viewpointAssigned_ = -1;
     lastHeardFrom_ = {};
     dronePingPub_ = this->create_publisher<offboard_control_interfaces::msg::DronePing>(
         "decentralised_control/drone_ping", 10);
     timer_ = this->create_wall_timer(
-           std::chrono::seconds(1),  // Adjust the interval as needed
+           std::chrono::seconds(1),
            std::bind(&DecentralisedCoverageNode::publishDronePing, this));
 }
 
@@ -21,7 +28,9 @@ void DecentralisedCoverageNode::startDecentralisedCoverageCb(const std_msgs::msg
 {
     if (!isCoverageStarted_)
     {
-        coverageViewpoints_ = CoverageViewpointLoader::load("/home/ajifoster3/Downloads/all_geoposes_wind_turbine.json");
+        std::string file = "/home/ajifoster3/Downloads/Poses/random120/5.json";
+        RCLCPP_INFO(this->get_logger(), "%s", file.c_str());
+        coverageViewpoints_ = CoverageViewpointLoader::load(file);
         isCoverageStarted_ = true;
         droneAllocation_.allocations = std::vector<int>(coverageViewpoints_.size(), -1);
         droneEnvironmentalRepresentation_.is_covered = std::vector<bool>(coverageViewpoints_.size(), false);
@@ -240,8 +249,15 @@ void DecentralisedCoverageNode::shutdownCallback(const std_msgs::msg::Bool::Shar
     }
 }
 
+
 void DecentralisedCoverageNode::decentralisedCoverageTimerCallback()
 {
+    if (isKilled_)
+    {
+        RCLCPP_WARN(this->get_logger(), "Drone %d is killed, skipping operations", uasNumber_);
+        return;
+    }
+
     RCLCPP_INFO(this->get_logger(), "Drone %d decentralisedCoverageTimerCallback", uasNumber_);
     if (isGPSSet_)
     {
@@ -280,10 +296,33 @@ void DecentralisedCoverageNode::publishDroneEnvironmentalRepresentation()
 
 void DecentralisedCoverageNode::publishDronePing()
 {
-    offboard_control_interfaces::msg::DronePing dronePing = offboard_control_interfaces::msg::DronePing();
+    if (isKilled_)
+    {
+        return;
+    }
+    offboard_control_interfaces::msg::DronePing dronePing;
     dronePing.drone_id = uasNumber_;
     dronePingPub_->publish(dronePing);
 }
+
+void DecentralisedCoverageNode::killCallback(const std_msgs::msg::Bool::SharedPtr msg)
+{
+    if (msg->data && !isKilled_)
+    {
+        RCLCPP_WARN(this->get_logger(), "Kill signal received. Stopping all operations for UAS %d", uasNumber_);
+        isKilled_ = true;
+    }
+}
+
+void DecentralisedCoverageNode::reviveCallback(const std_msgs::msg::Bool::SharedPtr msg)
+{
+    if (msg->data && isKilled_)
+    {
+        RCLCPP_INFO(this->get_logger(), "Revive signal received. Resuming operations for UAS %d", uasNumber_);
+        isKilled_ = false;
+    }
+}
+
 
 int DecentralisedCoverageNode::getClosestViewpointIndex()
 {

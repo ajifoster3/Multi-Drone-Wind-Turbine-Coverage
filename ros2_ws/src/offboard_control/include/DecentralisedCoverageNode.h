@@ -35,6 +35,7 @@ private:
     geographic_msgs::msg::GeoPoseStamped geoposeGoalGps_{};
     std::unordered_map<int, rclcpp::Time> lastHeardFrom_;
     rclcpp::TimerBase::SharedPtr timer_;
+    bool isKilled_;
 
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr decentralisedCoverageSub_;
     rclcpp::Subscription<offboard_control_interfaces::msg::DroneAllocation>::SharedPtr droneAllocationSub_;
@@ -48,6 +49,10 @@ private:
     rclcpp::TimerBase::SharedPtr decentralisedPubTimer_;
     rclcpp::TimerBase::SharedPtr checkDroneTimer_;
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr shutdownSub_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr killSub_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr reviveSub_;
+
+
 
 
     void startDecentralisedCoverageCb(const std_msgs::msg::Bool::SharedPtr msg);
@@ -68,5 +73,7 @@ private:
     void checkDroneTimeouts();
     void removeTimedOutDroneAllocations(int drone_id);
     void shutdownCallback(const std_msgs::msg::Bool::SharedPtr msg);
+    void killCallback(const std_msgs::msg::Bool::SharedPtr msg);
+    void reviveCallback(const std_msgs::msg::Bool::SharedPtr msg);
 };
 #endif
