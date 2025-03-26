@@ -3,7 +3,7 @@
 using namespace std::chrono_literals;
 
 OffboardNode::OffboardNode(const std::string &name, int uas_number, CoverageMode mode)
-    : Node(name), coverageMode_(mode), uasNumber_(uas_number), geoid_("egm96-5")
+    : Node("offboard_node_uas_" + std::to_string(uas_number)), coverageMode_(mode), uasNumber_(uas_number), geoid_("egm96-5")
 {
     initializeSubscribers();
     initializePublishers();
