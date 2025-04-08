@@ -18,6 +18,8 @@ void OffboardNode::OffboardNodeSetup()
 
     RCLCPP_INFO(this->get_logger(), "Setting up offboard mode...");
 
+    armDrone();
+    setOffboardMode();
 
     RCLCPP_INFO(this->get_logger(), "Publishing initial Pose...");
     // Publish target altitude to maintain OFFBOARD mode

@@ -22,12 +22,14 @@ tmux split-window -v
 
 # Pane 1: source ROS setup script and type ros2 launch mavros multi_uas.launch without running
 tmux send-keys -t $SESSION:0.0 'source /opt/ros/humble/setup.bash' C-m
+tmux send-keys -t $SESSION:0.0 'source ~/Documents/Software/ros2_ws/install/local_setup.bash' C-m
 tmux send-keys -t $SESSION:0.0 'ros2 launch mavros multi_uas.launch' 
 
 # Pane 2: cd to ~/Documents/Code, source ROS setup scripts, and type ./multi_launch_drones.sh without running
 tmux send-keys -t $SESSION:0.1 'cd /home/ajifoster3/Documents/GitHub/Multi-Drone-Wind-Turbine-Coverage' C-m
 tmux send-keys -t $SESSION:0.1 'source /opt/ros/humble/setup.bash' C-m
-tmux send-keys -t $SESSION:0.1 'source ~/Documents/GitHub/Multi-Drone-Wind-Turbine-Coverage/ros2_ws/install/local_setup.bash' C-m
+tmux send-keys -t $SESSION:0.1 'source ~/Documents/Software/Multi-Drone-Wind-Turbine-Coverage/ros2_ws/install/local_setup.bash' C-m
+tmux send-keys -t $SESSION:0.1 'source ~/Documents/Software/ros2_ws/install/local_setup.bash' C-m
 tmux send-keys -t $SESSION:0.1 './parallel.sh' 
 
 # Pane 3: cd to ~/Applications/PegasusSimulator/examples and run ISAACSIM_PYTHON 2_px4_multi_vehicles.py
